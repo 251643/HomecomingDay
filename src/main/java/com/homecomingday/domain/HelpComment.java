@@ -1,11 +1,18 @@
 package com.homecomingday.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Builder
 @Getter
@@ -18,6 +25,9 @@ public class HelpComment extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false)
+  private String content;
+
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
@@ -25,10 +35,6 @@ public class HelpComment extends Timestamped {
   @JoinColumn(name = "help_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Help help;
-
-  @Column(nullable = false)
-  private String content;
-
 
   public boolean validateMember(Member member) {
     return !this.member.equals(member);

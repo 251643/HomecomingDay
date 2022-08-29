@@ -1,21 +1,20 @@
 package com.homecomingday.service;
 
+import com.homecomingday.controller.response.MemberResponseDto;
+import com.homecomingday.domain.Member;
 import com.homecomingday.controller.request.LoginRequestDto;
 import com.homecomingday.controller.request.MemberRequestDto;
-import com.homecomingday.controller.request.TokenDto;
-import com.homecomingday.controller.response.MemberResponseDto;
 import com.homecomingday.controller.response.ResponseDto;
-import com.homecomingday.domain.Member;
+import com.homecomingday.controller.request.TokenDto;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +23,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
 
   private final PasswordEncoder passwordEncoder;
+//  private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final TokenProvider tokenProvider;
 
   @Transactional

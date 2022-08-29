@@ -1,15 +1,24 @@
 package com.homecomingday.jwt;
 
-import com.homecomingday.controller.request.TokenDto;
-import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.RefreshToken;
 import com.homecomingday.domain.UserDetailsImpl;
+import com.homecomingday.controller.response.ResponseDto;
+import com.homecomingday.controller.request.TokenDto;
 import com.homecomingday.repository.RefreshTokenRepository;
 import com.homecomingday.shared.Authority;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
+import java.security.Key;
+import java.util.Date;
+import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,10 +26,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.Key;
-import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 @Component

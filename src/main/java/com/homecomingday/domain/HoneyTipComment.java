@@ -18,6 +18,9 @@ public class HoneyTipComment extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false)
+  private String content;
+
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
@@ -25,10 +28,6 @@ public class HoneyTipComment extends Timestamped {
   @JoinColumn(name = "honeyTip_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private HoneyTip honeyTip;
-
-  @Column(nullable = false)
-  private String content;
-
 
   public boolean validateMember(Member member) {
     return !this.member.equals(member);

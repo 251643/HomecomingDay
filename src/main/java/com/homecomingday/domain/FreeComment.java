@@ -18,6 +18,9 @@ public class FreeComment extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false)
+  private String content;
+
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
@@ -25,10 +28,6 @@ public class FreeComment extends Timestamped {
   @JoinColumn(name = "free_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Free free;
-
-  @Column(nullable = false)
-  private String content;
-
 
   public boolean validateMember(Member member) {
     return !this.member.equals(member);

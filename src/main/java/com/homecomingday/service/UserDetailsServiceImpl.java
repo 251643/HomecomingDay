@@ -3,13 +3,13 @@ package com.homecomingday.service;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.MemberRepository;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
