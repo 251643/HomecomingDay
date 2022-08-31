@@ -1,4 +1,4 @@
-package com.homecomingday.controller.request;
+package com.homecomingday.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

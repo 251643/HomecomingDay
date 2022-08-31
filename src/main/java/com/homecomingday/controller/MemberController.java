@@ -1,31 +1,50 @@
 package com.homecomingday.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homecomingday.controller.request.LoginRequestDto;
 import com.homecomingday.controller.request.MemberRequestDto;
+import com.homecomingday.controller.request.SchoolInfoDto;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.service.MemberService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import com.homecomingday.service.NaverLoginService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.json.simple.parser.ParseException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
 
   private final MemberService memberService;
+  private final NaverLoginService naverLoginService;
 
-  @RequestMapping(value = "/api/member/signup", method = RequestMethod.POST)
+  @RequestMapping(value = "/member/signup", method = RequestMethod.POST)
   public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) {
     return memberService.createMember(requestDto);
   }
 
-  @RequestMapping(value = "/api/member/login", method = RequestMethod.POST)
+  @RequestMapping(value = "/member/signup/schoolInfo", method = RequestMethod.POST)
+  public ResponseDto<?> schoolInfo(@RequestBody @Valid SchoolInfoDto requestDto) {
+    return memberService.schoolInfoMember(requestDto);
+  }
+
+  @RequestMapping(value = "/member/login", method = RequestMethod.POST)
   public ResponseDto<?> login(@RequestBody @Valid LoginRequestDto requestDto,
       HttpServletResponse response
   ) {
@@ -37,8 +56,30 @@ public class MemberController {
 //    return memberService.reissue(request, response);
 //  }
 
-  @RequestMapping(value = "/api/auth/member/logout", method = RequestMethod.POST)
+  @RequestMapping(value = "/auth/member/logout", method = RequestMethod.POST)
   public ResponseDto<?> logout(HttpServletRequest request) {
     return memberService.logout(request);
   }
+
+  //네이버 로그인
+  @RequestMapping(value = "/member/callback", method = { RequestMethod.GET, RequestMethod.POST })
+  public TokenDto callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session, HttpServletResponse response) throws IOException, ParseException {
+    TokenDto tokenDto = naverLoginService.naverLoginCallback(model, code, state, session);
+    tokenToHeaders(tokenDto, response);
+    return tokenDto;
+  }
+  //로그아웃
+//  @RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
+//  public String logout(HttpSession session)throws IOException {
+//    System.out.println("여기는 logout");
+//    session.invalidate();
+//    return "로그아웃";
+//  }
+
+  public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
+    response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
+    response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
+    response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
+  }
+
 }
