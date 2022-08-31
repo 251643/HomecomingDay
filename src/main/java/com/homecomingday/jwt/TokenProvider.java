@@ -73,10 +73,12 @@ public class TokenProvider {
     refreshTokenRepository.save(refreshTokenObject);
 
     return TokenDto.builder()
-        .grantType(BEARER_PREFIX)
-        .accessToken(accessToken)
+
+        //.grantType(BEARER_PREFIX)
+        .accessToken(BEARER_PREFIX + accessToken)
         .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
         .refreshToken(refreshToken)
+        .username(member.getUsername())
         .build();
 
   }

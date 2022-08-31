@@ -18,11 +18,17 @@ public class MemberRequestDto {
   private String email;
 
   @NotBlank
+  @Pattern(regexp = "^[가-힣a-zA-Z]{2,16}$")
+  private String username;
+
+  @NotBlank
   @Size(min = 4, max = 32)
-  @Pattern(regexp = "[a-z\\d]*${3,32}")
+  @Pattern(regexp = "^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\\\(\\\\)\\-_=+]).{8,16}$")
   private String password;
 
   @NotBlank
-  private String username;
+  @Size(min = 4, max = 32)
+  @Pattern(regexp = "^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\\\(\\\\)\\-_=+]).{8,16}$")
+  private String passwordCheck;
 
 }

@@ -74,14 +74,7 @@ public class MemberService {
     TokenDto tokenDto = tokenProvider.generateTokenDto(member);
     tokenToHeaders(tokenDto, response);
 
-    return ResponseDto.success(
-        MemberResponseDto.builder()
-            .id(member.getId())
-            .username(member.getUsername())
-            .createdAt(member.getCreatedAt())
-            .modifiedAt(member.getModifiedAt())
-            .build()
-    );
+    return ResponseDto.success(tokenDto);
   }
 
 //  @Transactional
@@ -128,9 +121,11 @@ public class MemberService {
   }
 
   public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-    response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
+    response.setContentType("text/plain;charset=utf-8");
+    response.addHeader("Authorization", tokenDto.getAccessToken());
     response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
     response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
+    response.addHeader("Username", tokenDto.getUsername());
   }
 
   @Transactional

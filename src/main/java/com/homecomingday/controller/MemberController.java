@@ -44,7 +44,7 @@ public class MemberController {
     return memberService.schoolInfoMember(requestDto);
   }
 
-  @RequestMapping(value = "/member/login", method = RequestMethod.POST)
+  @RequestMapping(value = "/member/login", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
   public ResponseDto<?> login(@RequestBody @Valid LoginRequestDto requestDto,
       HttpServletResponse response
   ) {
@@ -64,9 +64,8 @@ public class MemberController {
   //네이버 로그인
   @RequestMapping(value = "/member/callback", method = { RequestMethod.GET, RequestMethod.POST })
   public TokenDto callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session, HttpServletResponse response) throws IOException, ParseException {
-    TokenDto tokenDto = naverLoginService.naverLoginCallback(model, code, state, session);
-    tokenToHeaders(tokenDto, response);
-    return tokenDto;
+
+    return naverLoginService.naverLoginCallback(model, code, state, session, response);
   }
   //로그아웃
 //  @RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
@@ -75,11 +74,5 @@ public class MemberController {
 //    session.invalidate();
 //    return "로그아웃";
 //  }
-
-  public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-    response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
-    response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
-    response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
-  }
 
 }

@@ -53,7 +53,7 @@ public class NaverLoginService {
         model.addAttribute("url", naverAuthUrl);
     }
 
-    public TokenDto naverLoginCallback(Model model, String code, String state, HttpSession session) throws IOException, ParseException {
+    public TokenDto naverLoginCallback(Model model, String code, String state, HttpSession session, HttpServletResponse response) throws IOException, ParseException {
         OAuth2AccessToken oauthToken;
         oauthToken = naverLogin.getAccessToken(session, code, state);
 
@@ -94,17 +94,20 @@ public class NaverLoginService {
                 .build();
 
         refreshTokenRepository.save(refreshTokenObject);
-
-        return TokenDto.builder()
-                .grantType(oauthToken.getTokenType())
+        TokenDto tokenDto = TokenDto.builder()
+                //  .grantType(oauthToken.getTokenType())
                 .accessToken(oauthToken.getAccessToken())
                 .accessTokenExpiresIn(Long.valueOf(oauthToken.getExpiresIn()))
                 .refreshToken(oauthToken.getRefreshToken())
                 .build();
+
+        tokenToHeaders(tokenDto, response);
+
+        return tokenDto;
     }
 
     private Member registerNaver(NaverMemberInfoDto naverMemberInfoDto) {
-        //DB 에 중복된 Kakao Id 가 있는지 확인
+
         Member naverMember = memberRepository.findByEmail(naverMemberInfoDto.getEmail())
                 .orElse(null);
         if (naverMember == null) {
@@ -134,6 +137,15 @@ public class NaverLoginService {
         UserDetails userDetails = new UserDetailsImpl(member);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+
+    public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
+        response.setContentType("text/html;charset=utf-8");
+        response.addHeader("Authorization", tokenDto.getAccessToken());
+        response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
+        response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
+        response.addHeader("Username", tokenDto.getUsername());
     }
 
 }
