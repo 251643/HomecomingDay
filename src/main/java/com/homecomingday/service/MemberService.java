@@ -39,14 +39,14 @@ public class MemberService {
     }
 
     Member member = Member.builder()
-            .nickname(requestDto.getNickname())
+            .username(requestDto.getNickname())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                     .build();
     memberRepository.save(member);
     return ResponseDto.success(
         MemberResponseDto.builder()
             .id(member.getId())
-            .nickname(member.getNickname())
+            .nickname(member.getUsername())
             .createdAt(member.getCreatedAt())
             .modifiedAt(member.getModifiedAt())
             .build()
@@ -75,7 +75,7 @@ public class MemberService {
     return ResponseDto.success(
         MemberResponseDto.builder()
             .id(member.getId())
-            .nickname(member.getNickname())
+            .nickname(member.getUsername())
             .createdAt(member.getCreatedAt())
             .modifiedAt(member.getModifiedAt())
             .build()
@@ -121,7 +121,7 @@ public class MemberService {
 
   @Transactional(readOnly = true)
   public Member isPresentMember(String nickname) {
-    Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+    Optional<Member> optionalMember = memberRepository.findByUsername(nickname);
     return optionalMember.orElse(null);
   }
 

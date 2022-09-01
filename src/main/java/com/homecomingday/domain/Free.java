@@ -29,6 +29,9 @@ public class Free extends Timestamped {
   @Column(nullable = false)
   private String content;
 
+  @Column
+  private Long views;
+
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<FreeComment> freeComments;
