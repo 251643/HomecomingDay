@@ -12,7 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberResponseDto {
   private Long id;
-  private String nickname;
+  private String email;
+  private String username;
+  private String schoolname;
+  private String departmentname;
+  private String admission;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
 }

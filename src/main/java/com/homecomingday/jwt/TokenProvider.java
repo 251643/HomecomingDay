@@ -4,7 +4,7 @@ import com.homecomingday.domain.Member;
 import com.homecomingday.domain.RefreshToken;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.controller.response.ResponseDto;
-import com.homecomingday.controller.request.TokenDto;
+import com.homecomingday.controller.TokenDto;
 import com.homecomingday.repository.RefreshTokenRepository;
 import com.homecomingday.shared.Authority;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -53,7 +53,7 @@ public class TokenProvider {
 
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
-        .setSubject(member.getNickname())
+        .setSubject(member.getUsername())
         .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
         .setExpiration(accessTokenExpiresIn)
         .signWith(key, SignatureAlgorithm.HS256)
@@ -73,10 +73,12 @@ public class TokenProvider {
     refreshTokenRepository.save(refreshTokenObject);
 
     return TokenDto.builder()
-        .grantType(BEARER_PREFIX)
-        .accessToken(accessToken)
+
+        //.grantType(BEARER_PREFIX)
+        .accessToken(BEARER_PREFIX + accessToken)
         .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
         .refreshToken(refreshToken)
+        .username(member.getUsername())
         .build();
 
   }
