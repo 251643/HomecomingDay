@@ -8,7 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
 import com.homecomingday.util.Timestamped;
+import com.homecomingday.controller.request.SchoolInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +29,7 @@ public class Member extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String email;
 
   @Column(nullable = false)
@@ -36,6 +38,15 @@ public class Member extends Timestamped {
   @Column(nullable = false)
   @JsonIgnore
   private String password;
+
+  @Column
+  private String admission;
+
+  @Column
+  private String schoolname;
+
+  @Column
+  private String departmentname;
 
   @Override
   public boolean equals(Object o) {
@@ -48,7 +59,11 @@ public class Member extends Timestamped {
     Member member = (Member) o;
     return id != null && Objects.equals(id, member.id);
   }
-
+  public void update(SchoolInfoDto schoolInfoDto) {
+    this.schoolname = schoolInfoDto.getSchoolName();
+    this.departmentname = schoolInfoDto.getDepartmentName();
+    this.admission = schoolInfoDto.getAdmission();
+  }
   @Override
   public int hashCode() {
     return getClass().hashCode();
