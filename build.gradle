@@ -22,12 +22,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    //S3 의존성 주입
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+    
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
     runtimeOnly 'com.h2database:h2'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
 //     JWT
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
@@ -36,6 +43,11 @@ dependencies {
 //     validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+
+    //aws-java-sdk-v2 추가 
+    implementation platform('software.amazon.awssdk:bom:2.17.53')
+    implementation 'software.amazon.awssdk:s3'
+
 //
     implementation group: 'com.github.scribejava', name: 'scribejava-core', version: '2.8.1'
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
@@ -43,6 +55,7 @@ dependencies {
     //  스웨거 의존성
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+
 
 
 
