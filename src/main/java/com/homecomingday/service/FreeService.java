@@ -28,9 +28,9 @@ import java.util.List;
 
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class FreeService {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -40,7 +40,6 @@ public class FreeService {
     private final Time time;
     private final ImageRepository imageRepository;
 
-    private final UserDetailsImpl userDetails;
 
 
 
@@ -87,7 +86,7 @@ public class FreeService {
 //            작성시간 조회
 
             long rightNow = ChronoUnit.MINUTES.between(free.getCreatedAt(), LocalDateTime.now());
-            ArticleResponseDto articleResponseDto = new ArticleResponseDto(free, time.times(rightNow));
+            ArticleResponseDto articleResponseDto = new ArticleResponseDto(free, Time.times(rightNow));
             return articleResponseDto;
 
         } else {
@@ -100,7 +99,7 @@ public class FreeService {
 //            작성시간 조회
 
             long rightNow = ChronoUnit.MINUTES.between(free.getCreatedAt(), LocalDateTime.now());
-            ArticleResponseDto articleResponseDto = new ArticleResponseDto(free, time.times(rightNow));
+            ArticleResponseDto articleResponseDto = new ArticleResponseDto(free, Time.times(rightNow));
             return articleResponseDto;
         }
 
@@ -137,7 +136,7 @@ public class FreeService {
             data.add(image.getImgUrl());
         }
 
-        ArticleResponseDto articleResponseDto=new ArticleResponseDto(free,data,time.times(articlePresentTime),commentDtoList);
+        ArticleResponseDto articleResponseDto=new ArticleResponseDto(free,data, Time.times(articlePresentTime),commentDtoList);
         return articleResponseDto;
     }
 }

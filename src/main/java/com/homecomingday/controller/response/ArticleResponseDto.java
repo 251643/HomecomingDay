@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -34,22 +33,26 @@ public class ArticleResponseDto {
 
     private List<String>image;
 
+    private Long commentCnt;
 
+    private List<CommentDto> commentList;
+
+
+    //전체조회시 출력값
     public ArticleResponseDto(Free free,String createdAt){
         this.articleId=free.getId();
         this.title=free.getTitle();
-        this.content=free.getContent();
         this.username=getUsername();
         this.createdAt=createdAt;
         this.admission=getAdmission();
         this.views=getViews();
-//        this.commentCnt
+        this.commentCnt= (long) free.getFreeComments().size();
 
     }
 
+    //상세페이지 출력값
     public ArticleResponseDto(Free free,List<String> image, String createdAt, List<CommentDto> commentDtoList) {
         this.articleId = free.getId();
-//        this.images = articles.getImage();
         this.username = free.getMember().getUsername();
         this.content = free.getContent();
         this.createdAt = createdAt;
