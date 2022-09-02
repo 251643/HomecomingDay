@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
+import com.homecomingday.util.Timestamped;
 import com.homecomingday.controller.request.SchoolInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,7 @@
 package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class HoneyTip extends Timestamped {
   private String content;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<HelpComment> helpComments;
+  private List<HoneyTipComment> honeyTipComments;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference

@@ -39,6 +39,7 @@ public class MemberService {
 //    }
 
     Member member = Member.builder()
+
             .email(requestDto.getEmail())
             .username(requestDto.getUsername())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
@@ -74,7 +75,9 @@ public class MemberService {
     TokenDto tokenDto = tokenProvider.generateTokenDto(member);
     tokenToHeaders(tokenDto, response);
 
+
     return ResponseDto.success(tokenDto);
+
   }
 
 //  @Transactional
@@ -115,8 +118,10 @@ public class MemberService {
   }
 
   @Transactional(readOnly = true)
+
   public Member isPresentMember(String email) {
     Optional<Member> optionalMember = memberRepository.findByEmail(email);
+
     return optionalMember.orElse(null);
   }
 

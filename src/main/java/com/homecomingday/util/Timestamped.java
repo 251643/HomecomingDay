@@ -1,4 +1,4 @@
-package com.homecomingday.domain;
+package com.homecomingday.util;
 
 import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
