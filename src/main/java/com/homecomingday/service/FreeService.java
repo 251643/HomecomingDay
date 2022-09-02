@@ -4,21 +4,22 @@ package com.homecomingday.service;
 import com.homecomingday.controller.request.ArticleRequestDto;
 import com.homecomingday.controller.response.ArticleResponseDto;
 import com.homecomingday.controller.response.CommentDto;
+import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.*;
+import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.FreeCommentRepository;
 import com.homecomingday.repository.FreeRepository;
 import com.homecomingday.repository.ImageRepository;
-import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.service.s3.S3Uploader;
 import com.homecomingday.util.Time;
-import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -39,10 +40,7 @@ public class FreeService {
     private final S3Uploader s3Uploader;
     private final Time time;
     private final ImageRepository imageRepository;
-
-
-
-
+    private final TokenProvider tokenProvider;
 
     private Long getTime() {
         Free free = new Free();
@@ -54,11 +52,9 @@ public class FreeService {
         return freeRepository.findAllByOrderByCreatedAtDesc();
     }
 
-
-
     //게시글 생성
     @Transactional
-    public ArticleResponseDto postFree(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<?> postFree(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, UserDetailsImpl userDetails, HttpServletRequest request) throws IOException {
 
         List<Image> imageList = new ArrayList<>();
         if (multipartFile != null) {
@@ -87,7 +83,7 @@ public class FreeService {
 
             long rightNow = ChronoUnit.MINUTES.between(free.getCreatedAt(), LocalDateTime.now());
             ArticleResponseDto articleResponseDto = new ArticleResponseDto(free, Time.times(rightNow));
-            return articleResponseDto;
+            return  ResponseDto.success( articleResponseDto);
 
         } else {
             Free free = Free.builder()
@@ -100,7 +96,7 @@ public class FreeService {
 
             long rightNow = ChronoUnit.MINUTES.between(free.getCreatedAt(), LocalDateTime.now());
             ArticleResponseDto articleResponseDto = new ArticleResponseDto(free, Time.times(rightNow));
-            return articleResponseDto;
+            return ResponseDto.success( articleResponseDto);
         }
 
     }
@@ -138,5 +134,14 @@ public class FreeService {
 
         ArticleResponseDto articleResponseDto=new ArticleResponseDto(free,data, Time.times(articlePresentTime),commentDtoList);
         return articleResponseDto;
+    }
+
+    @Transactional
+    public Member validateMember(HttpServletRequest request) {
+        System.out.println(request.getHeader("Refresh-Token"));
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return null;
+        }
+        return tokenProvider.getMemberFromAuthentication();
     }
 }

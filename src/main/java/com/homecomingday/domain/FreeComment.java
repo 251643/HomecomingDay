@@ -1,6 +1,5 @@
 package com.homecomingday.domain;
 
-import com.homecomingday.controller.response.CommentDto;
 import com.homecomingday.controller.response.ReviseContentDto;
 import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,5 @@
 package com.homecomingday.controller.response;
 
-import com.homecomingday.domain.Free;
-import com.homecomingday.domain.FreeComment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

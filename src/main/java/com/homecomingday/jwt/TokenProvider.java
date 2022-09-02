@@ -1,24 +1,16 @@
 package com.homecomingday.jwt;
 
+import com.homecomingday.controller.TokenDto;
+import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.RefreshToken;
 import com.homecomingday.domain.UserDetailsImpl;
-import com.homecomingday.controller.response.ResponseDto;
-import com.homecomingday.controller.TokenDto;
 import com.homecomingday.repository.RefreshTokenRepository;
 import com.homecomingday.shared.Authority;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
-import java.security.Key;
-import java.util.Date;
-import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -26,6 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -53,7 +49,7 @@ public class TokenProvider {
 
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
-        .setSubject(member.getUsername())
+        .setSubject(member.getEmail())
         .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
         .setExpiration(accessTokenExpiresIn)
         .signWith(key, SignatureAlgorithm.HS256)
@@ -64,21 +60,19 @@ public class TokenProvider {
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
 
-    RefreshToken refreshTokenObject = RefreshToken.builder()
+    RefreshToken rTokenEntityObject = RefreshToken.builder()
         .id(member.getId())
         .member(member)
         .token(refreshToken)
         .build();
 
-    refreshTokenRepository.save(refreshTokenObject);
+    refreshTokenRepository.save(rTokenEntityObject);
 
     return TokenDto.builder()
-
-        //.grantType(BEARER_PREFIX)
-        .accessToken(BEARER_PREFIX + accessToken)
+        .grantType(BEARER_PREFIX)
+        .accessToken(accessToken)
         .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
         .refreshToken(refreshToken)
-        .username(member.getUsername())
         .build();
 
   }
@@ -141,12 +135,12 @@ public class TokenProvider {
 
   @Transactional
   public ResponseDto<?> deleteRefreshToken(Member member) {
-    RefreshToken refreshToken = isPresentRefreshToken(member);
-    if (null == refreshToken) {
+    RefreshToken rTokenEntity = isPresentRefreshToken(member);
+    if (null == rTokenEntity) {
       return ResponseDto.fail("TOKEN_NOT_FOUND", "존재하지 않는 Token 입니다.");
     }
 
-    refreshTokenRepository.delete(refreshToken);
+    refreshTokenRepository.delete(rTokenEntity);
     return ResponseDto.success("success");
   }
 }

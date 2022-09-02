@@ -13,10 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,11 +39,6 @@ public class SecurityConfiguration {
   }
 
   @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().antMatchers("/**");
-  }
-
-  @Bean
   @Order(SecurityProperties.BASIC_AUTH_ORDER)
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors();
@@ -63,11 +55,10 @@ public class SecurityConfiguration {
 
         .and()
         .authorizeRequests()
-        .antMatchers("/api/member/**").permitAll()
-        .antMatchers("/api/post/**").permitAll()
-        .antMatchers("/api/comment/**").permitAll()
-        .antMatchers("/**").permitAll()
-        //.anyRequest().authenticated()
+        .antMatchers("/member/**").permitAll()
+        .antMatchers("/post/**").permitAll()
+        .antMatchers("/comment/**").permitAll()
+        .anyRequest().authenticated()
 
         .and()
         .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));

@@ -1,30 +1,20 @@
 package com.homecomingday.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homecomingday.controller.request.LoginRequestDto;
 import com.homecomingday.controller.request.MemberRequestDto;
 import com.homecomingday.controller.request.SchoolInfoDto;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.service.MemberService;
+import com.homecomingday.service.NaverLoginService;
+import lombok.RequiredArgsConstructor;
+import org.json.simple.parser.ParseException;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
-import com.homecomingday.service.NaverLoginService;
-import lombok.RequiredArgsConstructor;
-import org.json.simple.parser.ParseException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
 import java.io.IOException;
 
 @RequiredArgsConstructor
