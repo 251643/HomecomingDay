@@ -54,7 +54,8 @@ public class MemberController {
   //네이버 로그인
   @RequestMapping(value = "/member/callback", method = { RequestMethod.GET, RequestMethod.POST })
   public TokenDto callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session, HttpServletResponse response) throws IOException, ParseException {
-
+    System.out.println(code);
+    System.out.println(state);
     return naverLoginService.naverLoginCallback(model, code, state, session, response);
   }
   //로그아웃
