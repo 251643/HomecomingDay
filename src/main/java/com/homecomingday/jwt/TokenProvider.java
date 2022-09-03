@@ -60,13 +60,13 @@ public class TokenProvider {
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
 
-    RefreshToken rTokenEntityObject = RefreshToken.builder()
+    RefreshToken refreshTokenObject = RefreshToken.builder()
         .id(member.getId())
         .member(member)
         .token(refreshToken)
         .build();
 
-    refreshTokenRepository.save(rTokenEntityObject);
+    refreshTokenRepository.save(refreshTokenObject);
 
     return TokenDto.builder()
         .grantType(BEARER_PREFIX)

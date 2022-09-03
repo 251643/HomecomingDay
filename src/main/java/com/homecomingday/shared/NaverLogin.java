@@ -91,9 +91,6 @@ public class NaverLogin {
         Response response = request.send();
         return response.getBody();
     }
-
-
-
 }
 
 
