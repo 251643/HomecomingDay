@@ -27,6 +27,6 @@ public class EachArticleDto {
 
     private String createdAt;
 
-    private List<CommentDto> commentDtoList;
+    private List<CommentResponseDto> commentResponseDtoList;
 
 }

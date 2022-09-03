@@ -3,6 +3,7 @@ package com.homecomingday.service.s3;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.homecomingday.controller.S3Dto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
 
-    public String upload(MultipartFile multipartFile) throws IOException {
+    public S3Dto upload(MultipartFile multipartFile) throws IOException {
         File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
 
@@ -38,14 +39,15 @@ public class S3Uploader {
 
     // S3로 파일 업로드하기
     @Transactional
-    public String uploadToS3(File uploadFile) throws IOException {
+    public S3Dto uploadToS3(File uploadFile) throws IOException {
 
         String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
         removeNewFile(uploadFile);
+        S3Dto s3Dto = new S3Dto(fileName, uploadImageUrl);
 
 
-        return uploadImageUrl;
+        return s3Dto;
     }
 
     // S3로 업로드

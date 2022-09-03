@@ -52,12 +52,6 @@ public class NaverLoginService {
         //1. 로그인 사용자 정보를 읽어온다.
         apiResult = naverLogin.getUserProfile(oauthToken);
 
-        //String형식의 json데이터
-        /** apiResult json 구조
-         {"resultcode":"00",
-         "message":"success",
-         "response":{"id":"33666449","nickname":"shinn****","age":"20-29","gender":"M","email":"sh@naver.com","name":"\uc2e0\ubc94\ud638"}}		**/
-
         //2. String형식인 apiResult를 json형태로 바꿈
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(apiResult);

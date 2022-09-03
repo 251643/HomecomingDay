@@ -1,7 +1,8 @@
 package com.homecomingday.controller.response;
 
 
-import com.homecomingday.domain.Free;
+import com.homecomingday.domain.Comment;
+import com.homecomingday.domain.Image;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,33 +32,33 @@ public class ArticleResponseDto {
 
 //    private Long commentCnt; 어떻게 가져가야하는지 모르겠음
 
-    private List<String>image;
+    private List<ImagePostDto>image;
 
     private Long commentCnt;
 
-    private List<CommentDto> commentList;
+    private List<CommentResponseDto> commentList;
 
 
     //전체조회시 출력값
-    public ArticleResponseDto(Free free,String createdAt){
-        this.articleId=free.getId();
-        this.title=free.getTitle();
-        this.username=getUsername();
-        this.createdAt=createdAt;
-        this.admission=getAdmission();
-        this.views=getViews();
-        this.commentCnt= (long) free.getFreeComments().size();
+//    public ArticleResponseDto(Article article, String createdAt){
+//        this.articleId= article.getId();
+//        this.title= article.getTitle();
+//        this.username=getUsername();
+//        this.createdAt=createdAt; // 몇분전 부터 출력
+//        this.admission=getAdmission();
+//        this.views=getViews();
+   //     this.commentCnt= (long) article.getComments().size(); // 처음 작성했을시에는 댓글이 0인데 사이즈를 어떻게 가지고 올 것 인지?
 
-    }
+  //  }
 
-    //상세페이지 출력값
-    public ArticleResponseDto(Free free,List<String> image, String createdAt, List<CommentDto> commentDtoList) {
-        this.articleId = free.getId();
-        this.username = free.getMember().getUsername();
-        this.content = free.getContent();
-        this.createdAt = createdAt;
-        this.commentList = commentDtoList;
-        this.image = image;
-    }
+//    //상세페이지 출력값
+//    public ArticleResponseDto(Free free,List<String> image, String createdAt, List<CommentDto> commentDtoList) {
+//        this.articleId = free.getId();
+//        this.username = free.getMember().getUsername();
+//        this.content = free.getContent();
+//        this.createdAt = createdAt;
+//        this.commentList = commentDtoList;
+//        this.image = image;
+//    }
 
 }
