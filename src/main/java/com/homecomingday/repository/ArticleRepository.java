@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-//
+
 //    @Modifying
-//    @Query("update Article p set p.views = p.views + 1 where p.id = :id")
+//    @Query("update Article p set p.views = p.views + 1 where p.Id = :id")
 //    int updateCount(Long id);
     List <ArticleResponseDto> findAllByOrderByCreatedAtDesc();
     List <Article> findByArticleFlagOrderByCreatedAtDesc(String articleFlag);

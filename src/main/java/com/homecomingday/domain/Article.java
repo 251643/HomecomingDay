@@ -1,6 +1,8 @@
 package com.homecomingday.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.homecomingday.controller.request.ArticleRequestDto;
 import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,4 +58,8 @@ public class Article extends Timestamped {
     private List<Comment> comments;
 
 
+    public void updateArticle(ArticleRequestDto articleRequestDto) {
+        this.title=articleRequestDto.getTitle();
+        this.content=articleRequestDto.getContent();
+    }
 }
