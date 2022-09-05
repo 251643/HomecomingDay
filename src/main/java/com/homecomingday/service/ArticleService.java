@@ -7,6 +7,7 @@ import com.homecomingday.controller.response.*;
 import com.homecomingday.domain.*;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.ArticleRepository;
+import com.homecomingday.repository.CommentRepository;
 import com.homecomingday.repository.ImageRepository;
 import com.homecomingday.service.s3.S3Uploader;
 import com.homecomingday.util.Time;
@@ -31,8 +32,9 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final S3Uploader s3Uploader;
 
+    private final CommentRepository commentRepository;
+
     private final ImageRepository imageRepository;
-    private final TokenProvider tokenProvider;
 
 
 
@@ -51,16 +53,28 @@ public class ArticleService {
         List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
 
         List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
-        for (Article article : articleList) {
+
+
+        for (Article findarticle : articleList) {
+            Long sizeCnt=0L;
+            List<Comment>commentList=commentRepository.findbyArticle_Id(findarticle.getId()); //게시물 index 번호에 따라 뽑아옴
+
+            for(Comment datas : commentList ){
+                if(datas.getArticle().getId().equals(findarticle.getId())){
+                   sizeCnt++;
+                }
+            }
+
+
             articleResponseDtoList.add(
                     ArticleResponseDto.builder()
-                            .articleId(article.getId())
-                            .title(article.getTitle())
-                            .username(article.getMember().getUsername())
-                            .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                            .admission(article.getMember().getAdmission())
-                            .views(article.getViews())
-                            .commentCnt(0L) // 0으로 기본세팅
+                            .articleId(findarticle.getId())
+                            .title(findarticle.getTitle())
+                            .username(findarticle.getMember().getUsername())
+                            .createdAt(Time.convertLocaldatetimeToTime(findarticle.getCreatedAt()))
+                            .admission(findarticle.getMember().getAdmission().substring(2,4)+"학번")
+                            .views(findarticle.getViews())
+                            .commentCnt(sizeCnt) // 0으로 기본세팅
                             .build()
             );
         }
@@ -82,7 +96,7 @@ public class ArticleService {
         Article article = Article.builder()
                 .title(articleRequestDto.getTitle())
                 .content(articleRequestDto.getContent())
-                .views(0L)
+                .views(1L)
                 .member(userDetails.getMember())
                 .articleFlag(articleFlag)
                 .build();
@@ -123,7 +137,7 @@ public class ArticleService {
                 .content(article.getContent())
                 .username(article.getMember().getUsername())
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(article.getMember().getAdmission())
+                .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
                 .views(article.getViews())
                 //     .image(article.getImageList())
                 .commentCnt(0L) // 0으로 기본세팅
@@ -135,35 +149,42 @@ public class ArticleService {
 
 
     // 게시글 상세 조회
+    @Transactional            //get이라고 @transactional 지우지마세요 조회수 갱신때메 넣어야합니다
     public ArticleResponseDto readArticle(Long articleId, String articleFlag, UserDetailsImpl userDetails) {
+        articleRepository.updateCount(articleId); //현재는 쿠키값 상관없이 조회수 누적체크
+
         Article article = isPresentArticle(articleId);
         if (null == article) {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
 
+
+        List<Comment>findComment =commentRepository.findbyArticle_Id(articleId);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
-        List<ImagePostDto> imageList = new ArrayList<>();
+//        List<ImagePostDto> imageList = new ArrayList<>();
 
-//        for (Comment comment : article.getComments()) {
-//            commentResponseDtoList.add(
-//                    CommentResponseDto.builder()
-//                            .id(comment.getId())
-//                            .nickname(comment.getMember().getNickname())
-//                            .content(comment.getContent())
-//                            .timeMsg(com.example.intermediate.shared.Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-//                            .build()
-//            );
-//        }
-
-
-        for (Image image : article.getImageList()) {
-            imageList.add(
-                    ImagePostDto.builder()
-                            .imageId(image.getId())
-                            .imgUrl(image.getImgUrl())
+        for (Comment comment : findComment) {
+            commentResponseDtoList.add(
+                    CommentResponseDto.builder()
+                            .commentId(comment.getId())
+                            .content(comment.getContent())
+                            .username(comment.getMember().getUsername())
+                            .admission(comment.getMember().getAdmission())
+                            .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
                             .build()
             );
         }
+
+
+
+//        for (Image image : article.getImageList()) {
+//            imageList.add(
+//                    ImagePostDto.builder()
+//                            .imageId(image.getId())
+//                            .imgUrl(image.getImgUrl())
+//                            .build()
+//            );
+//        }
 
         return ArticleResponseDto.builder()
                 .articleId(article.getId())
@@ -171,16 +192,16 @@ public class ArticleService {
                 .content(article.getContent())
                 .username(article.getMember().getUsername())
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(article.getMember().getAdmission())
+                .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
                 .views(article.getViews())
-                .imageList(imageList)
+//                .imageList(imageList)
                 .commentCnt((long) commentResponseDtoList.size())
                 .commentList(commentResponseDtoList)
                 .build();
     }
 
 
-    //게시글 수정 사진수정은 안하기로함
+    //게시글 수정 ---사진수정은 안하기로함
     @Transactional
     public ArticleResponseDto updateArticle(Long articleId, String articleFlag,
                                             UserDetailsImpl userDetails,
@@ -192,24 +213,29 @@ public class ArticleService {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         List<ImagePostDto> imageList = new ArrayList<>();
 
-        //        for (Comment comment : article.getComments()) {
-//            commentResponseDtoList.add(
-//                    CommentResponseDto.builder()
-//                            .id(comment.getId())
-//                            .nickname(comment.getMember().getNickname())
-//                            .content(comment.getContent())
-//                            .timeMsg(com.example.intermediate.shared.Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+        for (Comment comment : article.getComments()) {
+            if(comment.getArticle().getId().equals(articleId)){
+                commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentId(comment.getId())
+                                .content(comment.getContent())
+                                .username(comment.getMember().getUsername())
+                                .admission(comment.getMember().getAdmission())
+                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                                .build()
+                );
+            }
+        }
+
+
+//        for (Image image : article.getImageList()) {
+//            imageList.add(
+//                    ImagePostDto.builder()
+//                            .imageId(image.getId())
+//                            .imgUrl(image.getImgUrl())
 //                            .build()
 //            );
 //        }
-        for (Image image : article.getImageList()) {
-            imageList.add(
-                    ImagePostDto.builder()
-                            .imageId(image.getId())
-                            .imgUrl(image.getImgUrl())
-                            .build()
-            );
-        }
 
 
         ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
@@ -226,7 +252,6 @@ public class ArticleService {
         if (email.equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
 
             article.updateArticle(articleRequestDto);
-//            article.updateArticle(articleRequestDto);
             return articleResponseDto;
         }
         return null;
@@ -241,7 +266,7 @@ public class ArticleService {
         String email=userDetails.getUsername();
 
         ArticleDeleteDto articleDeleteDto=new ArticleDeleteDto(Id,"삭제에 실패했습니다.");
-        ArticleDeleteDto articleDeleteDto1=new ArticleDeleteDto(Id,"삭제가 완료되었습니다.");
+        ArticleDeleteDto articleDeleteDto1=new ArticleDeleteDto(Id,"삭제가 성공되었습니다.");
 
         if(email.equals(articles.getMember().getEmail())){
             articleRepository.delete(article);

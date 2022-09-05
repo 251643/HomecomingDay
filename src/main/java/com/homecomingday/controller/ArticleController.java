@@ -26,7 +26,8 @@ public class ArticleController {
 
 
 
-    @GetMapping("/article/{articleFlag}") //게시판 메인홈 조회
+    //게시글 메인홈 조회
+    @GetMapping("/article/{articleFlag}")
     public List<ArticleResponseDto> readAllArticle(@PathVariable String articleFlag){
         return articleService.readAllArticle(articleFlag);
     }
@@ -59,6 +60,7 @@ public class ArticleController {
         return ResponseDto.success(articleResponseDto);
     }
 
+    //게시글 삭제
     @DeleteMapping("/article/{Id}")
     public ArticleDeleteDto deleteArticle(@PathVariable Long Id,@AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.deleteArticle(Id,userDetails);

@@ -21,7 +21,7 @@ import java.util.List;
 public class Article extends Timestamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
 
     @Column(nullable = false)
@@ -54,8 +54,9 @@ public class Article extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Image> imageList = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Comment> comments= new ArrayList<>();
 
 
     public void updateArticle(ArticleRequestDto articleRequestDto) {
