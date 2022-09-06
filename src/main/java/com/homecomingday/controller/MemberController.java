@@ -1,11 +1,11 @@
 package com.homecomingday.controller;
 
-import com.homecomingday.controller.request.LoginRequestDto;
-import com.homecomingday.controller.request.MemberRequestDto;
-import com.homecomingday.controller.request.SchoolInfoDto;
+import com.homecomingday.controller.request.*;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.service.MemberService;
 import com.homecomingday.service.NaverLoginService;
+import com.homecomingday.service.NaverUserInfoService;
+import com.homecomingday.service.SendEmailService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.ui.Model;
@@ -23,6 +23,8 @@ public class MemberController {
 
   private final MemberService memberService;
   private final NaverLoginService naverLoginService;
+  private final NaverUserInfoService naverUserInfoService;
+  private final SendEmailService sendEmailService;
 
   @RequestMapping(value = "/member/signup", method = RequestMethod.POST)
   public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) {
@@ -46,7 +48,7 @@ public class MemberController {
 //    return memberService.reissue(request, response);
 //  }
 
-  @RequestMapping(value = "/auth/member/logout", method = RequestMethod.POST)
+  @RequestMapping(value = "/member/logout", method = RequestMethod.POST)
   public ResponseDto<?> logout(HttpServletRequest request) {
     return memberService.logout(request);
   }
@@ -58,6 +60,25 @@ public class MemberController {
     System.out.println(state);
     return naverLoginService.naverLoginCallback(model, code, state, session, response);
   }
+
+  @RequestMapping(value = "/member/naverUserInfo", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json; charset=utf-8")
+  public TokenDto naverUserInfo(@RequestHeader(value="Authorization") String token, HttpServletResponse response)throws ParseException {
+
+    return naverUserInfoService.naverUserInfo(token, response);
+  }
+
+  @PostMapping("/member/signup/sendEmail")
+  public @ResponseBody void sendEmail(@RequestBody EmailRequestDto emailRequestDto){
+    MailDto dto = sendEmailService.createMail(emailRequestDto);
+    sendEmailService.mailSend(dto);
+  }
+  @PostMapping("/member/signup/checkEmail")
+  public ResponseDto<?> checkEmail(@RequestBody EmailRequestDto emailRequestDto){
+    return sendEmailService.checkEmail(emailRequestDto);
+  }
+
+
+
   //로그아웃
 //  @RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
 //  public String logout(HttpSession session)throws IOException {

@@ -60,6 +60,7 @@ public class SecurityConfiguration {
         .antMatchers("/post/**").permitAll()
         .antMatchers("/comment/**").permitAll()
         .antMatchers("/naverLogin/**").permitAll()
+        .antMatchers("/**").permitAll()
         .anyRequest().authenticated()
 
         .and()

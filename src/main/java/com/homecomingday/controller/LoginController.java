@@ -22,6 +22,7 @@ public class LoginController {
     //로그인 첫 화면 요청 메소드
     @RequestMapping(value = "/naverLogin", method = { RequestMethod.GET, RequestMethod.POST })
     public String login(Model model, HttpSession session) {
+        naverLoginService.naverLogin(model, session);
 
         return "이거 된거 맞냐";
     }

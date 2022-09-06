@@ -31,9 +31,7 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final S3Uploader s3Uploader;
-
     private final CommentRepository commentRepository;
-
     private final ImageRepository imageRepository;
 
 
@@ -144,8 +142,7 @@ public class ArticleService {
                 .build();
             return ResponseDto.success(articleResponseDto);
         }
-
-
+    }
 
 
     // 게시글 상세 조회
