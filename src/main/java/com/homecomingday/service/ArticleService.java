@@ -101,11 +101,10 @@ public class ArticleService {
 //            작성시간 조회
 
 
-
+        List<ImagePostDto> imgbox = new ArrayList<>();
 
         if (multipartFile != null) {
 
-            List<Image> imageList = new ArrayList<>();
             //이미지 업로드
             for (MultipartFile uploadedFile : multipartFile) {
                 S3Dto s3Dto = s3Uploader.upload(uploadedFile);
@@ -115,15 +114,14 @@ public class ArticleService {
                         .urlPath(s3Dto.getFileName())
                         .article(article)
                         .build();
+                imageRepository.save(image);
 
-                List<ImagePostDto> imagePostDto = new ArrayList<>();
-                ImagePostDto.builder()
+                ImagePostDto imagePostDto=ImagePostDto.builder()
                         .imageId(image.getId())
                         .imgUrl(image.getImgUrl())
                         .build();
 
-                imageList.add(image);
-                imageRepository.save(image);
+                imgbox.add(imagePostDto);
 
             }
         }
@@ -136,7 +134,7 @@ public class ArticleService {
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                 .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
                 .views(article.getViews())
-                //     .image(article.getImageList())
+                .imageList(imgbox)
                 .commentCnt(0L) // 0으로 기본세팅
                 .build();
             return ResponseDto.success(articleResponseDto);

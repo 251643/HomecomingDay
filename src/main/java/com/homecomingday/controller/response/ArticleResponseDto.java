@@ -30,7 +30,7 @@ public class ArticleResponseDto {
 
     private Long views;
 //
-//    private List<ImagePostDto>imageList;
+    private List<ImagePostDto>imageList;
 
     private Long commentCnt;
 
