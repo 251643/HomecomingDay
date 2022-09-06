@@ -52,7 +52,6 @@ public class ArticleService {
 
         List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
 
-
         for (Article findarticle : articleList) {
             Long sizeCnt=0L;
             List<Comment>commentList=commentRepository.findbyArticle_Id(findarticle.getId()); //게시물 index 번호에 따라 뽑아옴
@@ -94,7 +93,7 @@ public class ArticleService {
         Article article = Article.builder()
                 .title(articleRequestDto.getTitle())
                 .content(articleRequestDto.getContent())
-                .views(1L)
+                .views(0L)
                 .member(userDetails.getMember())
                 .articleFlag(articleFlag)
                 .build();
@@ -102,11 +101,10 @@ public class ArticleService {
 //            작성시간 조회
 
 
-
+        List<ImagePostDto> imgbox = new ArrayList<>();
 
         if (multipartFile != null) {
 
-            List<Image> imageList = new ArrayList<>();
             //이미지 업로드
             for (MultipartFile uploadedFile : multipartFile) {
                 S3Dto s3Dto = s3Uploader.upload(uploadedFile);
@@ -116,15 +114,14 @@ public class ArticleService {
                         .urlPath(s3Dto.getFileName())
                         .article(article)
                         .build();
+                imageRepository.save(image);
 
-                List<ImagePostDto> imagePostDto = new ArrayList<>();
-                ImagePostDto.builder()
+                ImagePostDto imagePostDto=ImagePostDto.builder()
                         .imageId(image.getId())
                         .imgUrl(image.getImgUrl())
                         .build();
 
-                imageList.add(image);
-                imageRepository.save(image);
+                imgbox.add(imagePostDto);
 
             }
         }
@@ -137,16 +134,16 @@ public class ArticleService {
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                 .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
                 .views(article.getViews())
-                //     .image(article.getImageList())
+                .imageList(imgbox)
                 .commentCnt(0L) // 0으로 기본세팅
                 .build();
             return ResponseDto.success(articleResponseDto);
         }
-    }
+
 
 
     // 게시글 상세 조회
-    @Transactional            //get이라고 @transactional 지우지마세요 조회수 갱신때메 넣어야합니다
+    @Transactional            //get이라고 @transactional 지우지마세요 조회수 갱신때메 넣어야합니다.빼면 에러나유
     public ArticleResponseDto readArticle(Long articleId, String articleFlag, UserDetailsImpl userDetails) {
         articleRepository.updateCount(articleId); //현재는 쿠키값 상관없이 조회수 누적체크
 
