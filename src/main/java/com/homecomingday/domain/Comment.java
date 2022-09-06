@@ -34,6 +34,7 @@ public class Comment extends Timestamped {
 
   @JoinColumn(name = "member_id")
   @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private Member member;
 
   @JsonBackReference

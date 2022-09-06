@@ -153,32 +153,36 @@ public class ArticleService {
         }
 
 
-        List<Comment>findComment =commentRepository.findbyArticle_Id(articleId);
+        List<Comment>findComment =commentRepository.findAll();
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 //        List<ImagePostDto> imageList = new ArrayList<>();
 
         for (Comment comment : findComment) {
-            commentResponseDtoList.add(
-                    CommentResponseDto.builder()
-                            .commentId(comment.getId())
-                            .content(comment.getContent())
-                            .username(comment.getMember().getUsername())
-                            .admission(comment.getMember().getAdmission())
-                            .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-                            .build()
-            );
+            if(comment.getArticle().getId().equals(articleId)) {
+                    commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentId(comment.getId())
+                                .content(comment.getContent())
+                                .username(comment.getMember().getUsername())
+                                .admission(comment.getMember().getAdmission())
+                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                                .build()
+                );
+            }
         }
+        List <Image> findImage=imageRepository.findAll();
+        List <ImagePostDto> pickImage=new ArrayList<>();
 
-
-
-//        for (Image image : article.getImageList()) {
-//            imageList.add(
-//                    ImagePostDto.builder()
-//                            .imageId(image.getId())
-//                            .imgUrl(image.getImgUrl())
-//                            .build()
-//            );
-//        }
+            for (Image image : findImage) {
+                if(image.getArticle().getId().equals(articleId)) {
+                    pickImage.add(
+                            ImagePostDto.builder()
+                                    .imageId(image.getId())
+                                    .imgUrl(image.getImgUrl())
+                                    .build()
+                    );
+                }
+            }
 
         return ArticleResponseDto.builder()
                 .articleId(article.getId())
@@ -188,7 +192,7 @@ public class ArticleService {
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                 .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
                 .views(article.getViews())
-//                .imageList(imageList)
+                .imageList(pickImage)
                 .commentCnt((long) commentResponseDtoList.size())
                 .commentList(commentResponseDtoList)
                 .build();
