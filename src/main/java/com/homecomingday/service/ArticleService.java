@@ -52,7 +52,6 @@ public class ArticleService {
 
         List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
 
-
         for (Article findarticle : articleList) {
             Long sizeCnt=0L;
             List<Comment>commentList=commentRepository.findbyArticle_Id(findarticle.getId()); //게시물 index 번호에 따라 뽑아옴
@@ -94,7 +93,7 @@ public class ArticleService {
         Article article = Article.builder()
                 .title(articleRequestDto.getTitle())
                 .content(articleRequestDto.getContent())
-                .views(1L)
+                .views(0L)
                 .member(userDetails.getMember())
                 .articleFlag(articleFlag)
                 .build();
@@ -142,11 +141,11 @@ public class ArticleService {
                 .build();
             return ResponseDto.success(articleResponseDto);
         }
-    }
+
 
 
     // 게시글 상세 조회
-    @Transactional            //get이라고 @transactional 지우지마세요 조회수 갱신때메 넣어야합니다
+    @Transactional            //get이라고 @transactional 지우지마세요 조회수 갱신때메 넣어야합니다.빼면 에러나유
     public ArticleResponseDto readArticle(Long articleId, String articleFlag, UserDetailsImpl userDetails) {
         articleRepository.updateCount(articleId); //현재는 쿠키값 상관없이 조회수 누적체크
 
