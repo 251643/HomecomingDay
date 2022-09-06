@@ -4,6 +4,7 @@ import com.homecomingday.controller.response.ArticleResponseDto;
 import com.homecomingday.controller.response.MemberResponseDto;
 import com.homecomingday.controller.response.MyPageResponseDto;
 import com.homecomingday.domain.Member;
+import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.repository.MyPageRepository;
 import com.homecomingday.util.Time;
@@ -20,12 +21,12 @@ public class MyPageService {
     //유저 정보 조회
 
 
-    public MyPageResponseDto readMyPage(Member member) {
+    public MyPageResponseDto readMyPage(UserDetailsImpl member) {
         MyPageResponseDto myPageResponseDto = new MyPageResponseDto();
         MyPageResponseDto.builder()
-                .email(member.getEmail())
-                .username(member.getUsername())
-                .admission(member.getAdmission())
+                .email(member.getUsername())
+                .username(member.getMember().getUsername())
+                .admission(member.getMember().getAdmission())
                 .build();
         return myPageResponseDto;
     }
