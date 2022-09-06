@@ -33,9 +33,7 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final S3Uploader s3Uploader;
-    private final Time time;
     private final ImageRepository imageRepository;
-    private final TokenProvider tokenProvider;
 
     public List<ArticleResponseDto> readAllFree(String articleFlag) {
 
@@ -133,6 +131,8 @@ public class ArticleService {
                     .build();
             return ResponseDto.success(articleResponseDto);
         }
+
+
 
     }
 
