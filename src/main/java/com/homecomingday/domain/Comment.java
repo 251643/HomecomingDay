@@ -1,5 +1,7 @@
 package com.homecomingday.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.homecomingday.controller.request.CommentRequestDto;
 import com.homecomingday.controller.response.ReviseContentDto;
 import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
@@ -18,16 +20,21 @@ public class Comment extends Timestamped {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long Id;
 
   @Column(nullable = false)
   private String content;
+
+
+  @Column(nullable = false)
+  private String articleFlag;
 
 
   @JoinColumn(name = "member_id")
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
 
+  @JsonBackReference
   @JoinColumn(name = "article_id")
   @ManyToOne(fetch = FetchType.LAZY)
   private Article article;
@@ -44,5 +51,9 @@ public class Comment extends Timestamped {
 
   public boolean validateMember(Member member) {
     return !this.member.equals(member);
+  }
+
+  public void updateComment(CommentRequestDto commentRequestDto) {
+    this.content= commentRequestDto.getContent();
   }
 }

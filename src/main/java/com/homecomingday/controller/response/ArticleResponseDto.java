@@ -29,10 +29,8 @@ public class ArticleResponseDto {
     private String admission;
 
     private Long views;
-
-//    private Long commentCnt; 어떻게 가져가야하는지 모르겠음
-
-    private List<ImagePostDto>image;
+//
+//    private List<ImagePostDto>imageList;
 
     private Long commentCnt;
 

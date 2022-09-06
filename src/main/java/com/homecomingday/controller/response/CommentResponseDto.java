@@ -19,6 +19,8 @@ public class CommentResponseDto {
 
     private String username;
 
+    private String admission;
+
     private String createdAt;
 
 
