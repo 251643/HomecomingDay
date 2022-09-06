@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -32,11 +34,13 @@ public class Comment extends Timestamped {
 
   @JoinColumn(name = "member_id")
   @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private Member member;
 
   @JsonBackReference
   @JoinColumn(name = "article_id")
   @ManyToOne(fetch = FetchType.LAZY)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private Article article;
 
   public Comment(Article article, ReviseContentDto reviseContentDto, UserDetailsImpl userDetails) {
