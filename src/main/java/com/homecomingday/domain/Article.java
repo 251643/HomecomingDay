@@ -55,7 +55,7 @@ public class Article extends Timestamped {
     private List<Image> imageList = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comment> comments= new ArrayList<>();
 
 

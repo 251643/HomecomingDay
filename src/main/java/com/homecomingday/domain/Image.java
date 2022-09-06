@@ -2,6 +2,8 @@ package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -25,6 +27,7 @@ public class Image {
     private String imgUrl;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="free_id",nullable = false)
     @JsonBackReference
     private Article article;
