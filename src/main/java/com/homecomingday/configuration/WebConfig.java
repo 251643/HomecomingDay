@@ -3,6 +3,7 @@ package com.homecomingday.configuration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -29,5 +30,18 @@ public class WebConfig implements WebMvcConfigurer {
                 // 여기에 열어놓읗 주소 적어놓으면 된다.
                 .allowedOrigins("*");
 
+    }
+    /* swagger-ui 페이지 연결 핸들러 설정 */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry
+                .addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+        WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 }

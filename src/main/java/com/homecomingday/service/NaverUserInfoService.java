@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,14 +40,13 @@ public class NaverUserInfoService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
-    public TokenDto naverUserInfo(String AccessToken, HttpServletResponse response) throws ParseException {
+    public TokenDto naverUserInfo(String AccessToken,  HttpServletResponse response) throws ParseException {
         String token = AccessToken; // 네이버 로그인 접근 토큰;
-        String header = "Bearer " + token; // Bearer 다음에 공백 추가
 
         String apiURL = "https://openapi.naver.com/v1/nid/me";
 
         Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("Authorization", header);
+        requestHeaders.put("Authorization", token);
         String responseBody = get(apiURL,requestHeaders);
 
         System.out.println(responseBody);
@@ -59,6 +57,7 @@ public class NaverUserInfoService {
         JSONObject response_obj = (JSONObject)jsonObj.get("response");
         String name = (String)response_obj.get("name");
         String email = (String)response_obj.get("email");
+        System.out.println(name +"       "+ email);
 
         NaverMemberInfoDto naverMemberInfoDto = new NaverMemberInfoDto(email, name);
 
@@ -69,7 +68,6 @@ public class NaverUserInfoService {
         tokenToHeaders(tokenDto, response);
         return tokenDto;
     }
-
 
     private  String get(String apiUrl, Map<String, String> requestHeaders){
         HttpURLConnection con = connect(apiUrl);
@@ -92,7 +90,6 @@ public class NaverUserInfoService {
         }
     }
 
-
     private HttpURLConnection connect(String apiUrl){
         try {
             URL url = new URL(apiUrl);
@@ -103,7 +100,6 @@ public class NaverUserInfoService {
             throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, e);
         }
     }
-
 
     private String readBody(InputStream body){
         InputStreamReader streamReader = new InputStreamReader(body);
@@ -147,7 +143,6 @@ public class NaverUserInfoService {
         return naverMember;
     }
 
-
     private void forceLogin(Member member) {
         UserDetails userDetails = new UserDetailsImpl(member);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -156,10 +151,10 @@ public class NaverUserInfoService {
 
 
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-        response.setContentType("text/html;charset=utf-8");
         response.addHeader("Authorization", tokenDto.getAccessToken());
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
         response.addHeader("Username", tokenDto.getUsername());
+        response.addHeader("SchoolInfo", String.valueOf(tokenDto.isSchoolInfo()));
     }
 }

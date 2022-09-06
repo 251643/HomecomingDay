@@ -130,19 +130,19 @@ public class ArticleService {
         }
 
         ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-                .articleId(article.getId())
-                .title(article.getTitle())
-                .content(article.getContent())
-                .username(article.getMember().getUsername())
-                .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
-                .views(article.getViews())
-                //     .image(article.getImageList())
-                .commentCnt(0L) // 0으로 기본세팅
-                .build();
-            return ResponseDto.success(articleResponseDto);
-        }
+            .articleId(article.getId())
+            .title(article.getTitle())
+            .content(article.getContent())
+            .username(article.getMember().getUsername())
+            .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+            .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
+            .views(article.getViews())
+            //     .image(article.getImageList())
+            .commentCnt(0L) // 0으로 기본세팅
+            .build();
+        return ResponseDto.success(articleResponseDto);
     }
+
 
 
     // 게시글 상세 조회
@@ -154,7 +154,6 @@ public class ArticleService {
         if (null == article) {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
-
 
         List<Comment>findComment =commentRepository.findbyArticle_Id(articleId);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();

@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.utils.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -67,12 +68,13 @@ public class TokenProvider {
         .build();
 
     refreshTokenRepository.save(refreshTokenObject);
-
     return TokenDto.builder()
         .grantType(BEARER_PREFIX)
         .accessToken(accessToken)
         .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
         .refreshToken(refreshToken)
+        .username(member.getUsername())
+        .schoolInfo(StringUtils.isNotBlank(member.getSchoolname()))
         .build();
 
   }
