@@ -1,4 +1,4 @@
-package com.homecomingday.service;
+package com.homecomingday.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

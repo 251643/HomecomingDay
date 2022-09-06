@@ -3,6 +3,7 @@ package com.homecomingday.service;
 import com.homecomingday.controller.request.EmailRequestDto;
 import com.homecomingday.controller.request.MailDto;
 import com.homecomingday.controller.response.ResponseDto;
+import com.homecomingday.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -46,7 +47,7 @@ public class SendEmailService {
     public ResponseDto<?> checkEmail(EmailRequestDto emailRequestDto) {
         String redisEmail = redisUtil.getData(emailRequestDto.getAuthKey());
         if(!emailRequestDto.getEmail().equals(redisEmail)){
-            return ResponseDto.fail("UNREGISTERED_KEY", "인증코드가 일치하지 않습니다.");
+            return ResponseDto.fail("UNREGISTERED_KEY", "인증버놓가 일치하지 않습니다.");
            // throw new RuntimeException("인증코드가 일치하지 않습니다.");
         }
         return ResponseDto.success("인증번호가 일치합니다.");
