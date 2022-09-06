@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class myPageController {
 
-    private MyPageService myPageService;
+    private final MyPageService myPageService;
 
     //유저 정보 조회
     @GetMapping("/myPage")

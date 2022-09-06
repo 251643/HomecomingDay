@@ -22,8 +22,7 @@ public class MyPageService {
 
 
     public MyPageResponseDto readMyPage(UserDetailsImpl member) {
-        MyPageResponseDto myPageResponseDto = new MyPageResponseDto();
-        MyPageResponseDto.builder()
+        MyPageResponseDto myPageResponseDto =MyPageResponseDto.builder()
                 .email(member.getUsername())
                 .username(member.getMember().getUsername())
                 .admission(member.getMember().getAdmission())
