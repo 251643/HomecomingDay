@@ -9,7 +9,6 @@ import com.homecomingday.service.NaverUserInfoService;
 import com.homecomingday.service.SendEmailService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
