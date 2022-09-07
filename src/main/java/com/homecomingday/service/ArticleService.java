@@ -5,7 +5,6 @@ import com.homecomingday.controller.S3Dto;
 import com.homecomingday.controller.request.ArticleRequestDto;
 import com.homecomingday.controller.response.*;
 import com.homecomingday.domain.*;
-import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.repository.CommentRepository;
 import com.homecomingday.repository.ImageRepository;
@@ -13,6 +12,7 @@ import com.homecomingday.service.s3.S3Uploader;
 import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +35,6 @@ public class ArticleService {
     private final ImageRepository imageRepository;
 
 
-
     //현재 게시물 받아오기
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Article isPresentArticle(Long id) {
@@ -44,52 +43,49 @@ public class ArticleService {
     }
 
 
-
     //메인페이지 게시물 조회
-    public List<ArticleResponseDto> readAllArticle(String articleFlag) {
+    public List<GetAllArticleDto> readAllArticle(String articleFlag) {
 
         List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
 
-        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+        List<GetAllArticleDto> getAllArticleDtos = new ArrayList<>();
 
         for (Article findarticle : articleList) {
-            Long sizeCnt=0L;
-            List<Comment>commentList=commentRepository.findbyArticle_Id(findarticle.getId()); //게시물 index 번호에 따라 뽑아옴
+            Long sizeCnt = 0L;
+            List<Comment> commentList = commentRepository.findbyArticle_Id(findarticle.getId()); //게시물 index 번호에 따라 뽑아옴
 
-            for(Comment datas : commentList ){
-                if(datas.getArticle().getId().equals(findarticle.getId())){
-                   sizeCnt++;
+            for (Comment datas : commentList) {
+                if (datas.getArticle().getId().equals(findarticle.getId())) {
+                    sizeCnt++;
                 }
             }
 
 
-            articleResponseDtoList.add(
-                    ArticleResponseDto.builder()
+            getAllArticleDtos.add(
+                    GetAllArticleDto.builder()
                             .articleId(findarticle.getId())
                             .title(findarticle.getTitle())
                             .username(findarticle.getMember().getUsername())
                             .createdAt(Time.convertLocaldatetimeToTime(findarticle.getCreatedAt()))
-                            .admission(findarticle.getMember().getAdmission().substring(2,4)+"학번")
+                            .admission(findarticle.getMember().getAdmission().substring(2, 4) + "학번")
+                            .articleFlag(articleFlag)
                             .views(findarticle.getViews())
                             .commentCnt(sizeCnt) // 0으로 기본세팅
                             .build()
             );
         }
-        return articleResponseDtoList;
+        return getAllArticleDtos;
     }
-
 
 
     //게시글 만남일정이랑 다른친구 구분값으로 api주던가 flag통해서 구분값주기
     //게시글 생성
-    @Transactional
-    public ResponseDto<?> postArticle(String articleFlag,
-                                      List<MultipartFile> multipartFile,
-                                      ArticleRequestDto articleRequestDto,
-                                      UserDetailsImpl userDetails,
-                                      HttpServletRequest request) throws IOException {
+    public ArticleResponseDto postArticle(String articleFlag,
+                                          List<MultipartFile> multipartFile,
+                                          ArticleRequestDto articleRequestDto,
+                                          UserDetailsImpl userDetails,
+                                          HttpServletRequest request) throws IOException {
 
-        //게시글
         Article article = Article.builder()
                 .title(articleRequestDto.getTitle())
                 .content(articleRequestDto.getContent())
@@ -98,54 +94,87 @@ public class ArticleService {
                 .articleFlag(articleFlag)
                 .build();
         articleRepository.save(article);
-//            작성시간 조회
 
 
+        int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
+                         // 조건문을 통과하면 안에 값이 비어있다는것, 리스트자체가 아닌 내부 값 자체를 비교해야함
         List<ImagePostDto> imgbox = new ArrayList<>();
 
-        if (multipartFile != null) {
-
+        //이미지 null값 비교값
+        for (MultipartFile uploadedFile : multipartFile) {
+            if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
+                checkNum = 0;
+            }
+        if(checkNum==1){
             //이미지 업로드
             for (MultipartFile uploadedFile : multipartFile) {
-                S3Dto s3Dto = s3Uploader.upload(uploadedFile);
+            S3Dto s3Dto = s3Uploader.upload(uploadedFile);
 
-                Image image = Image.builder()
-                        .imgUrl(s3Dto.getUploadImageUrl())
-                        .urlPath(s3Dto.getFileName())
-                        .article(article)
-                        .build();
-                imageRepository.save(image);
+            Image image = Image.builder()
+                    .imgUrl(s3Dto.getUploadImageUrl())
+                    .urlPath(s3Dto.getFileName())
+                    .article(article)
+                    .build();
+            imageRepository.save(image);
 
-                ImagePostDto imagePostDto=ImagePostDto.builder()
-                        .imageId(image.getId())
-                        .imgUrl(image.getImgUrl())
-                        .build();
+            ImagePostDto imagePostDto = ImagePostDto.builder()
+                    .imageId(image.getId())
+                    .imgUrl(image.getImgUrl())
+                    .build();
 
-                imgbox.add(imagePostDto);
+            imgbox.add(imagePostDto);
 
-            }
         }
-
         ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-
                 .articleId(article.getId())
+                .articleFlag(articleFlag)
                 .title(article.getTitle())
                 .content(article.getContent())
                 .username(article.getMember().getUsername())
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
-                .views(article.getViews())
+                .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                .views(0L)
                 .imageList(imgbox)
                 .commentCnt(0L) // 0으로 기본세팅
                 .build();
-            return ResponseDto.success(articleResponseDto);
-        }
+
+//            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
+//            Article2ResponseDto article2ResponseDto=
+//                    new Article2ResponseDto(article,articleFlag,admission1,imgbox);
+        return articleResponseDto;
+    }else
+
+    {
+
+
+        ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                .articleId(article.getId())
+                .articleFlag(articleFlag)
+                .title(article.getTitle())
+                .content(article.getContent())
+                .username(article.getMember().getUsername())
+                .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                .views(0L)
+                .commentCnt(0L) // 0으로 기본세팅
+                .build();
+//            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
+
+//            Article2ResponseDto article2ResponseDto=
+//                    new Article2ResponseDto(article,articleFlag,admission1);
+        return articleResponseDto;
+    }
+
+}
+
+
+
 
 
 
     // 게시글 상세 조회
     @Transactional            //get이라고 @transactional 지우지마세요 조회수 갱신때메 넣어야합니다.빼면 에러나유
-    public ArticleResponseDto readArticle(Long articleId, String articleFlag, UserDetailsImpl userDetails) {
+    public ArticleResponseDto readArticle(String articleFlag,Long articleId,UserDetailsImpl userDetails) {
         articleRepository.updateCount(articleId); //현재는 쿠키값 상관없이 조회수 누적체크
 
         Article article = isPresentArticle(articleId);
@@ -187,6 +216,7 @@ public class ArticleService {
 
         return ArticleResponseDto.builder()
                 .articleId(article.getId())
+                .articleFlag(articleFlag)
                 .title(article.getTitle())
                 .content(article.getContent())
                 .username(article.getMember().getUsername())
@@ -202,12 +232,11 @@ public class ArticleService {
 
     //게시글 수정 ---사진수정은 안하기로함
     @Transactional
-    public ArticleResponseDto updateArticle(Long articleId, String articleFlag,
+    public String updateArticles( String articleFlag,Long articleId,
                                             UserDetailsImpl userDetails,
                                             ArticleRequestDto articleRequestDto) {
         Article article = isPresentArticle(articleId);
-        String email = userDetails.getUsername();  //받는 값은 username으로 되어있으나 email임
-
+        String myId = String.valueOf(articleId);
 
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         List<ImagePostDto> imageList = new ArrayList<>();
@@ -237,41 +266,45 @@ public class ArticleService {
 //        }
 
 
-        ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-                .articleId(article.getId())
-                .title(articleRequestDto.getTitle())
-                .content(articleRequestDto.getContent())
-                .username(userDetails.getMember().getUsername())
-                .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(article.getMember().getAdmission())
-                .views(article.getViews())
-                .commentCnt((long) commentResponseDtoList.size())
-                .build();
+//        ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+//                .articleId(article.getId())
+//                .title(articleRequestDto.getTitle())
+//                .content(articleRequestDto.getContent())
+//                .username(userDetails.getMember().getUsername())
+//                .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+//                .admission(article.getMember().getAdmission())
+//                .views(article.getViews())
+//                .commentCnt((long) commentResponseDtoList.size())
+//                .build();
 
-        if (email.equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
+        if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
 
             article.updateArticle(articleRequestDto);
-            return articleResponseDto;
+
+
+            return articleFlag+"  "+myId+"번 게시글이 수정";
         }
-        return null;
+
+        return articleFlag+"  "+myId+"번 게시글이 수정 실패";
     }
 
 
-    public ArticleDeleteDto deleteArticle(Long Id,UserDetailsImpl userDetails) {
-        Article article = articleRepository.findById(Id)
+    //게시글 삭제
+    public String deleteArticles(String articleFlag,Long articleId,UserDetailsImpl userDetails) {
+        Article article = articleRepository.findById(articleId)
                 .orElseThrow(()->new IllegalArgumentException("해당 게시물이 존재하지 않습니다"));
 
-        Article articles = isPresentArticle(Id);
+        Article articles = isPresentArticle(articleId);
         String email=userDetails.getUsername();
+        String myId = String.valueOf(articleId);
 
-        ArticleDeleteDto articleDeleteDto=new ArticleDeleteDto(Id,"삭제에 실패했습니다.");
-        ArticleDeleteDto articleDeleteDto1=new ArticleDeleteDto(Id,"삭제가 성공되었습니다.");
+
 
         if(email.equals(articles.getMember().getEmail())){
+
             articleRepository.delete(article);
-//            imageRepository.deleteById(Id);
-            return articleDeleteDto1;
-        }else return articleDeleteDto;
+            return articleFlag+" "+myId+"번 게시글이 삭제 성공";
+        }else return articleFlag+" "+myId+"번 게시글이 삭제 실패";
 
     }
 }

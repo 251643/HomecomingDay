@@ -1,6 +1,5 @@
 package com.homecomingday.repository;
 
-import com.homecomingday.controller.response.ArticleResponseDto;
 import com.homecomingday.domain.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

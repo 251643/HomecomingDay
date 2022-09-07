@@ -2,9 +2,7 @@ package com.homecomingday.controller;
 
 
 import com.homecomingday.controller.request.ArticleRequestDto;
-import com.homecomingday.controller.response.ArticleDeleteDto;
-import com.homecomingday.controller.response.ArticleResponseDto;
-import com.homecomingday.controller.response.ResponseDto;
+import com.homecomingday.controller.response.*;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.ArticleService;
@@ -43,15 +41,16 @@ public class ArticleController {
 
     //게시글 메인홈 조회
     @GetMapping("/article/{articleFlag}")
-    public List<ArticleResponseDto> readAllArticle(@PathVariable String articleFlag){
+    public List<GetAllArticleDto> readAllArticle(@PathVariable String articleFlag){
+
         return articleService.readAllArticle(articleFlag);
     }
 
     //게시글 작성
     @PostMapping(value = "/article/{articleFlag}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseDto<?> upload(@PathVariable String articleFlag,
+    public ArticleResponseDto upload(@PathVariable String articleFlag,
                                  @RequestPart(required = false, value="articleRequestDto") ArticleRequestDto articleRequestDto,
-                                 @RequestPart (required = false, value="files") List<MultipartFile> multipartFile,
+                                 @RequestPart (required = false,value="files") List<MultipartFile> multipartFile,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails,
                                  HttpServletRequest request) throws IOException {
         return articleService.postArticle(articleFlag, multipartFile, articleRequestDto,userDetails, request);
@@ -59,30 +58,27 @@ public class ArticleController {
 
 
     //해당 게시물 상세조회
-    @GetMapping("/article/{articleFlag}/{Id}")
-    public ArticleResponseDto readArticle(@PathVariable Long Id, @PathVariable String articleFlag, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return articleService.readArticle(Id, articleFlag,userDetails);
+    @GetMapping("/article/{articleFlag}/{articleId}")
+    public ArticleResponseDto readArticle( @PathVariable String articleFlag,@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.readArticle(articleFlag,articleId,userDetails);
     }
 
 
     //게시글 수정
-    @PutMapping(value="/article/{articleFlag}/{Id}")
-    public ResponseDto<?>  updateArticle(@PathVariable Long Id, @PathVariable String articleFlag,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                  @RequestBody ArticleRequestDto articleRequestDto) {
-        ArticleResponseDto articleResponseDto=articleService.updateArticle(Id,articleFlag,userDetails,articleRequestDto);
+    @PutMapping(value="/article/{articleFlag}/{articleId}")
+    public String updateArticle(@PathVariable String articleFlag,@PathVariable Long articleId,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                          @RequestBody ArticleRequestDto articleRequestDto) {
+//        ArticleResponseDto articleResponseDto=articleService.updateArticle(Id,articleFlag,userDetails,articleRequestDto);
 
-        return ResponseDto.success(articleResponseDto);
+        return articleService.updateArticles(articleFlag,articleId,userDetails,articleRequestDto);
     }
 
     //게시글 삭제
-    @DeleteMapping("/article/{Id}")
-    public ArticleDeleteDto deleteArticle(@PathVariable Long Id,@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return articleService.deleteArticle(Id,userDetails);
+    @DeleteMapping("/article/{articleFlag}/{articleId}")
+    public String deleteArticle(@PathVariable String articleFlag,@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.deleteArticles(articleFlag,articleId,userDetails);
     }
 
-
-//    @GetMapping("/{articleId}")
-//    public A
 
 }
