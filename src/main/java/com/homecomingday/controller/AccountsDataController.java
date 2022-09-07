@@ -2,8 +2,10 @@ package com.homecomingday.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.homecomingday.controller.response.AdmissionDto;
 import com.homecomingday.controller.response.DepartmentDto;
 import com.homecomingday.controller.response.SchoolDto;
+import com.homecomingday.util.DeduplicationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 
 @RestController("user-data-controller")
@@ -30,7 +30,7 @@ public class AccountsDataController {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
 
-    @RequestMapping(value="/member/signup/schoolList",method={RequestMethod.GET, RequestMethod.POST} )
+    @RequestMapping(value="/schoolSearchs",method={RequestMethod.GET, RequestMethod.POST} )
     public List<SchoolDto> findSchool(
                                HttpServletRequest request, HttpServletResponse response){
         int a = 1;
@@ -38,6 +38,7 @@ public class AccountsDataController {
         StringBuilder sb = new StringBuilder("http://www.career.go.kr/cnet/openapi/getOpenApi?apiKey=2ba8e2c040276c52e29d91e720b3f21d&svcType=api&svcCode=SCHOOL&contentType=json&gubun=univ_list&perPage=1000");
 
         List<SchoolDto> list = new ArrayList<>();
+        List<SchoolDto> listDistinct = new ArrayList<>();
         try {
             URL url = new URL(sb.toString());
             URLConnection connection = url.openConnection();
@@ -56,14 +57,15 @@ public class AccountsDataController {
                         jn3.get("schoolName").textValue(),
                         jn3.get("adres").textValue()
                 ));
+                listDistinct = DeduplicationUtils.deduplication(list, SchoolDto::getSchoolName);
             }
         } catch (Exception e) {
             logger.error("CAREER API ERROR", e);
         }
-        return list;//items;
+        return listDistinct;//items;
     }
 
-    @RequestMapping(value="/member/signup/departmentList",method={RequestMethod.GET, RequestMethod.POST} )
+    @RequestMapping(value="/departmentSearchs",method={RequestMethod.GET, RequestMethod.POST} )
     public List<DepartmentDto> findDepartment(
             HttpServletRequest request, HttpServletResponse response){
         int a = 1;
@@ -88,9 +90,20 @@ public class AccountsDataController {
                         a++,
                         jn3.get("mClass").textValue()
                 ));
+
             }
         } catch (Exception e) {
             logger.error("CAREER API ERROR", e);
+        }
+        return list;//items;
+    }
+
+    @RequestMapping(value="/admissions",method={RequestMethod.GET, RequestMethod.POST} )
+    public List<AdmissionDto> findAdmission(){
+        int year = LocalDate.now().getYear();
+        List<AdmissionDto> list = new ArrayList<>();
+        for(int i = 1990 ; i < year-3 ; i++ ){
+            list.add(new AdmissionDto(String.valueOf(i)));
         }
         return list;//items;
     }

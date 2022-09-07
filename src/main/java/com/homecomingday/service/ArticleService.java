@@ -133,6 +133,7 @@ public class ArticleService {
         }
 
         ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+
                 .articleId(article.getId())
                 .title(article.getTitle())
                 .content(article.getContent())
@@ -159,8 +160,8 @@ public class ArticleService {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
 
-
         List<Comment>findComment =commentRepository.findAll();
+
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 //        List<ImagePostDto> imageList = new ArrayList<>();
 

@@ -7,6 +7,7 @@ import com.homecomingday.controller.request.SchoolInfoDto;
 import com.homecomingday.controller.response.MemberResponseDto;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.Member;
+import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -129,11 +130,13 @@ public class MemberService {
     response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
     response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
     response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
+    response.addHeader("Username", tokenDto.getUsername());
+    response.addHeader("SchoolInfo", String.valueOf(tokenDto.isSchoolInfo()));
   }
 
   @Transactional
-  public ResponseDto<?> schoolInfoMember(SchoolInfoDto requestDto) {
-    Member signupMember = memberRepository.findByEmail(requestDto.getEmail()).orElse(null);
+  public ResponseDto<?> schoolInfoMember(SchoolInfoDto requestDto, UserDetailsImpl userDetails) {
+    Member signupMember = memberRepository.findByEmail(userDetails.getUsername()).orElse(null);
 
     signupMember.update(requestDto);
     return ResponseDto.success(
