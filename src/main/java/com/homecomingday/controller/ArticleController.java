@@ -6,14 +6,21 @@ import com.homecomingday.controller.response.ArticleDeleteDto;
 import com.homecomingday.controller.response.ArticleResponseDto;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.UserDetailsImpl;
+import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,8 +29,16 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
 
-
+    @GetMapping("/api/auth/article")
+    public Slice<ArticleResponseDto> getArticleScroll(HttpServletResponse response,
+                                                      @PageableDefault(size = 3, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable,
+                                                      @AuthenticationPrincipal UserDetails userDetails) {
+        String nickname = userDetails.getUsername();
+        response.setHeader("nickname", nickname);
+        return articleRepository.getArticleScroll(pageable, nickname);
+    }
 
 
     //게시글 메인홈 조회

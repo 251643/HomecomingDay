@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface ArticleRepository extends JpaRepository<Article, Long> , ArticleRepositoryCustom{
 
     @Modifying
     @Query("update Article p set p.views = p.views + 1 where p.Id = :id")

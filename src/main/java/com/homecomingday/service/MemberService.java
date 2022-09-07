@@ -1,6 +1,7 @@
 package com.homecomingday.service;
 
 import com.homecomingday.controller.TokenDto;
+import com.homecomingday.controller.request.EmailRequestDto;
 import com.homecomingday.controller.request.LoginRequestDto;
 import com.homecomingday.controller.request.MemberRequestDto;
 import com.homecomingday.controller.request.SchoolInfoDto;
@@ -151,5 +152,13 @@ public class MemberService {
                     .modifiedAt(signupMember.getModifiedAt())
                     .build()
     );
+  }
+
+  public ResponseDto<?> checkEmail(EmailRequestDto requestDto) {
+    if (null != isPresentMember(requestDto.getEmail())) {
+      return ResponseDto.fail("DUPLICATED_EMAIL",
+              "동일한 이메일이 존재합니다.");
+    }
+    return ResponseDto.success(requestDto.getEmail());
   }
 }

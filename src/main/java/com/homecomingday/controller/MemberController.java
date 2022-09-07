@@ -30,7 +30,10 @@ public class MemberController {
   public ResponseDto<?> signup(@RequestBody @Valid MemberRequestDto requestDto) {
     return memberService.createMember(requestDto);
   }
-
+  @RequestMapping(value = "/emailCheck", method = RequestMethod.POST)
+  public ResponseDto<?> emailCheck(@RequestBody @Valid EmailRequestDto requestDto) {
+    return memberService.checkEmail(requestDto);
+  }
   @RequestMapping(value = "/login", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
   public ResponseDto<?> login(@RequestBody @Valid LoginRequestDto requestDto,
       HttpServletResponse response

@@ -42,7 +42,9 @@ public class NaverUserInfoService {
 
     public TokenDto naverUserInfo(String AccessToken,  HttpServletResponse response) throws ParseException {
         String token = AccessToken; // 네이버 로그인 접근 토큰;
-
+        if(token == null){ // && token.equals("")){
+            throw new RuntimeException("AccessToken값이 없습니다.");
+        }
         String apiURL = "https://openapi.naver.com/v1/nid/me";
 
         Map<String, String> requestHeaders = new HashMap<>();
@@ -57,7 +59,6 @@ public class NaverUserInfoService {
         JSONObject response_obj = (JSONObject)jsonObj.get("response");
         String name = (String)response_obj.get("name");
         String email = (String)response_obj.get("email");
-        System.out.println(name +"       "+ email);
 
         NaverMemberInfoDto naverMemberInfoDto = new NaverMemberInfoDto(email, name);
 
