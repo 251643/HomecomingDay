@@ -6,7 +6,6 @@ import com.homecomingday.controller.response.MyPageResponseDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.MemberRepository;
-import com.homecomingday.repository.MyPageRepository;
 import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class MyPageService {
 
-    private MyPageRepository mypageRepository;
+   // private MyPageRepository mypageRepository;
 
     //유저 정보 조회
 
