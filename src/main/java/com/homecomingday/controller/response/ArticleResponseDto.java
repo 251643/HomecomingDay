@@ -1,8 +1,7 @@
 package com.homecomingday.controller.response;
 
 
-import com.homecomingday.domain.Comment;
-import com.homecomingday.domain.Image;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

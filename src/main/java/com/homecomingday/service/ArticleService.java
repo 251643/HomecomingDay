@@ -100,7 +100,13 @@ public class ArticleService {
         articleRepository.save(article);
 //            작성시간 조회
 
+        if(articleFlag.equals("calendar")){
 
+
+
+            return null;
+        }
+        else{ //if(articleFlag.equals("freeTalk")||articleFlag.equals("help")||articleFlag.equals("information"))
         List<ImagePostDto> imgbox = new ArrayList<>();
 
         if (multipartFile != null) {
@@ -139,6 +145,7 @@ public class ArticleService {
                 .build();
             return ResponseDto.success(articleResponseDto);
         }
+    }
 
 
 
