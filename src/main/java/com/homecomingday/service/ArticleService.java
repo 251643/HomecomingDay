@@ -68,6 +68,7 @@ public class ArticleService {
                             .username(findarticle.getMember().getUsername())
                             .createdAt(Time.convertLocaldatetimeToTime(findarticle.getCreatedAt()))
                             .admission(findarticle.getMember().getAdmission().substring(2, 4) + "학번")
+                            .departmentName(findarticle.getMember().getDepartmentname())
                             .articleFlag(articleFlag)
                             .views(findarticle.getViews())
                             .commentCnt(sizeCnt) // 0으로 기본세팅
@@ -133,6 +134,7 @@ public class ArticleService {
                 .username(article.getMember().getUsername())
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                 .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                .departmentName(article.getMember().getDepartmentname())
                 .views(0L)
                 .imageList(imgbox)
                 .commentCnt(0L) // 0으로 기본세팅
@@ -155,6 +157,7 @@ public class ArticleService {
                 .username(article.getMember().getUsername())
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                 .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                .departmentName(article.getMember().getDepartmentname())
                 .views(0L)
                 .commentCnt(0L) // 0으로 기본세팅
                 .build();
@@ -195,6 +198,7 @@ public class ArticleService {
                                 .content(comment.getContent())
                                 .username(comment.getMember().getUsername())
                                 .admission(comment.getMember().getAdmission())
+                                .departmentName(comment.getMember().getDepartmentname())
                                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
                                 .build()
                 );
@@ -221,7 +225,8 @@ public class ArticleService {
                 .content(article.getContent())
                 .username(article.getMember().getUsername())
                 .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(userDetails.getMember().getAdmission().substring(2,4)+"학번")
+                .admission(article.getMember().getAdmission().substring(2,4)+"학번")
+                .departmentName(article.getMember().getDepartmentname())
                 .views(article.getViews())
                 .imageList(pickImage)
                 .commentCnt((long) commentResponseDtoList.size())
@@ -249,6 +254,7 @@ public class ArticleService {
                                 .content(comment.getContent())
                                 .username(comment.getMember().getUsername())
                                 .admission(comment.getMember().getAdmission())
+                                .departmentName(comment.getMember().getDepartmentname())
                                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
                                 .build()
                 );
