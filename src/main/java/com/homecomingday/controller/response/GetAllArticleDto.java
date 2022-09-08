@@ -1,27 +1,21 @@
 package com.homecomingday.controller.response;
-
-
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleResponseDto {
+public class GetAllArticleDto {
+
+
 
     private Long articleId;
 
-    private String articleFlag;
-
     private String title;
-
-    private String content;
 
     private String username;
 
@@ -29,13 +23,11 @@ public class ArticleResponseDto {
 
     private String admission;
 
+    private String articleFlag;
+
     private Long views;
 
-    private List<ImagePostDto> imageList;
-
     private Long commentCnt;
-
-    private List<CommentResponseDto> commentList;
 
 
 
