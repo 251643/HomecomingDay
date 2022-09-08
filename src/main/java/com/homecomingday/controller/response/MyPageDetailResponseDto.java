@@ -20,6 +20,8 @@ public class MyPageDetailResponseDto {
 
     private String username;
 
+    private String departmentName;
+
     private String createdAt;
 
     private String admission;

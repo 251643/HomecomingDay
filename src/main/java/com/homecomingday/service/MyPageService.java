@@ -25,6 +25,7 @@ public class MyPageService {
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                 .email(member.getUsername())
                 .username(member.getMember().getUsername())
+                .departmentName(member.getMember().getDepartmentname())
                 .admission(member.getMember().getAdmission())
                 .build();
         return myPageResponseDto;
@@ -54,6 +55,7 @@ public class MyPageService {
                                 .articleId(articles.getId())
                                 .title(articles.getTitle())
                                 .username(member.getMember().getUsername())
+                                .departmentName(member.getMember().getDepartmentname())
                                 .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
                                 .admission(member.getMember().getAdmission().substring(2,4)+"학번")
                                 .articleFlag(articles.getArticleFlag())
