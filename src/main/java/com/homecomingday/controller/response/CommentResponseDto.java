@@ -21,6 +21,8 @@ public class CommentResponseDto {
 
     private String admission;
 
+    private String departmentName; // 학과
+
     private String createdAt;
 
 
