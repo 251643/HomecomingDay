@@ -15,5 +15,7 @@ public class MyPageResponseDto {
 
     private String username;
 
+    private String departmentName;
+
     private String admission;
 }
