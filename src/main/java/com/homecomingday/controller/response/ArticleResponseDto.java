@@ -29,6 +29,8 @@ public class ArticleResponseDto {
 
     private String admission;
 
+    private String departmentName;
+
     private Long views;
 
     private List<ImagePostDto> imageList;

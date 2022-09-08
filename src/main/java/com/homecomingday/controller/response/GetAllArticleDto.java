@@ -23,6 +23,8 @@ public class GetAllArticleDto {
 
     private String admission;
 
+    private String departmentName;
+
     private String articleFlag;
 
     private Long views;
