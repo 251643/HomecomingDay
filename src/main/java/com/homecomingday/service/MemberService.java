@@ -154,11 +154,11 @@ public class MemberService {
     );
   }
 
-  public ResponseDto<?> checkEmail(EmailRequestDto requestDto) {
-    if (null != isPresentMember(requestDto.getEmail())) {
+  public ResponseDto<?> checkEmail(EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {
+    if (null != isPresentMember(emailSendRequestDto.getSendEmail())) {
       return ResponseDto.fail("DUPLICATED_EMAIL",
               "동일한 이메일이 존재합니다.");
     }
-    return ResponseDto.success(requestDto.getEmail());
+    return ResponseDto.success(emailSendRequestDto.getSendEmail());
   }
 }

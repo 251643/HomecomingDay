@@ -30,13 +30,12 @@ public class MemberController {
     return memberService.createMember(requestDto);
   }
   @RequestMapping(value = "/emailCheck", method = RequestMethod.POST)
-  public ResponseDto<?> emailCheck(@RequestBody @Valid EmailRequestDto requestDto) {
-    return memberService.checkEmail(requestDto);
+  public ResponseDto<?> emailCheck(@RequestBody @Valid EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {
+    return memberService.checkEmail(emailSendRequestDto);
   }
   @RequestMapping(value = "/login", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
   public ResponseDto<?> login(@RequestBody @Valid LoginRequestDto requestDto,
-      HttpServletResponse response
-  ) {
+      HttpServletResponse response ) {
     return memberService.login(requestDto, response);
   }
 
@@ -45,7 +44,7 @@ public class MemberController {
     return memberService.schoolInfoMember(requestDto, userDetails);
   }
 
-//  @RequestMapping(value = "/api/auth/member/reissue", method = RequestMethod.POST)
+//  @RequestMapping(value = "/reissue", method = RequestMethod.POST)
 //  public ResponseDto<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 //    return memberService.reissue(request, response);
 //  }
@@ -55,7 +54,6 @@ public class MemberController {
     return memberService.logout(request);
   }
 
-
   @RequestMapping(value = "/naverUserInfo", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json; charset=utf-8")
   public TokenDto naverUserInfo(@RequestHeader(value="Authorization", required = false) String token, HttpServletResponse response)throws ParseException {
 
@@ -63,13 +61,14 @@ public class MemberController {
   }
 
   @PostMapping("/signup/sendEmail")
-  public @ResponseBody void sendEmail(@RequestBody EmailRequestDto emailRequestDto){
-    MailDto dto = sendEmailService.createMail(emailRequestDto);
+  public @ResponseBody void sendEmail(@RequestBody EmailRequestDto.EmailSendRequestDto emailSendRequestDto){
+    MailDto dto = sendEmailService.createMail(emailSendRequestDto);
     sendEmailService.mailSend(dto);
   }
+
   @PostMapping("/signup/checkEmail")
-  public ResponseDto<?> checkEmail(@RequestBody EmailRequestDto emailRequestDto){
-    return sendEmailService.checkEmail(emailRequestDto);
+  public ResponseDto<?> checkEmail(@RequestBody EmailRequestDto.AuthRequestDto authRequestDto){
+    return sendEmailService.checkEmail(authRequestDto);
   }
 
 

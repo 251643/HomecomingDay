@@ -5,5 +5,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface ArticleRepositoryCustom {
-    Slice<ArticleResponseDto> getArticleScroll(Pageable pageable, String nickname);
+    Slice<ArticleResponseDto> getArticleScroll(Pageable pageable, String articleFlag);
 }

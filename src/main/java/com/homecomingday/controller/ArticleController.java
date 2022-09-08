@@ -7,6 +7,7 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,15 +30,6 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final ArticleRepository articleRepository;
-
-    @GetMapping("/api/auth/article")
-    public Slice<ArticleResponseDto> getArticleScroll(HttpServletResponse response,
-                                                      @PageableDefault(size = 3, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable,
-                                                      @AuthenticationPrincipal UserDetails userDetails) {
-        String nickname = userDetails.getUsername();
-        response.setHeader("nickname", nickname);
-        return articleRepository.getArticleScroll(pageable, nickname);
-    }
 
 
     //게시글 메인홈 조회
@@ -52,7 +45,7 @@ public class ArticleController {
                                  @RequestPart(required = false, value="articleRequestDto") ArticleRequestDto articleRequestDto,
                                  @RequestPart (required = false,value="files") List<MultipartFile> multipartFile,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                 HttpServletRequest request) throws IOException {
+                                     MultipartHttpServletRequest  request) throws IOException {
         return articleService.postArticle(articleFlag, multipartFile, articleRequestDto,userDetails, request);
     }
 
