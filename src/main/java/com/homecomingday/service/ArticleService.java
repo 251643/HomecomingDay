@@ -12,7 +12,6 @@ import com.homecomingday.service.s3.S3Uploader;
 import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,29 +48,65 @@ public class ArticleService {
         List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
 
         List<GetAllArticleDto> getAllArticleDtos = new ArrayList<>();
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
         for (Article findarticle : articleList) {
             Long sizeCnt = 0L;
             List<Comment> commentList = commentRepository.findbyArticle_Id(findarticle.getId()); //게시물 index 번호에 따라 뽑아옴
 
-            for (Comment datas : commentList) {
-                if (datas.getArticle().getId().equals(findarticle.getId())) {
-                    sizeCnt++;
+//            for (Comment datas : commentList) {
+//                if (datas.getArticle().getId().equals(findarticle.getId())) {
+//                    sizeCnt++;
+//                }
+//            }
+
+//            List<Comment>findComment =commentRepository.findAll();
+//        List<ImagePostDto> imageList = new ArrayList<>();
+
+            for (Comment comment : commentList) {
+                if(comment.getArticle().getId().equals(findarticle.getId())) {
+                    commentResponseDtoList.add(
+                            CommentResponseDto.builder()
+                                    .commentId(comment.getId())
+                                    .content(comment.getContent())
+                                    .username(comment.getMember().getUsername())
+                                    .admission(comment.getMember().getAdmission())
+                                    .departmentName(comment.getMember().getDepartmentname())
+                                    .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                                    .build()
+                    );
                 }
             }
 
+
+            List <Image> findImage=imageRepository.findAll();
+            List <ImagePostDto> pickImage=new ArrayList<>();
+
+            for (Image image : findImage) {
+                if(image.getArticle().getId().equals(findarticle.getId())) {
+                    pickImage.add(
+                            ImagePostDto.builder()
+                                    .imageId(image.getId())
+                                    .imgUrl(image.getImgUrl())
+                                    .build()
+                    );
+                }
+            }
 
             getAllArticleDtos.add(
                     GetAllArticleDto.builder()
                             .articleId(findarticle.getId())
                             .title(findarticle.getTitle())
+                            .content(findarticle.getContent())
+                            .imageList(pickImage)
                             .username(findarticle.getMember().getUsername())
                             .createdAt(Time.convertLocaldatetimeToTime(findarticle.getCreatedAt()))
                             .admission(findarticle.getMember().getAdmission().substring(2, 4) + "학번")
                             .departmentName(findarticle.getMember().getDepartmentname())
                             .articleFlag(articleFlag)
                             .views(findarticle.getViews())
-                            .commentCnt(sizeCnt) // 0으로 기본세팅
+                            .commentCnt((long) commentResponseDtoList.size())
+                            .commentList(commentResponseDtoList)
                             .build()
             );
         }
@@ -87,6 +122,8 @@ public class ArticleService {
                                           UserDetailsImpl userDetails,
                                           HttpServletRequest request) throws IOException {
 
+
+        System.out.println(userDetails);
         Article article = Article.builder()
                 .title(articleRequestDto.getTitle())
                 .content(articleRequestDto.getContent())
@@ -97,76 +134,80 @@ public class ArticleService {
         articleRepository.save(article);
 
 
-        int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
-                         // 조건문을 통과하면 안에 값이 비어있다는것, 리스트자체가 아닌 내부 값 자체를 비교해야함
-        List<ImagePostDto> imgbox = new ArrayList<>();
+//        if(!articleFlag.equals("information")) {
 
-        //이미지 null값 비교값
-        for (MultipartFile uploadedFile : multipartFile) {
-            if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
-                checkNum = 0;
-            }
-        if(checkNum==1){
-            //이미지 업로드
+            int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
+            // 조건문을 통과하면 안에 값이 비어있다는것, 리스트자체가 아닌 내부 값 자체를 비교해야함
+            List<ImagePostDto> imgbox = new ArrayList<>();
+
+            //이미지 null값 비교값
             for (MultipartFile uploadedFile : multipartFile) {
-            S3Dto s3Dto = s3Uploader.upload(uploadedFile);
+                if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
+                    checkNum = 0;
+            }
+            if (checkNum == 1) {
+                //이미지 업로드
+                for (MultipartFile uploadedFile : multipartFile) {
+                    S3Dto s3Dto = s3Uploader.upload(uploadedFile);
 
-            Image image = Image.builder()
-                    .imgUrl(s3Dto.getUploadImageUrl())
-                    .urlPath(s3Dto.getFileName())
-                    .article(article)
-                    .build();
-            imageRepository.save(image);
+                    Image image = Image.builder()
+                            .imgUrl(s3Dto.getUploadImageUrl())
+                            .urlPath(s3Dto.getFileName())
+                            .article(article)
+                            .build();
+                    imageRepository.save(image);
 
-            ImagePostDto imagePostDto = ImagePostDto.builder()
-                    .imageId(image.getId())
-                    .imgUrl(image.getImgUrl())
-                    .build();
+                    ImagePostDto imagePostDto = ImagePostDto.builder()
+                            .imageId(image.getId())
+                            .imgUrl(image.getImgUrl())
+                            .build();
 
-            imgbox.add(imagePostDto);
+                    imgbox.add(imagePostDto);
 
-        }
-        ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-                .articleId(article.getId())
-                .articleFlag(articleFlag)
-                .title(article.getTitle())
-                .content(article.getContent())
-                .username(article.getMember().getUsername())
-                .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
-                .departmentName(article.getMember().getDepartmentname())
-                .views(0L)
-                .imageList(imgbox)
-                .commentCnt(0L) // 0으로 기본세팅
-                .build();
+                }
+                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                        .articleId(article.getId())
+                        .articleFlag(articleFlag)
+                        .title(article.getTitle())
+                        .content(article.getContent())
+                        .username(article.getMember().getUsername())
+                        .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                        .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                        .departmentName(article.getMember().getDepartmentname())
+                        .views(0L)
+                        .imageList(imgbox)
+                        .commentCnt(0L) // 0으로 기본세팅
+                        .build();
 
 //            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
 //            Article2ResponseDto article2ResponseDto=
 //                    new Article2ResponseDto(article,articleFlag,admission1,imgbox);
-        return articleResponseDto;
-    }else
-
-    {
+                return articleResponseDto;
+            } else {
 
 
-        ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-                .articleId(article.getId())
-                .articleFlag(articleFlag)
-                .title(article.getTitle())
-                .content(article.getContent())
-                .username(article.getMember().getUsername())
-                .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
-                .departmentName(article.getMember().getDepartmentname())
-                .views(0L)
-                .commentCnt(0L) // 0으로 기본세팅
-                .build();
+                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                        .articleId(article.getId())
+                        .articleFlag(articleFlag)
+                        .title(article.getTitle())
+                        .content(article.getContent())
+                        .username(article.getMember().getUsername())
+                        .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                        .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                        .departmentName(article.getMember().getDepartmentname())
+                        .views(0L)
+                        .commentCnt(0L) // 0으로 기본세팅
+                        .build();
 //            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
 
 //            Article2ResponseDto article2ResponseDto=
 //                    new Article2ResponseDto(article,articleFlag,admission1);
-        return articleResponseDto;
-    }
+                return articleResponseDto;
+            }
+//        }
+//        else{
+//
+//        }
 
 }
 
