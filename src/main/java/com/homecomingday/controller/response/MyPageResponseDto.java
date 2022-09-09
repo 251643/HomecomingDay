@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MyPageResponseDto {
 
+    private String schoolName;
+
     private String email;
 
     private String username;
