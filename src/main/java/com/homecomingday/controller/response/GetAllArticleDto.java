@@ -21,6 +21,12 @@ public class GetAllArticleDto {
 
     private String content;
 
+    private String calendarDate;
+
+    private String calendarTime;
+
+    private String calendarLocation;
+
     private List<ImagePostDto> imageList;
 
     private String username;

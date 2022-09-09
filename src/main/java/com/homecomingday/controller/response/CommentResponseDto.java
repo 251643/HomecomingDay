@@ -25,6 +25,7 @@ public class CommentResponseDto {
 
     private String createdAt;
 
+    private Long articleId;
 
 
 
