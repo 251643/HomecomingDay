@@ -25,11 +25,11 @@ public class SendEmailService {
         Random random = new Random();
         String authKey = String.valueOf(random.nextInt(999999) + 1);
         MailDto dto = new MailDto();
-        dto.setAddress(emailSendRequestDto.getSendEmail());
+        dto.setAddress(emailSendRequestDto.getEmail());
         dto.setTitle("Homecoming Day 인증번호 안내 이메일 입니다.");
         dto.setMessage("안녕하세요. Homecoming Day입니다. 인증번호는 " + authKey + " 입니다. ");
         // 유효 시간(5분)동안 {email, authKey} 저장
-        redisUtil.setDataExpire(authKey, emailSendRequestDto.getSendEmail(), 60 * 3L);
+        redisUtil.setDataExpire(authKey, emailSendRequestDto.getEmail(), 60 * 3L);
 
         return dto;
     }
@@ -46,7 +46,7 @@ public class SendEmailService {
 
     public ResponseDto<?> checkEmail(EmailRequestDto.AuthRequestDto authRequestDto) {
         String redisEmail = redisUtil.getData(authRequestDto.getAuthKey());
-        if(!authRequestDto.getAuthEmail().equals(redisEmail)){
+        if(!authRequestDto.getEmail().equals(redisEmail)){
             return ResponseDto.fail("UNREGISTERED_KEY", "인증번호가 일치하지 않습니다.");
            // throw new RuntimeException("인증코드가 일치하지 않습니다.");
         }

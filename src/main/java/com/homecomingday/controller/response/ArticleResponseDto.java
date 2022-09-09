@@ -23,6 +23,12 @@ public class ArticleResponseDto {
 
     private String content;
 
+    private String calendarDate;
+
+    private String calendarTime;
+
+    private String calendarLocation;
+
     private String username;
 
     private String createdAt;
@@ -38,6 +44,9 @@ public class ArticleResponseDto {
     private Long commentCnt;
 
     private List<CommentResponseDto> commentList;
+
+
+
 
 
 

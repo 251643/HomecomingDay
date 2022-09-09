@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class DeduplicationUtils {
     /**
     * @param list 중복이 있는 list
-    * @param 중복여부를 판단하는 키값
+    * @param key 중복여부를 판단하는 키값
     * @param <T> generic type
     * @return list
     */

@@ -41,13 +41,13 @@ public class Article extends Timestamped {
     private String articleFlag;
 
     @Column
-    private String mDate;
+    private String calendarDate;
 
     @Column
-    private String mTime;
+    private String calendarTime;
 
     @Column
-    private String place;
+    private String calendarLocation;
 
     //  @Transient //사진은 보여지기만 하면 되므로 불필요하게 관게를 맺기보단 일시적으로 체류만 시켜주면됨
     @JsonManagedReference
@@ -62,5 +62,8 @@ public class Article extends Timestamped {
     public void updateArticle(ArticleRequestDto articleRequestDto) {
         this.title=articleRequestDto.getTitle();
         this.content=articleRequestDto.getContent();
+        this.calendarDate=articleRequestDto.getCalendarDate();
+        this.calendarTime=articleRequestDto.getCalendarDate();
+        this.calendarLocation=articleRequestDto.getCalendarLocation();
     }
 }

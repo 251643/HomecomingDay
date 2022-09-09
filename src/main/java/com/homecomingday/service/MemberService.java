@@ -155,10 +155,10 @@ public class MemberService {
   }
 
   public ResponseDto<?> checkEmail(EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {
-    if (null != isPresentMember(emailSendRequestDto.getSendEmail())) {
+    if (null != isPresentMember(emailSendRequestDto.getEmail())) {
       return ResponseDto.fail("DUPLICATED_EMAIL",
               "동일한 이메일이 존재합니다.");
     }
-    return ResponseDto.success(emailSendRequestDto.getSendEmail());
+    return ResponseDto.success(emailSendRequestDto.getEmail());
   }
 }
