@@ -23,10 +23,11 @@ public class MyPageService {
     //유저 정보 조회
     public MyPageResponseDto readMyPage(UserDetailsImpl member) {
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
+                .schoolName(member.getMember().getSchoolname())
                 .email(member.getUsername())
                 .username(member.getMember().getUsername())
                 .departmentName(member.getMember().getDepartmentname())
-                .admission(member.getMember().getAdmission())
+                .admission(member.getMember().getAdmission().substring(2,4)+"학번")
                 .build();
         return myPageResponseDto;
     }
