@@ -1,6 +1,7 @@
 package com.homecomingday.repository;
 
 import com.homecomingday.controller.response.ArticleResponseDto;
+import com.homecomingday.controller.response.MyPageDetailResponseDto;
 import com.homecomingday.domain.Article;
 import com.homecomingday.util.Time;
 import com.querydsl.core.QueryResults;
@@ -35,7 +36,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return customTimestamp;
     }
 
-    public Slice<ArticleResponseDto> getArticleScroll(Pageable pageable) {
+    @Override
+    public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable) {
 
         QueryResults<Article> result = queryFactory
                 .selectFrom(article)
@@ -45,16 +47,18 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 .orderBy(article.Id.desc())
                 .fetchResults();
 
-        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
+        List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
         for (Article eachArticle : result.getResults()) {
-            articleResponseDtoList.add(ArticleResponseDto.builder()
+            articleResponseDtoList.add(                        MyPageDetailResponseDto.builder()
                     .articleId(eachArticle.getId())
                     .title(eachArticle.getTitle())
                     .username(eachArticle.getMember().getUsername())
+                    .departmentName(eachArticle.getMember().getDepartmentname())
                     .createdAt(Time.convertLocaldatetimeToTime(eachArticle.getCreatedAt()))
                     .admission(eachArticle.getMember().getAdmission().substring(2,4)+"학번")
+                    .articleFlag(eachArticle.getArticleFlag())
                     .views(eachArticle.getViews())
-                    .commentCnt(0L)
+                    .commentCnt((long) eachArticle.getComments().size()) // 0으로 기본세팅
                     .build()
             );
         }
@@ -66,4 +70,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
         return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
     }
+
+
 }

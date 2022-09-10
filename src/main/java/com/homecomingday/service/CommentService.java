@@ -42,6 +42,7 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
+        article1.getComments().add(comment);
 
         CommentResponseDto commentResponseDto = CommentResponseDto.builder()
                 .commentId(comment.getId())
@@ -50,7 +51,9 @@ public class CommentService {
                 .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                 .departmentName(userDetails.getMember().getDepartmentname())
                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                .articleId(articleId)
                 .build();
+
 
         return commentResponseDto;
     }

@@ -47,42 +47,35 @@ public class ArticleService {
 
         List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
 
-        List<GetAllArticleDto> getAllArticleDtos = new ArrayList<>();
-        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+        List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
-        for (Article findarticle : articleList) {
-//            Long sizeCnt = 0L;
-            List<Comment> commentList = findarticle.getComments(); //게시물 index 번호에 따라 뽑아옴
+        for (Article findArticle : articleList) {
+            List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
+            List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
 
-//            for (Comment datas : commentList) {
-//                if (datas.getArticle().getId().equals(findarticle.getId())) {
-//                    sizeCnt++;
-//                }
-//            }
+            for (Comment comment : commentList) {
 
+                commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentId(comment.getId())
+                                .content(comment.getContent())
+                                .username(comment.getMember().getUsername())
+                                .admission(comment.getMember().getAdmission())
+                                .departmentName(comment.getMember().getDepartmentname())
+                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                                .build()
+                );
+            }
 
-
-            for (Comment comment : commentList) { // 연관관계로 굳이 비교문을 안거쳐도됨
-                    commentResponseDtoList.add(
-                            CommentResponseDto.builder()
-                                    .commentId(comment.getId())
-                                    .content(comment.getContent())
-                                    .username(comment.getMember().getUsername())
-                                    .admission(comment.getMember().getAdmission().substring(2, 4)+"학번")
-                                    .departmentName(comment.getMember().getDepartmentname())
-                                    .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-                                    .articleId(comment.getArticle().getId())
-                                    .build()
-                    );
-                }
-
+//            List<Comment>findComment =commentRepository.findAll();
+//        List<ImagePostDto> imageList = new ArrayList<>();
 
             if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
                 List<Image> findImage = imageRepository.findAll();
                 List<ImagePostDto> pickImage = new ArrayList<>();
 
                 for (Image image : findImage) {
-                    if (image.getArticle().getId().equals(findarticle.getId())) {
+                    if (image.getArticle().getId().equals(findArticle.getId())) {
                         pickImage.add(
                                 ImagePostDto.builder()
                                         .imageId(image.getId())
@@ -92,37 +85,37 @@ public class ArticleService {
                     }
                 }
 
-                getAllArticleDtos.add(
+                getAllArticleDtoList.add(
                         GetAllArticleDto.builder()
-                                .articleId(findarticle.getId())
-                                .title(findarticle.getTitle())
-                                .content(findarticle.getContent())
+                                .articleId(findArticle.getId())
+                                .title(findArticle.getTitle())
+                                .content(findArticle.getContent())
                                 .imageList(pickImage)
-                                .username(findarticle.getMember().getUsername())
-                                .createdAt(Time.convertLocaldatetimeToTime(findarticle.getCreatedAt()))
-                                .admission(findarticle.getMember().getAdmission().substring(2, 4) + "학번")
-                                .departmentName(findarticle.getMember().getDepartmentname())
+                                .username(findArticle.getMember().getUsername())
+                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(findArticle.getMember().getDepartmentname())
                                 .articleFlag(articleFlag)
-                                .views(findarticle.getViews())
+                                .views(findArticle.getViews())
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
                 );
             } else { //만남일정 부분  출력
-                getAllArticleDtos.add(
+                getAllArticleDtoList.add(
                         GetAllArticleDto.builder()
-                                .articleId(findarticle.getId())
-                                .title(findarticle.getTitle())
-                                .content(findarticle.getContent())
-                                .calendarDate(findarticle.getCalendarDate())
-                                .calendarTime(findarticle.getCalendarTime())
-                                .calendarLocation(findarticle.getCalendarLocation())
-                                .username(findarticle.getMember().getUsername())
-                                .createdAt(Time.convertLocaldatetimeToTime(findarticle.getCreatedAt()))
-                                .admission(findarticle.getMember().getAdmission().substring(2, 4) + "학번")
-                                .departmentName(findarticle.getMember().getDepartmentname())
+                                .articleId(findArticle.getId())
+                                .title(findArticle.getTitle())
+                                .content(findArticle.getContent())
+                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarTime(findArticle.getCalendarTime())
+                                .calendarLocation(findArticle.getCalendarLocation())
+                                .username(findArticle.getMember().getUsername())
+                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(findArticle.getMember().getDepartmentname())
                                 .articleFlag(articleFlag)
-                                .views(findarticle.getViews())
+                                .views(findArticle.getViews())
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -132,7 +125,9 @@ public class ArticleService {
 
             }
         }
-        return getAllArticleDtos;
+
+
+        return getAllArticleDtoList;
     }
 
 
@@ -141,8 +136,7 @@ public class ArticleService {
     public ArticleResponseDto postArticle(String articleFlag,
                                           List<MultipartFile> multipartFile,
                                           ArticleRequestDto articleRequestDto,
-                                          UserDetailsImpl userDetails,
-                                          HttpServletRequest request) throws IOException {
+                                          UserDetailsImpl userDetails) throws IOException {
 
 
         System.out.println(userDetails);
@@ -161,16 +155,18 @@ public class ArticleService {
 
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
-//            int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
+            int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
             // 조건문을 통과하면 안에 값이 비어있다는것, 리스트자체가 아닌 내부 값 자체를 비교해야함
             List<ImagePostDto> imgbox = new ArrayList<>();
 
-            //이미지 null값 비교값
-//            for (MultipartFile uploadedFile : multipartFile) {
-//                if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
-//                    checkNum = 0;
-//            }
-            if (multipartFile!=null) { //이미지 있을때 출력 로직
+//            이미지 null값 비교값
+            for (MultipartFile uploadedFile : multipartFile) {
+                if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
+                    checkNum = 0;
+            }
+
+
+            if (checkNum==1) { //이미지 있을때 출력 로직
                 //이미지 업로드
                 for (MultipartFile uploadedFile : multipartFile) {
                     S3Dto s3Dto = s3Uploader.upload(uploadedFile);
@@ -279,7 +275,7 @@ public class ArticleService {
                                 .admission(comment.getMember().getAdmission().substring(2, 4)+"학번")
                                 .departmentName(comment.getMember().getDepartmentname())
                                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-                                .articleId(comment.getArticle().getId())
+                                .articleId(articleId)
                                 .build()
                 );
             }
