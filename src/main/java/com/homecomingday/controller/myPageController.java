@@ -27,9 +27,9 @@ public class myPageController {
     private final MyPageService myPageService;
     private final ArticleRepository articleRepository;
     @GetMapping("/myPage/myArticle")
-    public Slice<ArticleResponseDto> getArticleScroll(HttpServletResponse response,
-                                                      @PageableDefault(size = 3, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable,
-                                                      @AuthenticationPrincipal UserDetails userDetails) {
+    public Slice<MyPageDetailResponseDto> getArticleScroll(
+                                                      @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable
+                                                      ) {
         return articleRepository.getArticleScroll(pageable);
     }
 
