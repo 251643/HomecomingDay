@@ -26,11 +26,11 @@ public class myPageController {
 
     private final MyPageService myPageService;
     private final ArticleRepository articleRepository;
-    @GetMapping("/myPage/myArticle")
-    public Slice<MyPageDetailResponseDto> getArticleScroll(HttpServletResponse response,
-                                                      @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
-        return articleRepository.getArticleScroll(pageable);
-    }
+//    @GetMapping("/myPage/myArticle")
+//    public Slice<MyPageDetailResponseDto> getArticleScroll(HttpServletResponse response,
+//                                                      @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable) {
+//        return articleRepository.getArticleScroll(pageable);
+//    }
 
 
     //유저 정보 조회
@@ -40,11 +40,11 @@ public class myPageController {
 
     }
 
-    // 내가 쓴 게시글 조회
-//    @GetMapping("/myPage/myArticle")
-//    public List<MyPageDetailResponseDto> readDetailMyPage(@AuthenticationPrincipal UserDetailsImpl member){
-//        return myPageService.readDetailMyPage(member);
-//    }
+//     내가 쓴 게시글 조회
+    @GetMapping("/myPage/myArticle")
+    public List<MyPageDetailResponseDto> readDetailMyPage(@AuthenticationPrincipal UserDetailsImpl member){
+        return myPageService.readDetailMyPage(member);
+    }
 
 
 }

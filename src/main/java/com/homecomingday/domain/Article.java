@@ -66,4 +66,8 @@ public class Article extends Timestamped {
         this.calendarTime=articleRequestDto.getCalendarDate();
         this.calendarLocation=articleRequestDto.getCalendarLocation();
     }
+
+    public void deleteComment(Comment comment) {
+        comments.remove(comment);
+    }
 }

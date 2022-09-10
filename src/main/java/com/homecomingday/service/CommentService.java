@@ -43,7 +43,6 @@ public class CommentService {
 
         commentRepository.save(comment);
         article1.getComments().add(comment);
-
         CommentResponseDto commentResponseDto = CommentResponseDto.builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
@@ -87,17 +86,21 @@ public class CommentService {
 
 
     //댓글 삭제
+    @Transactional
     public String deleteComments(String articleFlag,Long articleId,Long commentId, UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+                .orElseThrow(() -> new IllegalArgumentException(commentId+"번 댓글이 존재하지 않습니다"));
+
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException(articleId+"번 게시물이 존재하지 않습니다"));
 
         String myId = String.valueOf(commentId);
 
 
 
-
-        if(comment.getMember().getEmail().equals(userDetails.getUsername())){
-           commentRepository.delete(comment);
+        if(userDetails.getUsername().equals(comment.getMember().getEmail())){
+            article.deleteComment(comment);
+            commentRepository.delete(comment);
 
            return articleFlag+" "+myId+"번째 삭제가 성공되었습니다.";
        }
