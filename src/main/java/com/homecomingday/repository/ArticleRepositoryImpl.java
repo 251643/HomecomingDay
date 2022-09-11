@@ -35,8 +35,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return customTimestamp;
     }
 
-    public Slice<ArticleResponseDto> getArticleScroll(Pageable pageable, String articleFlag) {
-
+    public Slice<ArticleResponseDto> getArticleScroll(Pageable pageable) {
         QueryResults<Article> result = queryFactory
                 .selectFrom(article)
                 //.where(article.articleFlag.eq(articleFlag))

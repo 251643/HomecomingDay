@@ -28,10 +28,10 @@ public class myPageController {
     private final ArticleRepository articleRepository;
     @GetMapping("/myPage/myArticle")
     public Slice<ArticleResponseDto> getArticleScroll(HttpServletResponse response,
-                                                      @PathVariable String articleFlag,
+                                                      //@PathVariable String articleFlag,
                                                       @PageableDefault(size = 3, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable,
                                                       @AuthenticationPrincipal UserDetails userDetails) {
-        return articleRepository.getArticleScroll(pageable, articleFlag);
+        return articleRepository.getArticleScroll(pageable);
     }
 
 
