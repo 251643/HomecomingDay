@@ -1,6 +1,7 @@
 package com.homecomingday.repository;
 
 import com.homecomingday.controller.response.ArticleResponseDto;
+import com.homecomingday.controller.response.MyPageDetailResponseDto;
 import com.homecomingday.domain.Article;
 import com.homecomingday.util.Time;
 import com.querydsl.core.QueryResults;
@@ -35,7 +36,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return customTimestamp;
     }
 
-    public Slice<ArticleResponseDto> getArticleScroll(Pageable pageable) {
+    public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable) {
 
         QueryResults<Article> result = queryFactory
                 .selectFrom(article)
@@ -45,16 +46,18 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 .orderBy(article.Id.desc())
                 .fetchResults();
 
-        List<ArticleResponseDto> articleResponseDtoList = new ArrayList<>();
-        for (Article eachArticle : result.getResults()) {
-            articleResponseDtoList.add(ArticleResponseDto.builder()
-                    .articleId(eachArticle.getId())
-                    .title(eachArticle.getTitle())
-                    .username(eachArticle.getMember().getUsername())
-                    .createdAt(Time.convertLocaldatetimeToTime(eachArticle.getCreatedAt()))
-                    .admission(eachArticle.getMember().getAdmission().substring(2,4)+"학번")
-                    .views(eachArticle.getViews())
-                    .commentCnt(0L)
+        List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
+        for (Article articles : result.getResults()) {
+            articleResponseDtoList.add( MyPageDetailResponseDto.builder()
+                    .articleId(articles.getId())
+                    .title(articles.getTitle())
+                    .username(articles.getMember().getUsername())
+                    .departmentName(articles.getMember().getDepartmentname())
+                    .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
+                    .admission(articles.getMember().getAdmission().substring(2,4)+"학번")
+                    .articleFlag(changearticleFlag(articles.getArticleFlag()))
+                    .views(articles.getViews())
+                    .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
                     .build()
             );
         }
@@ -66,4 +69,17 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
         return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
     }
+    public String changearticleFlag(String articleFlag) {
+        if (articleFlag.equals("help")) {
+            return "도움요청";
+        } else if(articleFlag.equals("freeTalk")){
+            return "자유토크";
+        }else if(articleFlag.equals("information")){
+            return "정보공유";
+        }else if(articleFlag.equals("calendar")){
+            return "만남일정";
+        }
+        return null;
+    }
+
 }
