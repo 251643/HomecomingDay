@@ -35,7 +35,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         System.out.println(customTimestamp);
         return customTimestamp;
     }
-
+    
     @Override
     public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable) {
 
@@ -48,17 +48,18 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 .fetchResults();
 
         List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
-        for (Article eachArticle : result.getResults()) {
-            articleResponseDtoList.add(                        MyPageDetailResponseDto.builder()
-                    .articleId(eachArticle.getId())
-                    .title(eachArticle.getTitle())
-                    .username(eachArticle.getMember().getUsername())
-                    .departmentName(eachArticle.getMember().getDepartmentname())
-                    .createdAt(Time.convertLocaldatetimeToTime(eachArticle.getCreatedAt()))
-                    .admission(eachArticle.getMember().getAdmission().substring(2,4)+"학번")
-                    .articleFlag(eachArticle.getArticleFlag())
-                    .views(eachArticle.getViews())
-                    .commentCnt((long) eachArticle.getComments().size()) // 0으로 기본세팅
+
+        for (Article articles : result.getResults()) {
+            articleResponseDtoList.add( MyPageDetailResponseDto.builder()
+                    .articleId(articles.getId())
+                    .title(articles.getTitle())
+                    .username(articles.getMember().getUsername())
+                    .departmentName(articles.getMember().getDepartmentname())
+                    .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
+                    .admission(articles.getMember().getAdmission().substring(2,4)+"학번")
+                    .articleFlag(changearticleFlag(articles.getArticleFlag()))
+                    .views(articles.getViews())
+                    .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
                     .build()
             );
         }
@@ -71,5 +72,17 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
     }
 
+    public String changearticleFlag(String articleFlag) {
+        if (articleFlag.equals("help")) {
+            return "도움요청";
+        } else if(articleFlag.equals("freeTalk")){
+            return "자유토크";
+        }else if(articleFlag.equals("information")){
+            return "정보공유";
+        }else if(articleFlag.equals("calendar")){
+            return "만남일정";
+        }
+        return null;
+    }
 
 }
