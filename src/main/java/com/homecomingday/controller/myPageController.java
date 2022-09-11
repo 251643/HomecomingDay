@@ -26,12 +26,12 @@ public class myPageController {
 
     private final MyPageService myPageService;
     private final ArticleRepository articleRepository;
-    @GetMapping("/myPage/myArticle")
-    public Slice<MyPageDetailResponseDto> getArticleScroll(
-                                                      @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable
-                                                      ) {
-        return articleRepository.getArticleScroll(pageable);
-    }
+//    @GetMapping("/myPage/myArticle")
+//    public Slice<MyPageDetailResponseDto> getArticleScroll(
+//                                                      @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable
+//                                                      ) {
+//        return articleRepository.getArticleScroll(pageable);
+//    }
 
 
     //유저 정보 조회
