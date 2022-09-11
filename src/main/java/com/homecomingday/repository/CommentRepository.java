@@ -13,4 +13,5 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     @Query("select p from Comment p ORDER BY p.createdAt")
     List<Comment> findbyArticle_Id(Long Id);
+
 }
