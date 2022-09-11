@@ -44,9 +44,8 @@ public class ArticleController {
     public ArticleResponseDto upload(@PathVariable String articleFlag,
                                  @RequestPart(required = false, value="articleRequestDto") ArticleRequestDto articleRequestDto,
                                  @RequestPart (required = false,value="files") List<MultipartFile> multipartFile,
-                                 @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                     MultipartHttpServletRequest  request) throws IOException {
-        return articleService.postArticle(articleFlag, multipartFile, articleRequestDto,userDetails, request);
+                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return articleService.postArticle(articleFlag, multipartFile, articleRequestDto,userDetails);
     }
 
 
