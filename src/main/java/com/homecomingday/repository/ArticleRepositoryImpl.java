@@ -35,7 +35,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         System.out.println(customTimestamp);
         return customTimestamp;
     }
-
+    
+    @Override
     public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable) {
 
         QueryResults<Article> result = queryFactory
@@ -47,6 +48,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 .fetchResults();
 
         List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
+
         for (Article articles : result.getResults()) {
             articleResponseDtoList.add( MyPageDetailResponseDto.builder()
                     .articleId(articles.getId())
@@ -69,6 +71,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
         return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
     }
+
     public String changearticleFlag(String articleFlag) {
         if (articleFlag.equals("help")) {
             return "도움요청";

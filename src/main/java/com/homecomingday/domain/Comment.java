@@ -32,13 +32,13 @@ public class Comment extends Timestamped {
   private String articleFlag;
 
 
-  @JoinColumn(name = "member_id")
+  @JoinColumn(name = "member_id",nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Member member;
 
   @JsonBackReference
-  @JoinColumn(name = "article_id")
+  @JoinColumn(name = "article_id",nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Article article;
