@@ -158,7 +158,7 @@ public class ArticleService {
             int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
             // 조건문을 통과하면 안에 값이 비어있다는것, 리스트자체가 아닌 내부 값 자체를 비교해야함
             List<ImagePostDto> imgbox = new ArrayList<>();
-
+            System.out.println("여기여기");
 //            이미지 null값 비교값
             for (MultipartFile uploadedFile : multipartFile) {
                 if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
@@ -411,7 +411,6 @@ public class ArticleService {
 
     }
 }
-
 
 
 

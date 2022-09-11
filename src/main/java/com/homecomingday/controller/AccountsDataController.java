@@ -100,10 +100,11 @@ public class AccountsDataController {
 
     @RequestMapping(value="/admissions",method={RequestMethod.GET, RequestMethod.POST} )
     public List<AdmissionDto> findAdmission(){
+        int a = 1;
         int year = LocalDate.now().getYear();
         List<AdmissionDto> list = new ArrayList<>();
         for(int i = 1990 ; i < year-3 ; i++ ){
-            list.add(new AdmissionDto(String.valueOf(i)));
+            list.add(new AdmissionDto(a++,String.valueOf(i)));
         }
         return list;//items;
     }

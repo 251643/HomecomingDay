@@ -41,11 +41,11 @@ public class myPageController {
 
     }
 
-//     내가 쓴 게시글 조회
-    @GetMapping("/myPage/myArticle")
-    public List<MyPageDetailResponseDto> readDetailMyPage(@AuthenticationPrincipal UserDetailsImpl member){
-        return myPageService.readDetailMyPage(member);
-    }
+    // 내가 쓴 게시글 조회
+//    @GetMapping("/myPage/myArticle")
+//    public List<MyPageDetailResponseDto> readDetailMyPage(@AuthenticationPrincipal UserDetailsImpl member){
+//        return myPageService.readDetailMyPage(member);
+//    }
 
 
 }
