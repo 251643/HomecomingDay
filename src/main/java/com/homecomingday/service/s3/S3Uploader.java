@@ -50,6 +50,25 @@ public class S3Uploader {
         return s3Dto;
     }
 
+    public String upload1(MultipartFile multipartFile) throws IOException {
+        File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
+
+        return uploadToS31(uploadFile);
+    }
+
+    // S3로 파일 업로드하기
+    @Transactional
+    public String uploadToS31(File uploadFile) throws IOException {
+
+        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
+        String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
+        removeNewFile(uploadFile);
+
+
+        return uploadImageUrl;
+    }
+
     // S3로 업로드
     private String putS3(File uploadFile, String fileName) {
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
