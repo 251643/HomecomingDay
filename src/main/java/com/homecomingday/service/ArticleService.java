@@ -158,7 +158,6 @@ public class ArticleService {
             int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
             // 조건문을 통과하면 안에 값이 비어있다는것, 리스트자체가 아닌 내부 값 자체를 비교해야함
             List<ImagePostDto> imgbox = new ArrayList<>();
-            System.out.println("여기여기");
 //            이미지 null값 비교값
             for (MultipartFile uploadedFile : multipartFile) {
                 if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
@@ -219,10 +218,7 @@ public class ArticleService {
                         .views(0L)
                         .commentCnt(0L) // 0으로 기본세팅
                         .build();
-//            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
 
-//            Article2ResponseDto article2ResponseDto=
-//                    new Article2ResponseDto(article,articleFlag,admission1);
                 return articleResponseDto;
             }
         } else { //calendar 부분만 출력
@@ -360,26 +356,6 @@ public class ArticleService {
         }
 
 
-//        for (Image image : article.getImageList()) {
-//            imageList.add(
-//                    ImagePostDto.builder()
-//                            .imageId(image.getId())
-//                            .imgUrl(image.getImgUrl())
-//                            .build()
-//            );
-//        }
-
-
-//        ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-//                .articleId(article.getId())
-//                .title(articleRequestDto.getTitle())
-//                .content(articleRequestDto.getContent())
-//                .username(userDetails.getMember().getUsername())
-//                .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-//                .admission(article.getMember().getAdmission())
-//                .views(article.getViews())
-//                .commentCnt((long) commentResponseDtoList.size())
-//                .build();
 
         if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
 
