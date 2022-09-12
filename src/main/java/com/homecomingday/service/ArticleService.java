@@ -177,6 +177,7 @@ public class ArticleService {
                             .imgUrl(s3Dto.getUploadImageUrl())
                             .urlPath(s3Dto.getFileName())
                             .article(article)
+                            .member(article.getMember())
                             .build();
                     imageRepository.save(image);
 
