@@ -39,6 +39,8 @@ public class ArticleResponseDto {
 
     private Long views;
 
+    private Long heartCnt;
+
     private List<ImagePostDto> imageList;
 
     private Long commentCnt;

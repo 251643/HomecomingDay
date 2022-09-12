@@ -7,6 +7,7 @@ import com.homecomingday.controller.response.*;
 import com.homecomingday.domain.*;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.repository.CommentRepository;
+import com.homecomingday.repository.HeartRepository;
 import com.homecomingday.repository.ImageRepository;
 import com.homecomingday.service.s3.S3Uploader;
 import com.homecomingday.util.Time;
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ public class ArticleService {
     private final S3Uploader s3Uploader;
     private final CommentRepository commentRepository;
     private final ImageRepository imageRepository;
+    private final HeartRepository heartRepository;
 
 
     //현재 게시물 받아오기
@@ -97,6 +98,7 @@ public class ArticleService {
                                 .departmentName(findArticle.getMember().getDepartmentname())
                                 .articleFlag(articleFlag)
                                 .views(findArticle.getViews())
+                                .heartCnt( findArticle.getHeartCnt())
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -116,6 +118,7 @@ public class ArticleService {
                                 .departmentName(findArticle.getMember().getDepartmentname())
                                 .articleFlag(articleFlag)
                                 .views(findArticle.getViews())
+                                .heartCnt( findArticle.getHeartCnt())
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -302,6 +305,7 @@ public class ArticleService {
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
                     .views(article.getViews())
+                    .heartCnt( article.getHeartCnt())
                     .imageList(pickImage)
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
@@ -320,6 +324,7 @@ public class ArticleService {
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
                     .views(article.getViews())
+                    .heartCnt( article.getHeartCnt())
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -386,7 +391,31 @@ public class ArticleService {
         } else return articleFlag + " " + myId + "번 게시글이 삭제 실패";
 
     }
-}
+
+    //게시글 좋아요
+    @Transactional
+    public String heartArticle(Long articleId, UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+        if(heartRepository.findByMemberAndArticle(member, article) == null){
+            Heart heart = new Heart(member, article);
+            article.addHeart(heart);
+            article.setHeartCnt(article.getHeartList().size());
+            heartRepository.save(heart);
+            return  "총 좋아요 수 : " + article.getHeartCnt();
+        }else  {
+            Heart heart = heartRepository.findByMemberAndArticle(member, article);
+            article.removeHeart(heart);
+            article.setHeartCnt(article.getHeartList().size());
+            heartRepository.delete(heart);
+            return "총 좋아요 수 : " + article.getHeartCnt();
+        }
+    }
+
+    }
+
 
 
 

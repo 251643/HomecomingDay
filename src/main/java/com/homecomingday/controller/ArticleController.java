@@ -72,5 +72,11 @@ public class ArticleController {
         return articleService.deleteArticles(articleFlag,articleId,userDetails);
     }
 
+    //게시글 좋아요
+    @PostMapping("/article/{articleId}/heart")
+    private String heartArticle(@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.heartArticle(articleId,userDetails);
+    }
+
 
 }
