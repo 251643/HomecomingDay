@@ -49,6 +49,9 @@ public class Article extends Timestamped {
     @Column
     private String calendarLocation;
 
+    @JsonIgnore
+    private long heartCnt;
+
     //  @Transient //사진은 보여지기만 하면 되므로 불필요하게 관게를 맺기보단 일시적으로 체류만 시켜주면됨
     @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
@@ -70,4 +73,21 @@ public class Article extends Timestamped {
     public void deleteComment(Comment comment) {
         comments.remove(comment);
     }
+
+    @OneToMany(mappedBy = "article")
+    @JsonIgnore
+    private List<Heart> heartList = new ArrayList<>();
+
+
+    public void addHeart(Heart heart) {
+        this.heartList.add(heart);
+    }
+    public void removeHeart(Heart heart) {
+        this.heartList.remove(heart);
+    }
+
+    public void setHeartCnt(int heartListSize) {
+        this.heartCnt = heartListSize;
+    }
+
 }

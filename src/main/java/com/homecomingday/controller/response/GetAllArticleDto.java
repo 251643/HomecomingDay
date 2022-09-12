@@ -41,6 +41,8 @@ public class GetAllArticleDto {
 
     private Long views;
 
+    private Long heartCnt;
+
     private Long commentCnt;
 
     private List<CommentResponseDto> commentList;

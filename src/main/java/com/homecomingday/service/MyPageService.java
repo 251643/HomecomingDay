@@ -33,7 +33,6 @@ public class MyPageService {
     //유저 정보 조회
     public MyPageResponseDto readMyPage(UserDetailsImpl member) {
 
-//        String userImage = ;
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
 
                 .schoolName(member.getMember().getSchoolname())
@@ -113,6 +112,7 @@ public class MyPageService {
                                 .admission(articles.getMember().getAdmission().substring(2,4)+"학번")
                                 .articleFlag(changearticleFlag(articles.getArticleFlag()))
                                 .views(articles.getViews())
+                                .heartCnt( articles.getHeartCnt())
                                 .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
                                 .build()
                 );
