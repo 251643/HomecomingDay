@@ -32,4 +32,10 @@ public class Image {
     @JsonBackReference
     private Article article;
 
+    @ManyToOne(fetch=FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="member_id",nullable = false)
+    @JsonBackReference
+    private Member member;
+
 }
