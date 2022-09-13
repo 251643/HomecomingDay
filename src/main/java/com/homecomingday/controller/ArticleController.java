@@ -9,6 +9,7 @@ import com.homecomingday.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,17 +33,18 @@ public class ArticleController {
 
     //게시글 메인홈 조회
     @GetMapping("/article/{articleFlag}")
-    public List<GetAllArticleDto> readAllArticle(@PathVariable String articleFlag){
+    public List<GetAllArticleDto> readAllArticle(@PathVariable String articleFlag,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return articleService.readAllArticle(articleFlag);
+        return articleService.readAllArticle(articleFlag, userDetails);
     }
 
     //게시글 작성
     @PostMapping(value = "/article/{articleFlag}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ArticleResponseDto upload(@PathVariable String articleFlag,
-                                 @RequestPart(required = false, value="articleRequestDto") ArticleRequestDto articleRequestDto,
-                                 @RequestPart (required = false,value="files") List<MultipartFile> multipartFile,
-                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+                                     @RequestPart(required = false, value="articleRequestDto") ArticleRequestDto articleRequestDto,
+                                     @RequestPart (required = false,value="files") List<MultipartFile> multipartFile,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return articleService.postArticle(articleFlag, multipartFile, articleRequestDto,userDetails);
     }
 

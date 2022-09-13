@@ -16,4 +16,5 @@ public class TokenDto {
   private Long accessTokenExpiresIn;
   private String username;
   private boolean schoolInfo;
+  private String schoolName;
 }

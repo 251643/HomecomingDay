@@ -49,6 +49,9 @@ public class Article extends Timestamped {
     @Column
     private String calendarLocation;
 
+    @Column
+    private String schoolName;
+
     @JsonIgnore
     private long heartCnt;
 
