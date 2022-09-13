@@ -329,80 +329,79 @@ public class ArticleService {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
 
-//        List<Comment> findComment = commentRepository.findAll();
-//
-//        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
-////        List<ImagePostDto> imageList = new ArrayList<>();
-//
-//        for (Comment comment : findComment) {
-//            if (comment.getArticle().getId().equals(articleId)) {
-//                commentResponseDtoList.add(
-//                        CommentResponseDto.builder()
-//                                .commentId(comment.getId())
-//                                .content(comment.getContent())
-//                                .username(comment.getMember().getUsername())
-//                                .userImage(changeImage(comment.getMember().getUserImage()))
-//                                .admission(comment.getMember().getAdmission().substring(2, 4)+"학번")
-//                                .departmentName(comment.getMember().getDepartmentname())
-//                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-//                                .articleId(articleId)
-//                                .build()
-//                );
-//            }
-//        }
-//        if (!articleFlag.equals("calendar")) { //조건문을 통해 정보공유,선배님도와주세요,자유게시판에만 이미지값이 출력
-//
-//            List<Image> findImage = imageRepository.findAll();
-//            List<ImagePostDto> pickImage = new ArrayList<>();
-//
-//            for (Image image : findImage) {
-//                if (image.getArticle().getId().equals(articleId)) {
-//                    pickImage.add(
-//                            ImagePostDto.builder()
-//                                    .imageId(image.getId())
-//                                    .imgUrl(image.getImgUrl())
-//                                    .build()
-//                    );
-//                }
-//            }
-//
-//            return ArticleResponseDto.builder()
-//                    .articleId(article.getId())
-//                    .articleFlag(articleFlag)
-//                    .title(article.getTitle())
-//                    .content(article.getContent())
-//                    .username(article.getMember().getUsername())
-//                    .userImage(changeImage(article.getMember().getUserImage()))
-//                    .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-//                    .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
-//                    .departmentName(article.getMember().getDepartmentname())
-//                    .views(article.getViews())
-//                    .heartCnt( article.getHeartCnt())
-//                    .imageList(pickImage)
-//                    .commentCnt((long) commentResponseDtoList.size())
-//                    .commentList(commentResponseDtoList)
-//                    .build();
-//        } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
-//            return ArticleResponseDto.builder()
-//                    .articleId(article.getId())
-//                    .articleFlag(articleFlag)
-//                    .title(article.getTitle())
-//                    .content(article.getContent())
-//                    .calendarDate(article.getCalendarDate())
-//                    .calendarTime(article.getCalendarTime())
-//                    .calendarLocation(article.getCalendarLocation())
-//                    .username(article.getMember().getUsername())
-//                    .userImage(changeImage(article.getMember().getUserImage()))
-//                    .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-//                    .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
-//                    .departmentName(article.getMember().getDepartmentname())
-//                    .views(article.getViews())
-//                    .heartCnt( article.getHeartCnt())
-//                    .commentCnt((long) commentResponseDtoList.size())
-//                    .commentList(commentResponseDtoList)
-//                    .build();
-//        }
-        return null;
+        List<Comment> findComment = commentRepository.findAll();
+
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+//        List<ImagePostDto> imageList = new ArrayList<>();
+
+        for (Comment comment : findComment) {
+            if (comment.getArticle().getId().equals(articleId)) {
+                commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentId(comment.getId())
+                                .content(comment.getContent())
+                                .username(comment.getMember().getUsername())
+                                .userImage(changeImage(comment.getMember().getUserImage()))
+                                .admission(comment.getMember().getAdmission().substring(2, 4)+"학번")
+                                .departmentName(comment.getMember().getDepartmentname())
+                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                                .articleId(articleId)
+                                .build()
+                );
+            }
+        }
+        if (!articleFlag.equals("calendar")) { //조건문을 통해 정보공유,선배님도와주세요,자유게시판에만 이미지값이 출력
+
+            List<Image> findImage = imageRepository.findAll();
+            List<ImagePostDto> pickImage = new ArrayList<>();
+
+            for (Image image : findImage) {
+                if (image.getArticle().getId().equals(articleId)) {
+                    pickImage.add(
+                            ImagePostDto.builder()
+                                    .imageId(image.getId())
+                                    .imgUrl(image.getImgUrl())
+                                    .build()
+                    );
+                }
+            }
+
+            return ArticleResponseDto.builder()
+                    .articleId(article.getId())
+                    .articleFlag(articleFlag)
+                    .title(article.getTitle())
+                    .content(article.getContent())
+                    .username(article.getMember().getUsername())
+                    .userImage(changeImage(article.getMember().getUserImage()))
+                    .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                    .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
+                    .departmentName(article.getMember().getDepartmentname())
+                    .views(article.getViews())
+                    .heartCnt( article.getHeartCnt())
+                    .imageList(pickImage)
+                    .commentCnt((long) commentResponseDtoList.size())
+                    .commentList(commentResponseDtoList)
+                    .build();
+        } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
+            return ArticleResponseDto.builder()
+                    .articleId(article.getId())
+                    .articleFlag(articleFlag)
+                    .title(article.getTitle())
+                    .content(article.getContent())
+                    .calendarDate(article.getCalendarDate())
+                    .calendarTime(article.getCalendarTime())
+                    .calendarLocation(article.getCalendarLocation())
+                    .username(article.getMember().getUsername())
+                    .userImage(changeImage(article.getMember().getUserImage()))
+                    .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                    .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
+                    .departmentName(article.getMember().getDepartmentname())
+                    .views(article.getViews())
+                    .heartCnt( article.getHeartCnt())
+                    .commentCnt((long) commentResponseDtoList.size())
+                    .commentList(commentResponseDtoList)
+                    .build();
+        }
 
     }
 
