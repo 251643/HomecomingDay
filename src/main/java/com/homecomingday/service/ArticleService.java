@@ -46,8 +46,8 @@ public class ArticleService {
 
 
     //검색창 페이지 목록조회
-    public List<GetAllArticleDto> searchArticle(){
-        List<Article> articleList = articleRepository.findAll();
+    public List<GetAllArticleDto> searchArticle(UserDetailsImpl userDetails){
+        List<Article> articleList = articleRepository.findBySchoolName(userDetails.getMember().getSchoolname());
 
         List<GetAllArticleDto> getAllArticleDtoList= new ArrayList<>();
 
@@ -385,7 +385,7 @@ public class ArticleService {
                     .build();
         } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
             return ArticleResponseDto.builder()
-                    .articleId(article.getId())
+                    .articleId(article.getId()) 
                     .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
