@@ -465,7 +465,7 @@ public class ArticleService {
 
     //게시글 좋아요
     @Transactional
-    public String heartArticle(Long articleId, UserDetailsImpl userDetails) {
+    public long heartArticle(Long articleId, UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
@@ -475,13 +475,13 @@ public class ArticleService {
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
-            return  "총 좋아요 수 : " + article.getHeartCnt();
+            return  article.getHeartCnt();
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);
             article.removeHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.delete(heart);
-            return "총 좋아요 수 : " + article.getHeartCnt();
+            return article.getHeartCnt();
         }
     }
 
