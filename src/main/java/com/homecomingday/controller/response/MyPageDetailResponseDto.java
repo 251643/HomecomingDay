@@ -30,6 +30,8 @@ public class MyPageDetailResponseDto {
 
     private Long views;
 
+    private Long heartCnt;
+
     private Long commentCnt;
 
 

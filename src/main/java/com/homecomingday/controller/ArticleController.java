@@ -7,20 +7,11 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.ArticleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +21,13 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final ArticleRepository articleRepository;
+
+
+    //검색창 페이지 목록조회
+    @GetMapping("/searchArticle")
+    public List<GetAllArticleDto> searchAllArticle(){
+        return articleService.searchArticle();
+    }
 
 
     //게시글 메인홈 조회
@@ -70,6 +68,12 @@ public class ArticleController {
     @DeleteMapping("/article/{articleFlag}/{articleId}")
     public String deleteArticle(@PathVariable String articleFlag,@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.deleteArticles(articleFlag,articleId,userDetails);
+    }
+
+    //게시글 좋아요
+    @PostMapping("/article/{articleId}/heart")
+    private String heartArticle(@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.heartArticle(articleId,userDetails);
     }
 
 
