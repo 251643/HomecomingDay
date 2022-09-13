@@ -83,6 +83,7 @@ public class TokenProvider {
         .refreshToken(refreshToken)
         .username(member.getUsername())
         .schoolInfo(StringUtils.isNotBlank(member.getSchoolname()))
+        .schoolName(member.getSchoolname())
         .build();
 
   }
