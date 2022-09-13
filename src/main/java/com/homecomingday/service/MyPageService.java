@@ -25,7 +25,6 @@ import java.util.List;
 public class MyPageService {
 
     private final ArticleRepository articleRepository;
-    private final ImageRepository imageRepository;
     private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
 
@@ -48,7 +47,7 @@ public class MyPageService {
     private String changeImage(String userImage) {
 
         if(userImage ==null){
-            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/cfdbc299-b3ed-44f3-91a1-f0dff4433fd7%E1%84%83%E1%85%A1%E1%84%8B%E1%85%AE%E1%86%AB%E1%84%85%E1%85%A9%E1%84%83%E1%85%B3%20%287%29.png";
+            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/e778fd8b-8761-444f-8f0a-8f7cb56c3854%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.png";
 
         }else {
             return userImage;
@@ -93,13 +92,6 @@ public class MyPageService {
         for (Article articles : articleList) {
 
             if (articles.getMember().getUsername().equals(member.getMember().getUsername())) {
-//                List<Comment>commentList=commentRepository.findbyArticle_Id(articles.getId()); //게시물 index 번호에 따라 뽑아옴
-//
-//                for(Comment datas : commentList ){
-//                    if(datas.getArticle().getId().equals(articles.getId())){
-//                        sizeCnt++;
-//                    }
-//                }
 
 
                 myPageDetailResponseDtoList.add(

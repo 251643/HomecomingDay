@@ -61,6 +61,7 @@ public class ArticleService {
                                 .commentId(comment.getId())
                                 .content(comment.getContent())
                                 .username(comment.getMember().getUsername())
+                                .userImage(changeImage(comment.getMember().getUserImage()))
                                 .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(comment.getMember().getDepartmentname())
                                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
@@ -93,6 +94,7 @@ public class ArticleService {
                                 .content(findArticle.getContent())
                                 .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
+                                .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
@@ -113,6 +115,7 @@ public class ArticleService {
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
+                                .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
@@ -272,6 +275,7 @@ public class ArticleService {
                                 .commentId(comment.getId())
                                 .content(comment.getContent())
                                 .username(comment.getMember().getUsername())
+                                .userImage(changeImage(comment.getMember().getUserImage()))
                                 .admission(comment.getMember().getAdmission().substring(2, 4)+"학번")
                                 .departmentName(comment.getMember().getDepartmentname())
                                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
@@ -302,6 +306,7 @@ public class ArticleService {
                     .title(article.getTitle())
                     .content(article.getContent())
                     .username(article.getMember().getUsername())
+                    .userImage(changeImage(article.getMember().getUserImage()))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
@@ -321,6 +326,7 @@ public class ArticleService {
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
                     .username(article.getMember().getUsername())
+                    .userImage(changeImage(article.getMember().getUserImage()))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
@@ -415,6 +421,16 @@ public class ArticleService {
         }
     }
 
+    private String changeImage(String userImage) {
+
+        if(userImage ==null){
+            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/e778fd8b-8761-444f-8f0a-8f7cb56c3854%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.png";
+
+        }else {
+            return userImage;
+        }
+
+    }
     }
 
 

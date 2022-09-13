@@ -31,6 +31,8 @@ public class ArticleResponseDto {
 
     private String username;
 
+    private String userImage;
+
     private String createdAt;
 
     private String admission;
