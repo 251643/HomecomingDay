@@ -37,6 +37,7 @@ public class ArticleController {
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         return articleService.readAllArticle(articleFlag, userDetails);
+//        return articleService.readAllArticle(articleFlag);
     }
 
     //게시글 작성

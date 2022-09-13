@@ -78,9 +78,10 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(findArticle.getArticleFlag())
+                                .articleFlag(changearticleFlag(findArticle.getArticleFlag()))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .commentCnt((long) findArticle.getComments().size())
                                 .build()
                 );
             } else { //만남일정 부분  출력
@@ -96,11 +97,11 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(findArticle.getArticleFlag())
+                                .articleFlag(changearticleFlag(findArticle.getArticleFlag()))
                                 .views(findArticle.getViews())
-                                .heartCnt( findArticle.getHeartCnt())
+                                .heartCnt(findArticle.getHeartCnt())
+                                .commentCnt((long) findArticle.getComments().size())
                                 .build()
-
                 );
             }
         }
@@ -113,6 +114,9 @@ public class ArticleService {
 
         List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolname());
 
+//    public List<GetAllArticleDto> readAllArticle(String articleFlag) {
+//
+//        List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
         for (Article findArticle : articleList) {
@@ -163,7 +167,7 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(articleFlag)
+                                .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
                                 .commentCnt((long) commentResponseDtoList.size())
@@ -184,16 +188,13 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(articleFlag)
+                                .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
-
                 );
-
-
             }
         }
 
@@ -260,7 +261,7 @@ public class ArticleService {
                 }
                 ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                         .articleId(article.getId())
-                        .articleFlag(articleFlag)
+                        .articleFlag(changearticleFlag(articleFlag))
                         .title(article.getTitle())
                         .content(article.getContent())
                         .username(article.getMember().getUsername())
@@ -281,7 +282,7 @@ public class ArticleService {
 
                 ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                         .articleId(article.getId())
-                        .articleFlag(articleFlag)
+                        .articleFlag(changearticleFlag(articleFlag))
                         .title(article.getTitle())
                         .content(article.getContent())
                         .username(article.getMember().getUsername())
@@ -304,7 +305,7 @@ public class ArticleService {
                     .calendarDate(article.getCalendarDate())
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
-                    .articleFlag(articleFlag)
+                    .articleFlag(changearticleFlag(articleFlag))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
@@ -368,7 +369,7 @@ public class ArticleService {
 
             return ArticleResponseDto.builder()
                     .articleId(article.getId())
-                    .articleFlag(articleFlag)
+                    .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
                     .username(article.getMember().getUsername())
@@ -384,8 +385,8 @@ public class ArticleService {
                     .build();
         } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
             return ArticleResponseDto.builder()
-                    .articleId(article.getId())
-                    .articleFlag(articleFlag)
+                    .articleId(article.getId()) 
+                    .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
                     .calendarDate(article.getCalendarDate())
@@ -397,7 +398,7 @@ public class ArticleService {
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
                     .views(article.getViews())
-                    .heartCnt( article.getHeartCnt())
+                    .heartCnt(article.getHeartCnt())
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -495,6 +496,19 @@ public class ArticleService {
             return userImage;
         }
 
+    }
+
+    public String changearticleFlag(String articleFlag) {
+        if (articleFlag.equals("help")) {
+            return "도움요청";
+        } else if(articleFlag.equals("freeTalk")){
+            return "자유토크";
+        }else if(articleFlag.equals("information")){
+            return "정보공유";
+        }else if(articleFlag.equals("calendar")){
+            return "만남일정";
+        }
+        return null;
     }
     }
 
