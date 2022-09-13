@@ -28,8 +28,14 @@ public class Image {
 
     @ManyToOne(fetch=FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="free_id",nullable = false)
+    @JoinColumn(name="article_id",nullable = false)
     @JsonBackReference
     private Article article;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="member_id",nullable = false)
+    @JsonBackReference
+    private Member member;
 
 }

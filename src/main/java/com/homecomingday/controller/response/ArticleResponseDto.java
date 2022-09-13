@@ -31,6 +31,8 @@ public class ArticleResponseDto {
 
     private String username;
 
+    private String userImage;
+
     private String createdAt;
 
     private String admission;
@@ -38,6 +40,8 @@ public class ArticleResponseDto {
     private String departmentName;
 
     private Long views;
+
+    private Long heartCnt;
 
     private List<ImagePostDto> imageList;
 
