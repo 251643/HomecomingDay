@@ -1,16 +1,21 @@
 package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.homecomingday.controller.request.SchoolInfoDto;
+import com.homecomingday.controller.response.MyPageResponseDto;
 import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Builder
@@ -43,6 +48,9 @@ public class Member extends Timestamped {
   @Column
   private String departmentname;
 
+  @Column
+  private String userImage;
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -66,5 +74,10 @@ public class Member extends Timestamped {
 
   public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
     return passwordEncoder.matches(password, this.password);
+  }
+
+
+  public void updateMyPage(MyPageResponseDto myPageResponseDto){
+    this.userImage = myPageResponseDto.getUserImage();
   }
 }
