@@ -14,4 +14,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long> , Articl
     void updateCount(Long id);
 //    List <ArticleResponseDto> findAllByOrderByCreatedAtDesc();
     List <Article> findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(String articleFlag, String schoolname);
+    List <Article> findBySchoolName(String schoolname);
 }

@@ -46,8 +46,8 @@ public class ArticleService {
 
 
     //검색창 페이지 목록조회
-    public List<GetAllArticleDto> searchArticle(){
-        List<Article> articleList = articleRepository.findAll();
+    public List<GetAllArticleDto> searchArticle(UserDetailsImpl userDetails){
+        List<Article> articleList = articleRepository.findBySchoolName(userDetails.getMember().getSchoolname());
 
         List<GetAllArticleDto> getAllArticleDtoList= new ArrayList<>();
 
