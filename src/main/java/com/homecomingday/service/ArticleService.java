@@ -43,6 +43,70 @@ public class ArticleService {
     }
 
 
+
+    //검색창 페이지 목록조회
+    public List<GetAllArticleDto> searchArticle(){
+        List<Article> articleList = articleRepository.findAll();
+
+        List<GetAllArticleDto> getAllArticleDtoList= new ArrayList<>();
+
+        for(Article findArticle : articleList){
+
+            if (!findArticle.getArticleFlag().equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
+                List<Image> findImage = imageRepository.findAll();
+                List<ImagePostDto> pickImage = new ArrayList<>();
+
+                for (Image image : findImage) {
+                    if (image.getArticle().getId().equals(findArticle.getId())) {
+                        pickImage.add(
+                                ImagePostDto.builder()
+                                        .imageId(image.getId())
+                                        .imgUrl(image.getImgUrl())
+                                        .build()
+                        );
+                    }
+                }
+
+                getAllArticleDtoList.add(
+                        GetAllArticleDto.builder()
+                                .articleId(findArticle.getId())
+                                .title(findArticle.getTitle())
+                                .content(findArticle.getContent())
+                                .imageList(pickImage)
+                                .username(findArticle.getMember().getUsername())
+                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(findArticle.getMember().getDepartmentname())
+                                .articleFlag(findArticle.getArticleFlag())
+                                .views(findArticle.getViews())
+                                .heartCnt( findArticle.getHeartCnt())
+                                .build()
+                );
+            } else { //만남일정 부분  출력
+                getAllArticleDtoList.add(
+                        GetAllArticleDto.builder()
+                                .articleId(findArticle.getId())
+                                .title(findArticle.getTitle())
+                                .content(findArticle.getContent())
+                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarTime(findArticle.getCalendarTime())
+                                .calendarLocation(findArticle.getCalendarLocation())
+                                .username(findArticle.getMember().getUsername())
+                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(findArticle.getMember().getDepartmentname())
+                                .articleFlag(findArticle.getArticleFlag())
+                                .views(findArticle.getViews())
+                                .heartCnt( findArticle.getHeartCnt())
+                                .build()
+
+                );
+            }
+        }
+        return getAllArticleDtoList;
+    }
+
+
     //메인페이지 게시물 조회
     public List<GetAllArticleDto> readAllArticle(String articleFlag) {
 
