@@ -488,7 +488,7 @@ public class ArticleService {
     private String changeImage(String userImage) {
 
         if(userImage ==null){
-            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/e778fd8b-8761-444f-8f0a-8f7cb56c3854%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.png";
+            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/5d44c9fd-1bac-47d3-9b68-17506b43491fKakaoTalk_20220913_175821034.png";
 
         }else {
             return userImage;
