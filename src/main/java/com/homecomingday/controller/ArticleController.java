@@ -26,8 +26,8 @@ public class ArticleController {
 
     //검색창 페이지 목록조회
     @GetMapping("/searchArticle")
-    public List<GetAllArticleDto> searchAllArticle(){
-        return articleService.searchArticle();
+    public List<GetAllArticleDto> searchAllArticle(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.searchArticle(userDetails);
     }
 
 
