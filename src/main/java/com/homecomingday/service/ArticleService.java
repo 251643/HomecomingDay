@@ -14,10 +14,8 @@ import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -548,7 +546,7 @@ public class ArticleService {
 
     //게시글 좋아요
     @Transactional
-    public long heartArticle(Long articleId, UserDetailsImpl userDetails) {
+    public boolean heartArticle(Long articleId, UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
@@ -558,13 +556,13 @@ public class ArticleService {
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
-            return  article.getHeartCnt();
+            return  true;
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);
             article.removeHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.delete(heart);
-            return article.getHeartCnt();
+            return false;
         }
     }
 
