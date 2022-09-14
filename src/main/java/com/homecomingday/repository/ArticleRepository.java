@@ -12,14 +12,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> , Articl
     @Modifying
     @Query("update Article p set p.views = p.views + 1 where p.Id = :id")
     void updateCount(Long id);
-//    List <ArticleResponseDto> findAllByOrderByCreatedAtDesc();
-    List <Article> findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(String articleFlag, String schoolname);
+
+    List <Article> findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(String articleFlag, String schoolName);
 
 
+    List <Article> findBySchoolNameOrderByCreatedAtDesc(String schoolName);
 
-  List <Article> findByArticleFlagOrderByCreatedAtDesc(String articleFlag);
-
-    List <Article> findBySchoolNameOrderByCreatedAtDesc(String schoolname);
-
-    List<Article> findByArticleFlagOrderByViewsDesc(String articleFlag);
+    List<Article> findByArticleFlagAndSchoolNameOrderByViewsDesc(String articleFlag, String schoolName);
 }

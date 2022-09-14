@@ -43,10 +43,10 @@ public class Member extends Timestamped {
   private String admission;
 
   @Column
-  private String schoolname;
+  private String schoolName;
 
   @Column
-  private String departmentname;
+  private String departmentName;
 
   @Column
   private String userImage;
@@ -63,8 +63,8 @@ public class Member extends Timestamped {
     return id != null && Objects.equals(id, member.id);
   }
   public void update(SchoolInfoDto schoolInfoDto) {
-    this.schoolname = schoolInfoDto.getSchoolName();
-    this.departmentname = schoolInfoDto.getDepartmentName();
+    this.schoolName = schoolInfoDto.getSchoolName();
+    this.departmentName = schoolInfoDto.getDepartmentName();
     this.admission = schoolInfoDto.getAdmission();
   }
   @Override
