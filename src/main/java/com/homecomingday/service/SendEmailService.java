@@ -3,6 +3,7 @@ package com.homecomingday.service;
 import com.homecomingday.controller.request.EmailRequestDto;
 import com.homecomingday.controller.request.MailDto;
 import com.homecomingday.controller.response.ResponseDto;
+import com.homecomingday.util.MailHandler;
 import com.homecomingday.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +28,7 @@ public class SendEmailService {
         MailDto dto = new MailDto();
         dto.setAddress(emailSendRequestDto.getEmail());
         dto.setTitle("Homecoming Day 인증번호 안내 이메일 입니다.");
-        dto.setMessage("안녕하세요. Homecoming Day입니다. 인증번호는 " + authKey + " 입니다. ");
+        dto.setMessage(authKey);
         // 유효 시간(5분)동안 {email, authKey} 저장
         redisUtil.setDataExpire(authKey, emailSendRequestDto.getEmail(), 60 * 3L);
 
@@ -35,14 +36,24 @@ public class SendEmailService {
     }
 
     public void mailSend(MailDto mailDto){
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mailDto.getAddress());
-        message.setFrom(FROM_ADDRESS);
-        message.setSubject(mailDto.getTitle());
-        message.setText(mailDto.getMessage());
+        try {
+            MailHandler mailHandler = new MailHandler(mailSender);
+            SimpleMailMessage message = new SimpleMailMessage();
+            mailHandler.setTo(mailDto.getAddress());
+            mailHandler.setFrom(FROM_ADDRESS);
+            mailHandler.setSubject(mailDto.getTitle());
+            String htmlContent = "<p>안녕하세요. Homecoming Day입니다.</p> <p>인증번호는 " + mailDto.getMessage() + " 입니다. </p> <img style='width:800px;' src='cid:sample-img'>";
+            mailHandler.setText(htmlContent, true);
+            // 이미지 삽입
+            mailHandler.setInline("sample-img", "static/background.png");
 
-        mailSender.send(message);
+            mailHandler.send();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
+
 
     public ResponseDto<?> checkEmail(EmailRequestDto.AuthRequestDto authRequestDto) {
         String redisEmail = redisUtil.getData(authRequestDto.getAuthKey());
