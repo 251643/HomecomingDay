@@ -14,10 +14,8 @@ import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,9 +76,10 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(findArticle.getArticleFlag())
+                                .articleFlag(changearticleFlag(findArticle.getArticleFlag()))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .commentCnt((long) findArticle.getComments().size())
                                 .build()
                 );
             } else { //만남일정 부분  출력
@@ -96,11 +95,11 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(findArticle.getArticleFlag())
+                                .articleFlag(changearticleFlag(findArticle.getArticleFlag()))
                                 .views(findArticle.getViews())
-                                .heartCnt( findArticle.getHeartCnt())
+                                .heartCnt(findArticle.getHeartCnt())
+                                .commentCnt((long) findArticle.getComments().size())
                                 .build()
-
                 );
             }
         }
@@ -113,6 +112,9 @@ public class ArticleService {
 
         List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolname());
 
+//    public List<GetAllArticleDto> readAllArticle(String articleFlag) {
+//
+//        List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
         for (Article findArticle : articleList) {
@@ -163,7 +165,7 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(articleFlag)
+                                .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
                                 .commentCnt((long) commentResponseDtoList.size())
@@ -184,16 +186,13 @@ public class ArticleService {
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentname())
-                                .articleFlag(articleFlag)
+                                .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
-
                 );
-
-
             }
         }
 
@@ -260,7 +259,7 @@ public class ArticleService {
                 }
                 ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                         .articleId(article.getId())
-                        .articleFlag(articleFlag)
+                        .articleFlag(changearticleFlag(articleFlag))
                         .title(article.getTitle())
                         .content(article.getContent())
                         .username(article.getMember().getUsername())
@@ -281,7 +280,7 @@ public class ArticleService {
 
                 ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                         .articleId(article.getId())
-                        .articleFlag(articleFlag)
+                        .articleFlag(changearticleFlag(articleFlag))
                         .title(article.getTitle())
                         .content(article.getContent())
                         .username(article.getMember().getUsername())
@@ -304,7 +303,7 @@ public class ArticleService {
                     .calendarDate(article.getCalendarDate())
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
-                    .articleFlag(articleFlag)
+                    .articleFlag(changearticleFlag(articleFlag))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
@@ -368,7 +367,7 @@ public class ArticleService {
 
             return ArticleResponseDto.builder()
                     .articleId(article.getId())
-                    .articleFlag(articleFlag)
+                    .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
                     .username(article.getMember().getUsername())
@@ -384,8 +383,8 @@ public class ArticleService {
                     .build();
         } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
             return ArticleResponseDto.builder()
-                    .articleId(article.getId())
-                    .articleFlag(articleFlag)
+                    .articleId(article.getId()) 
+                    .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
                     .calendarDate(article.getCalendarDate())
@@ -397,7 +396,7 @@ public class ArticleService {
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentname())
                     .views(article.getViews())
-                    .heartCnt( article.getHeartCnt())
+                    .heartCnt(article.getHeartCnt())
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -466,7 +465,7 @@ public class ArticleService {
 
     //게시글 좋아요
     @Transactional
-    public long heartArticle(Long articleId, UserDetailsImpl userDetails) {
+    public String heartArticle(Long articleId, UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
@@ -476,25 +475,38 @@ public class ArticleService {
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
-            return  article.getHeartCnt();
+            return  heart.getMember().getEmail();
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);
             article.removeHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.delete(heart);
-            return article.getHeartCnt();
+            return heart.getMember().getEmail();
         }
     }
 
     private String changeImage(String userImage) {
 
         if(userImage ==null){
-            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/e778fd8b-8761-444f-8f0a-8f7cb56c3854%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%91%E1%85%B5%E1%86%AF.png";
+            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/5d44c9fd-1bac-47d3-9b68-17506b43491fKakaoTalk_20220913_175821034.png";
 
         }else {
             return userImage;
         }
 
+    }
+
+    public String changearticleFlag(String articleFlag) {
+        if (articleFlag.equals("help")) {
+            return "도움요청";
+        } else if(articleFlag.equals("freeTalk")){
+            return "자유토크";
+        }else if(articleFlag.equals("information")){
+            return "정보공유";
+        }else if(articleFlag.equals("calendar")){
+            return "만남일정";
+        }
+        return null;
     }
     }
 
