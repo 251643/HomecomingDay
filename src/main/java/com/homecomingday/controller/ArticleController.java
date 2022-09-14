@@ -31,13 +31,22 @@ public class ArticleController {
     }
 
 
+    //게시글 메인홈 인기순 조회
+    @GetMapping("/article/{articleFlag}/popular")
+    public List<GetAllArticleDto> readPopularArticle(@PathVariable String articleFlag,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+//        return articleService.readAllArticle(articleFlag, userDetails);
+        return articleService.readPopularArticle(articleFlag);
+    }
+
     //게시글 메인홈 조회
     @GetMapping("/article/{articleFlag}")
     public List<GetAllArticleDto> readAllArticle(@PathVariable String articleFlag,
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return articleService.readAllArticle(articleFlag, userDetails);
-//        return articleService.readAllArticle(articleFlag);
+//        return articleService.readAllArticle(articleFlag, userDetails);
+        return articleService.readAllArticle(articleFlag);
     }
 
     //게시글 작성

@@ -18,8 +18,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long> , Articl
 
 
 
-//  List <Article> findByArticleFlagOrderByCreatedAtDesc(String articleFlag);
+  List <Article> findByArticleFlagOrderByCreatedAtDesc(String articleFlag);
 
-    List <Article> findBySchoolName(String schoolname);
+    List <Article> findBySchoolNameOrderByCreatedAtDesc(String schoolname);
 
+    List<Article> findByArticleFlagOrderByViewsDesc(String articleFlag);
 }
