@@ -34,11 +34,11 @@ public class MyPageService {
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
 
-                .schoolName(member.getMember().getSchoolname())
+                .schoolName(member.getMember().getSchoolName())
                 .email(member.getUsername())
                 .username(member.getMember().getUsername())
                 .userImage(changeImage(member.getMember().getUserImage()))
-                .departmentName(member.getMember().getDepartmentname())
+                .departmentName(member.getMember().getDepartmentName())
                 .admission(member.getMember().getAdmission().substring(2,4)+"학번")
                 .build();
         return myPageResponseDto;
@@ -70,11 +70,11 @@ public class MyPageService {
         String s3Dto = s3Uploader.upload1(multipartFile);
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
-                .schoolName(member.getMember().getSchoolname())
+                .schoolName(member.getMember().getSchoolName())
                 .email(member.getUsername())
                 .username(member.getMember().getUsername())
                 .userImage(s3Dto)
-                .departmentName(member.getMember().getDepartmentname())
+                .departmentName(member.getMember().getDepartmentName())
                 .admission(member.getMember().getAdmission().substring(2,4)+"학번")
                 .build();
         signupMember.updateMyPage(myPageResponseDto);
@@ -102,7 +102,7 @@ public class MyPageService {
                                 .articleId(articles.getId())
                                 .title(articles.getTitle())
                                 .username(articles.getMember().getUsername())
-                                .departmentName(articles.getMember().getDepartmentname())
+                                .departmentName(articles.getMember().getDepartmentName())
                                 .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
                                 .admission(articles.getMember().getAdmission().substring(2,4)+"학번")
                                 .articleFlag(changearticleFlag(articles.getArticleFlag()))

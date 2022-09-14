@@ -48,7 +48,7 @@ public class CommentService {
                 .content(comment.getContent())
                 .username(comment.getMember().getUsername())
                 .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
-                .departmentName(comment.getMember().getDepartmentname())
+                .departmentName(comment.getMember().getDepartmentName())
                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
                 .articleId(articleId)
                 .build();
@@ -70,7 +70,7 @@ public class CommentService {
                     .content(commentRequestDto.getContent())
                     .username(userDetails.getMember().getUsername())
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
-                    .departmentName(userDetails.getMember().getDepartmentname())
+                    .departmentName(userDetails.getMember().getDepartmentName())
                     .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
                     .build();
             //중간에 학번을 변경했을때를 고려해서 comment.getArticle().getMember().getAdmission()에서 userDetails.getMember().getAdmission()로 변경

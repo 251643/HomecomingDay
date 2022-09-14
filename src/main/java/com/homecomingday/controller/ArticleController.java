@@ -9,7 +9,6 @@ import com.homecomingday.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +36,7 @@ public class ArticleController {
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
 
 //        return articleService.readAllArticle(articleFlag, userDetails);
-        return articleService.readPopularArticle(articleFlag);
+        return articleService.readPopularArticle(articleFlag,userDetails);
     }
 
     //게시글 메인홈 조회
@@ -84,7 +83,7 @@ public class ArticleController {
 
     //게시글 좋아요
     @PostMapping("/article/{articleFlag}/{articleId}/heart")
-    private Long heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    private boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
     }
 
