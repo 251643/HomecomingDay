@@ -43,9 +43,10 @@ public class ArticleService {
     }
 
 
+
     //검색창 페이지 목록조회
     public List<GetAllArticleDto> searchArticle(UserDetailsImpl userDetails){
-        List<Article> articleList = articleRepository.findBySchoolName(userDetails.getMember().getSchoolname());
+        List<Article> articleList = articleRepository.findBySchoolNameOrderByCreatedAtDesc(userDetails.getMember().getSchoolname());
 
         List<GetAllArticleDto> getAllArticleDtoList= new ArrayList<>();
 
@@ -106,15 +107,106 @@ public class ArticleService {
         return getAllArticleDtoList;
     }
 
+    //메인페이지 인기순 조회
+    public List<GetAllArticleDto> readPopularArticle(String articleFlag){
+
+        List<Article> articleList = articleRepository.findByArticleFlagOrderByViewsDesc(articleFlag);
+        List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
+
+        for (Article findArticle : articleList) {
+            List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
+            List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
+
+            for (Comment comment : commentList) {
+
+                commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentId(comment.getId())
+                                .content(comment.getContent())
+                                .username(comment.getMember().getUsername())
+                                .userImage(changeImage(comment.getMember().getUserImage()))
+                                .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(comment.getMember().getDepartmentname())
+                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                                .build()
+                );
+            }
+
+//            List<Comment>findComment =commentRepository.findAll();
+//        List<ImagePostDto> imageList = new ArrayList<>();
+
+            if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
+                List<Image> findImage = imageRepository.findAll();
+                List<ImagePostDto> pickImage = new ArrayList<>();
+
+                for (Image image : findImage) {
+                    if (image.getArticle().getId().equals(findArticle.getId())) {
+                        pickImage.add(
+                                ImagePostDto.builder()
+                                        .imageId(image.getId())
+                                        .imgUrl(image.getImgUrl())
+                                        .build()
+                        );
+                    }
+                }
+
+                getAllArticleDtoList.add(
+                        GetAllArticleDto.builder()
+                                .articleId(findArticle.getId())
+                                .title(findArticle.getTitle())
+                                .content(findArticle.getContent())
+                                .imageList(pickImage)
+                                .username(findArticle.getMember().getUsername())
+                                .userImage(changeImage(findArticle.getMember().getUserImage()))
+                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(findArticle.getMember().getDepartmentname())
+                                .articleFlag(changearticleFlag(articleFlag))
+                                .views(findArticle.getViews())
+                                .heartCnt( findArticle.getHeartCnt())
+                                .commentCnt((long) commentResponseDtoList.size())
+                                .commentList(commentResponseDtoList)
+                                .build()
+                );
+            } else { //만남일정 부분  출력
+                getAllArticleDtoList.add(
+                        GetAllArticleDto.builder()
+                                .articleId(findArticle.getId())
+                                .title(findArticle.getTitle())
+                                .content(findArticle.getContent())
+                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarTime(findArticle.getCalendarTime())
+                                .calendarLocation(findArticle.getCalendarLocation())
+                                .username(findArticle.getMember().getUsername())
+                                .userImage(changeImage(findArticle.getMember().getUserImage()))
+                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(findArticle.getMember().getDepartmentname())
+                                .articleFlag(changearticleFlag(articleFlag))
+                                .views(findArticle.getViews())
+                                .heartCnt( findArticle.getHeartCnt())
+                                .commentCnt((long) commentResponseDtoList.size())
+                                .commentList(commentResponseDtoList)
+                                .build()
+                );
+            }
+        }
+
+
+        return getAllArticleDtoList;
+
+    }
+
+
 
     //메인페이지 게시물 조회
-    public List<GetAllArticleDto> readAllArticle(String articleFlag, UserDetailsImpl userDetails) {
-
-        List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolname());
-
-//    public List<GetAllArticleDto> readAllArticle(String articleFlag) {
+//    public List<GetAllArticleDto> readAllArticle(String articleFlag, UserDetailsImpl userDetails) {
 //
-//        List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
+//        List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolname());
+
+    public List<GetAllArticleDto> readAllArticle(String articleFlag) {
+
+        List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
         for (Article findArticle : articleList) {
@@ -485,6 +577,8 @@ public class ArticleService {
         }
     }
 
+
+    //이미지 수정시 게시글 입력값 다 수정
     private String changeImage(String userImage) {
 
         if(userImage ==null){

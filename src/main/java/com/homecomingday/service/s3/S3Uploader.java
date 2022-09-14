@@ -46,8 +46,10 @@ public class S3Uploader {
     public S3Dto uploadToS3(File uploadFile) throws IOException {
 
         String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장될 파일 이름
-        //이미지 리사이징
+
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
+
+        //이미지 리사이징
 //        String resizeFileName=resizeImageFile(uploadImageUrl,fileName);
 
         removeNewFile(uploadFile);
@@ -131,6 +133,16 @@ public class S3Uploader {
             return resizeImgName;
         } else {
             return resizedName;
+        }
+    }
+
+    // delete file
+    public void fileDelete(String fileName) {
+        log.info("file name : "+ fileName);
+        try {
+            amazonS3.deleteObject(this.bucket, (fileName).replace(File.separatorChar, '/'));
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
         }
     }
 
