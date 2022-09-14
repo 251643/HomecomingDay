@@ -36,7 +36,7 @@ public class ArticleController {
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
 
 //        return articleService.readAllArticle(articleFlag, userDetails);
-        return articleService.readPopularArticle(articleFlag);
+        return articleService.readPopularArticle(articleFlag,userDetails);
     }
 
     //게시글 메인홈 조회

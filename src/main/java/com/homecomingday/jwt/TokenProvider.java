@@ -82,8 +82,8 @@ public class TokenProvider {
         .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
         .refreshToken(refreshToken)
         .username(member.getUsername())
-        .schoolInfo(StringUtils.isNotBlank(member.getSchoolname()))
-        .schoolName(member.getSchoolname())
+        .schoolInfo(StringUtils.isNotBlank(member.getSchoolName()))
+        .schoolName(member.getSchoolName())
         .build();
 
   }

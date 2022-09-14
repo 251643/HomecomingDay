@@ -55,7 +55,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                             .articleId(articles.getId())
                             .title(articles.getTitle())
                             .username(articles.getMember().getUsername())
-                            .departmentName(articles.getMember().getDepartmentname())
+                            .departmentName(articles.getMember().getDepartmentName())
                             .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
                             .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
                             .articleFlag(changearticleFlag(articles.getArticleFlag()))

@@ -44,7 +44,7 @@ public class CommitService {
                 .username(commit.getMember().getUsername())
                 .userImage(commit.getMember().getUserImage())
                 .admission(commit.getMember().getAdmission())
-                .departmentName(commit.getMember().getDepartmentname())
+                .departmentName(commit.getMember().getDepartmentName())
                 .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
                 .build();
 
