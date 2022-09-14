@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 
@@ -19,6 +20,7 @@ public class GetAllArticleDto {
 
     private String title;
 
+    @Size(max=400)
     private String content;
 
     private String calendarDate;
