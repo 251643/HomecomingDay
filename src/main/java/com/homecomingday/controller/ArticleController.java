@@ -46,7 +46,7 @@ public class ArticleController {
                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
 
 //        return articleService.readAllArticle(articleFlag, userDetails);
-        return articleService.readAllArticle(articleFlag);
+        return articleService.readAllArticle(articleFlag, userDetails);
     }
 
     //게시글 작성
@@ -84,7 +84,7 @@ public class ArticleController {
 
     //게시글 좋아요
     @PostMapping("/article/{articleFlag}/{articleId}/heart")
-    private String heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    private Long heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
     }
 
