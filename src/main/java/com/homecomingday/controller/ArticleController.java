@@ -75,7 +75,7 @@ public class ArticleController {
 
     //게시글 좋아요
     @PostMapping("/article/{articleFlag}/{articleId}/heart")
-    private long heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    private String heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
     }
 
