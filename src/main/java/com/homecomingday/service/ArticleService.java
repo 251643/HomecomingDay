@@ -14,8 +14,10 @@ import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,7 +43,6 @@ public class ArticleService {
         Optional<Article> optionalPost = articleRepository.findById(id);
         return optionalPost.orElse(null);
     }
-
 
 
     //검색창 페이지 목록조회
@@ -164,8 +165,6 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
-                                .commentCnt((long) commentResponseDtoList.size())
-                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             } else { //만남일정 부분  출력
@@ -188,25 +187,19 @@ public class ArticleService {
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
+
                 );
             }
         }
-
-
         return getAllArticleDtoList;
-
     }
 
 
-
     //메인페이지 게시물 조회
-//    public List<GetAllArticleDto> readAllArticle(String articleFlag, UserDetailsImpl userDetails) {
-//
-//        List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolname());
+    public List<GetAllArticleDto> readAllArticle(String articleFlag, UserDetailsImpl userDetails) {
 
-    public List<GetAllArticleDto> readAllArticle(String articleFlag) {
+        List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolname());
 
-        List<Article> articleList = articleRepository.findByArticleFlagOrderByCreatedAtDesc(articleFlag);
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
         for (Article findArticle : articleList) {
@@ -300,8 +293,6 @@ public class ArticleService {
                                           ArticleRequestDto articleRequestDto,
                                           UserDetailsImpl userDetails) throws IOException {
 
-
-        System.out.println(userDetails);
         Article article = Article.builder()
                 .title(articleRequestDto.getTitle())
                 .content(articleRequestDto.getContent())
@@ -475,7 +466,7 @@ public class ArticleService {
                     .build();
         } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
             return ArticleResponseDto.builder()
-                    .articleId(article.getId()) 
+                    .articleId(article.getId())
                     .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
@@ -557,7 +548,7 @@ public class ArticleService {
 
     //게시글 좋아요
     @Transactional
-    public String heartArticle(Long articleId, UserDetailsImpl userDetails) {
+    public long heartArticle(Long articleId, UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
@@ -567,18 +558,16 @@ public class ArticleService {
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
-            return  heart.getMember().getEmail();
+            return  article.getHeartCnt();
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);
             article.removeHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.delete(heart);
-            return heart.getMember().getEmail();
+            return article.getHeartCnt();
         }
     }
 
-
-    //이미지 수정시 게시글 입력값 다 수정
     private String changeImage(String userImage) {
 
         if(userImage ==null){
