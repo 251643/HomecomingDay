@@ -419,24 +419,14 @@ public class ArticleService {
         articleRepository.save(article);
 
 
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+multipartFile.size());
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
-            int checkNum = 1; // 이미지 if(uploadedFile.isEmpty()) 비교를 위해 선언
-            // 조건문을 통과하면 안에 값이 비어있다는것, 리스트자체가 아닌 내부 값 자체를 비교해야함
+
             List<ImagePostDto> imgbox = new ArrayList<>();
 
-//            이미지 null값 비교값
-            for (MultipartFile uploadedFile : multipartFile) {
-                if (uploadedFile.isEmpty()) //multipartFile을 비교할때는 isEmpty()를 통해서 비교해야함
-                    System.out.println(uploadedFile.getSize()+">>>>>>>>>>>>>>>>>>>>>>>>uploadedFileSize");
-                    checkNum = 0;
-            }
-            System.out.println(checkNum+">>>>>>>>>>>>>>>>>>>>>>>>checkNum");
-            System.out.println("정우창>>>>>>>>>2222222222222");
 
 
-            if (checkNum==1) { //이미지 있을때 출력 로직
+            if (multipartFile!=null) { //이미지 있을때 출력 로직
                 //이미지 업로드
                 for (MultipartFile uploadedFile : multipartFile) {
                     S3Dto s3Dto = s3Uploader.upload(uploadedFile);
