@@ -12,6 +12,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -61,7 +62,7 @@ public class MemberController {
   }
 
   @PostMapping("/signup/sendEmail")
-  public @ResponseBody void sendEmail(@RequestBody EmailRequestDto.EmailSendRequestDto emailSendRequestDto){
+  public @ResponseBody void sendEmail(@RequestBody EmailRequestDto.EmailSendRequestDto emailSendRequestDto) throws MessagingException {
     MailDto dto = sendEmailService.createMail(emailSendRequestDto);
     sendEmailService.mailSend(dto);
   }
