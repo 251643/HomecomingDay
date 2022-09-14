@@ -83,8 +83,13 @@ public class ArticleController {
 
     //게시글 좋아요
     @PostMapping("/article/{articleFlag}/{articleId}/heart")
-    private boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
+    }
+    //게시글 좋아요 확인
+    @GetMapping("/article/{articleFlag}/{articleId}/heart")
+    public boolean heartCheck(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.heartCheck(articleId,userDetails);
     }
 
 

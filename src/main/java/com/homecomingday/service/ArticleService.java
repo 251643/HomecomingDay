@@ -5,10 +5,7 @@ import com.homecomingday.controller.S3Dto;
 import com.homecomingday.controller.request.ArticleRequestDto;
 import com.homecomingday.controller.response.*;
 import com.homecomingday.domain.*;
-import com.homecomingday.repository.ArticleRepository;
-import com.homecomingday.repository.CommentRepository;
-import com.homecomingday.repository.HeartRepository;
-import com.homecomingday.repository.ImageRepository;
+import com.homecomingday.repository.*;
 import com.homecomingday.service.s3.S3Uploader;
 import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +28,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final S3Uploader s3Uploader;
     private final CommentRepository commentRepository;
+    private final CommitRepository commitRepository;
     private final ImageRepository imageRepository;
     private final HeartRepository heartRepository;
 
@@ -202,85 +200,125 @@ public class ArticleService {
 
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
+//        System.out.println("1");
+//        List<Commit> commitList = commitRepository.findAll();
+//        List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
+//        for (Commit commit : commitList) {
+//            System.out.println("6");
+//            commitResponseDtoList.add(
+//                    CommitResponseDto.builder()
+//                            .childCommentId(commit.getId())
+//                            .content(commit.getContent())
+//                            .username(commit.getMember().getUsername())
+//                            .userImage(changeImage(commit.getMember().getUserImage()))
+//                            .admission(commit.getMember().getAdmission())
+//                            .departmentName(commit.getMember().getDepartmentName())
+//                            .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
+//                            .build()
+//            );
+//
+//        }
+
         for (Article findArticle : articleList) {
             List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
             List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
+//            System.out.println("2");
 
             for (Comment comment : commentList) {
+//                System.out.println("3");
+//                List<Commit> commitList = comment.getCommits();
+//                List<Commit> commitList = commitRepository.findById(comment.getId());
+//                List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
+//                for (Commit commit : commitList) {
+//                    System.out.println("6");
+//                    commitResponseDtoList.add(
+//                            CommitResponseDto.builder()
+//                                    .childCommentId(commit.getId())
+//                                    .content(commit.getContent())
+//                                    .username(commit.getMember().getUsername())
+//                                    .userImage(changeImage(commit.getMember().getUserImage()))
+//                                    .admission(commit.getMember().getAdmission())
+//                                    .departmentName(commit.getMember().getDepartmentName())
+//                                    .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
+//                                    .build()
+//                    );
+//
+//                }
+                System.out.println("4");
+                    commentResponseDtoList.add(
+                            CommentResponseDto.builder()
+                                    .commentId(comment.getId())
+                                    .content(comment.getContent())
+                                    .username(comment.getMember().getUsername())
+                                    .userImage(changeImage(comment.getMember().getUserImage()))
+                                    .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
+                                    .departmentName(comment.getMember().getDepartmentName())
+                                    .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+//                                    .childCommentList(commitResponseDtoList)
+                                    .build()
 
-                commentResponseDtoList.add(
-                        CommentResponseDto.builder()
-                                .commentId(comment.getId())
-                                .content(comment.getContent())
-                                .username(comment.getMember().getUsername())
-                                .userImage(changeImage(comment.getMember().getUserImage()))
-                                .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
-                                .departmentName(comment.getMember().getDepartmentName())
-                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-                                .build()
-                );
-            }
+                    );
+                }
 
 //            List<Comment>findComment =commentRepository.findAll();
 //        List<ImagePostDto> imageList = new ArrayList<>();
 
-            if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
-                List<Image> findImage = imageRepository.findAll();
-                List<ImagePostDto> pickImage = new ArrayList<>();
+                if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
+                    List<Image> findImage = imageRepository.findAll();
+                    List<ImagePostDto> pickImage = new ArrayList<>();
 
-                for (Image image : findImage) {
-                    if (image.getArticle().getId().equals(findArticle.getId())) {
-                        pickImage.add(
-                                ImagePostDto.builder()
-                                        .imageId(image.getId())
-                                        .imgUrl(image.getImgUrl())
-                                        .build()
-                        );
+                    for (Image image : findImage) {
+                        if (image.getArticle().getId().equals(findArticle.getId())) {
+                            pickImage.add(
+                                    ImagePostDto.builder()
+                                            .imageId(image.getId())
+                                            .imgUrl(image.getImgUrl())
+                                            .build()
+                            );
+                        }
                     }
+
+                    getAllArticleDtoList.add(
+                            GetAllArticleDto.builder()
+                                    .articleId(findArticle.getId())
+                                    .title(findArticle.getTitle())
+                                    .content(findArticle.getContent())
+                                    .imageList(pickImage)
+                                    .username(findArticle.getMember().getUsername())
+                                    .userImage(changeImage(findArticle.getMember().getUserImage()))
+                                    .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                    .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                    .departmentName(findArticle.getMember().getDepartmentName())
+                                    .articleFlag(changearticleFlag(articleFlag))
+                                    .views(findArticle.getViews())
+                                    .heartCnt(findArticle.getHeartCnt())
+                                    .commentCnt((long) commentResponseDtoList.size())
+                                    .commentList(commentResponseDtoList)
+                                    .build()
+                    );
+                } else { //만남일정 부분  출력
+                    getAllArticleDtoList.add(
+                            GetAllArticleDto.builder()
+                                    .articleId(findArticle.getId())
+                                    .title(findArticle.getTitle())
+                                    .content(findArticle.getContent())
+                                    .calendarDate(findArticle.getCalendarDate())
+                                    .calendarTime(findArticle.getCalendarTime())
+                                    .calendarLocation(findArticle.getCalendarLocation())
+                                    .username(findArticle.getMember().getUsername())
+                                    .userImage(changeImage(findArticle.getMember().getUserImage()))
+                                    .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
+                                    .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
+                                    .departmentName(findArticle.getMember().getDepartmentName())
+                                    .articleFlag(changearticleFlag(articleFlag))
+                                    .views(findArticle.getViews())
+                                    .heartCnt(findArticle.getHeartCnt())
+                                    .commentCnt((long) commentResponseDtoList.size())
+                                    .commentList(commentResponseDtoList)
+                                    .build()
+                    );
                 }
-
-                getAllArticleDtoList.add(
-                        GetAllArticleDto.builder()
-                                .articleId(findArticle.getId())
-                                .title(findArticle.getTitle())
-                                .content(findArticle.getContent())
-                                .imageList(pickImage)
-                                .username(findArticle.getMember().getUsername())
-                                .userImage(changeImage(findArticle.getMember().getUserImage()))
-                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
-                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
-                                .departmentName(findArticle.getMember().getDepartmentName())
-                                .articleFlag(changearticleFlag(articleFlag))
-                                .views(findArticle.getViews())
-                                .heartCnt( findArticle.getHeartCnt())
-                                .commentCnt((long) commentResponseDtoList.size())
-                                .commentList(commentResponseDtoList)
-                                .build()
-                );
-            } else { //만남일정 부분  출력
-                getAllArticleDtoList.add(
-                        GetAllArticleDto.builder()
-                                .articleId(findArticle.getId())
-                                .title(findArticle.getTitle())
-                                .content(findArticle.getContent())
-                                .calendarDate(findArticle.getCalendarDate())
-                                .calendarTime(findArticle.getCalendarTime())
-                                .calendarLocation(findArticle.getCalendarLocation())
-                                .username(findArticle.getMember().getUsername())
-                                .userImage(changeImage(findArticle.getMember().getUserImage()))
-                                .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
-                                .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
-                                .departmentName(findArticle.getMember().getDepartmentName())
-                                .articleFlag(changearticleFlag(articleFlag))
-                                .views(findArticle.getViews())
-                                .heartCnt( findArticle.getHeartCnt())
-                                .commentCnt((long) commentResponseDtoList.size())
-                                .commentList(commentResponseDtoList)
-                                .build()
-                );
             }
-        }
-
 
         return getAllArticleDtoList;
     }
@@ -568,6 +606,20 @@ public class ArticleService {
         }
     }
 
+    ///게시글 좋아요 확인
+    public boolean heartCheck(Long articleId, UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+        if(heartRepository.findByMemberAndArticle(member, article) == null){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
     private String changeImage(String userImage) {
 
         if(userImage ==null){
@@ -591,7 +643,8 @@ public class ArticleService {
         }
         return null;
     }
-    }
+
+}
 
 
 
