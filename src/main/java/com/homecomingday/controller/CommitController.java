@@ -22,7 +22,7 @@ public class CommitController {
 
     //대댓글 수정 patch로 내용만 수정
     @PatchMapping("/article/{articleFlag}/{articleId}/comment/{commentId}/{commitId}")
-    public String updateCommit(@PathVariable Long commitId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public CommitResponseDto updateCommit(@PathVariable Long commitId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return commitService.updateCommit(commitId, commentRequestDto,userDetails);
     }
 
