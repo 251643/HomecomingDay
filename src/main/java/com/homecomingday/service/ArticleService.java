@@ -73,7 +73,7 @@ public class ArticleService {
                                 .content(findArticle.getContent())
                                 .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
-                                .userImage(findArticle.getMember().getUserImage())
+                                .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentName())
@@ -93,7 +93,7 @@ public class ArticleService {
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
-                                .userImage(findArticle.getMember().getUserImage())
+                                .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(findArticle.getMember().getDepartmentName())
@@ -165,6 +165,8 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .commentCnt((long) commentResponseDtoList.size())
+                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             } else { //만남일정 부분  출력
@@ -187,10 +189,11 @@ public class ArticleService {
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
-
                 );
             }
         }
+
+
         return getAllArticleDtoList;
     }
 
