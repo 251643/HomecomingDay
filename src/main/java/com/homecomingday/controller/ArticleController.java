@@ -30,10 +30,9 @@ public class ArticleController {
 
     //검색창 페이지 인기순 조회
     @GetMapping("/searchArticle/popular")
-    public List<GetAllArticleDto> searchPopularArticle(UserDetailsImpl userDetails){
+    public List<GetAllArticleDto> searchPopularArticle(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.searchPopularArticle(userDetails);
     }
-
 
     //게시글 메인홈 인기순 조회
     @GetMapping("/article/{articleFlag}/popular")

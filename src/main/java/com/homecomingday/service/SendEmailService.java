@@ -3,22 +3,15 @@ package com.homecomingday.service;
 import com.homecomingday.controller.request.EmailRequestDto;
 import com.homecomingday.controller.request.MailDto;
 import com.homecomingday.controller.response.ResponseDto;
-import com.homecomingday.util.ClassPathResourceReader;
 import com.homecomingday.util.RedisUtil;
 import com.homecomingday.util.MailHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

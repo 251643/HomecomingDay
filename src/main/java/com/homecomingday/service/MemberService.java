@@ -77,7 +77,6 @@ public class MemberService {
     TokenDto tokenDto = tokenProvider.generateTokenDto(member);
     tokenToHeaders(tokenDto, response);
 
-
     return ResponseDto.success(tokenDto);
 
   }
@@ -133,12 +132,13 @@ public class MemberService {
     response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     response.addHeader("Username", tokenDto.getUsername());
     response.addHeader("SchoolInfo", String.valueOf(tokenDto.isSchoolInfo()));
+    response.addHeader("SchoolName", String.valueOf(tokenDto.getSchoolName()));
   }
 
   @Transactional
-  public ResponseDto<?> schoolInfoMember(SchoolInfoDto requestDto, UserDetailsImpl userDetails) {
+  public ResponseDto<?> schoolInfoMember(SchoolInfoDto requestDto, UserDetailsImpl userDetails, HttpServletResponse response) {
     Member signupMember = memberRepository.findByEmail(userDetails.getUsername()).orElse(null);
-
+    schoolNameToHeaders(requestDto, response);
     signupMember.update(requestDto);
     return ResponseDto.success(
             MemberResponseDto.builder()
@@ -152,6 +152,9 @@ public class MemberService {
                     .modifiedAt(signupMember.getModifiedAt())
                     .build()
     );
+  }
+  public void schoolNameToHeaders(SchoolInfoDto requestDto, HttpServletResponse response) {
+    response.addHeader("SchoolName", String.valueOf(requestDto.getSchoolName()));
   }
 
   public ResponseDto<?> checkEmail(EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {

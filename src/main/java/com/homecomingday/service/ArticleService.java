@@ -41,7 +41,7 @@ public class ArticleService {
     }
 
 
-    //검색창 페이지 인기 목록조회
+    //검색창 페이지 인기 목록조회 수정해야댐
     public List<GetAllArticleDto> searchPopularArticle(UserDetailsImpl userDetails){
 
         List<Article> articleList = articleRepository.findBySchoolNameOrderByViewsDesc(userDetails.getMember().getSchoolName());
