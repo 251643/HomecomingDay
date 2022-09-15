@@ -25,11 +25,21 @@ public class Comment extends Timestamped {
   private Long Id;
 
   @Column(nullable = false)
+  @Lob
   private String content;
 
 
   @Column(nullable = false)
   private String articleFlag;
+
+////대댓글
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "parent_id")
+//  private Comment parent;
+//
+//  @Builder.Default
+//  @OneToMany(mappedBy = "parent", orphanRemoval = true)
+//  private List<Comment> children = new ArrayList<>();
 
 
   @JoinColumn(name = "member_id",nullable = false)

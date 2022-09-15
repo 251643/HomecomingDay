@@ -20,13 +20,18 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final ArticleRepository articleRepository;
 
 
     //검색창 페이지 목록조회
     @GetMapping("/searchArticle")
     public List<GetAllArticleDto> searchAllArticle(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.searchArticle(userDetails);
+    }
+
+    //검색창 페이지 인기순 조회
+    @GetMapping("/searchArticle/popular")
+    public List<GetAllArticleDto> searchPopularArticle(UserDetailsImpl userDetails){
+        return articleService.searchPopularArticle(userDetails);
     }
 
 
@@ -83,8 +88,13 @@ public class ArticleController {
 
     //게시글 좋아요
     @PostMapping("/article/{articleFlag}/{articleId}/heart")
-    private boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
+    }
+    //게시글 좋아요 확인
+    @GetMapping("/article/{articleFlag}/{articleId}/heart")
+    public boolean heartCheck(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.heartCheck(articleId,userDetails);
     }
 
 
