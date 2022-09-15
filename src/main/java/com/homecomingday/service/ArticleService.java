@@ -659,19 +659,20 @@ public class ArticleService {
         Member member = userDetails.getMember();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+        boolean a = false;
 
         if(heartRepository.findByMemberAndArticle(member, article) == null){
             Heart heart = new Heart(member, article);
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
-            return  true;
+            return a =  true;
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);
             article.removeHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.delete(heart);
-            return false;
+            return a = false;
         }
     }
 
