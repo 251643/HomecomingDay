@@ -2,6 +2,7 @@ package com.homecomingday.repository;
 
 import com.homecomingday.controller.response.MyPageDetailResponseDto;
 import com.homecomingday.domain.Article;
+import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.util.Time;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,32 +25,21 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     }
 
 
-    public String CreatedAtCustom(Timestamp timestamp) {
-        String timestampToString = timestamp.toString();
-//        String timestampToString = "2022-08-21T14:54:46.247+00:00";
-        String customTimestamp = timestampToString.substring(5, 10);
-        customTimestamp = customTimestamp.replace("-", "월 ");
-        if (customTimestamp.startsWith("0")) {
-            customTimestamp = customTimestamp.substring(1);
-        }
-        System.out.println(customTimestamp);
-        return customTimestamp;
-    }
-
     @Override
-    public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable) {
+    public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable, UserDetailsImpl userDetails) {
 
-        QueryResults<Article> result = queryFactory
+        List<Article> result = queryFactory
                 .selectFrom(article)
-                //.where(article.articleFlag.eq(articleFlag))
+                .where(article.member.email.eq(userDetails.getUsername()),
+                        article.member.schoolName.eq(userDetails.getMember().getSchoolName()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(article.Id.desc())
-                .fetchResults();
+                .fetch();
 
         List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
 
-        for (Article articles : result.getResults()) {
+        for (Article articles : result) {
             articleResponseDtoList.add(
                     MyPageDetailResponseDto.builder()
                             .articleId(articles.getId())
