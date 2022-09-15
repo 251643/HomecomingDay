@@ -41,8 +41,9 @@ public class MemberController {
   }
 
   @RequestMapping(value = "/schoolInfos", method = RequestMethod.POST)
-  public ResponseDto<?> schoolInfo(@RequestBody @Valid SchoolInfoDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    return memberService.schoolInfoMember(requestDto, userDetails);
+  public ResponseDto<?> schoolInfo(@RequestBody @Valid SchoolInfoDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                   HttpServletResponse response) {
+    return memberService.schoolInfoMember(requestDto, userDetails, response);
   }
 
 //  @RequestMapping(value = "/reissue", method = RequestMethod.POST)

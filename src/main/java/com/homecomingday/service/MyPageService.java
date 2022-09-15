@@ -12,6 +12,8 @@ import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.service.s3.S3Uploader;
 import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +35,6 @@ public class MyPageService {
     public MyPageResponseDto readMyPage(UserDetailsImpl member) {
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
-
                 .schoolName(member.getMember().getSchoolName())
                 .email(member.getUsername())
                 .username(member.getMember().getUsername())

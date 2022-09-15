@@ -127,11 +127,11 @@ public class NaverLoginService {
 
 
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-        response.setContentType("text/html;charset=utf-8");
-        response.addHeader("Authorization", tokenDto.getAccessToken());
+        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
         response.addHeader("Username", tokenDto.getUsername());
+        response.addHeader("SchoolInfo", String.valueOf(tokenDto.isSchoolInfo()));
+        response.addHeader("SchoolName", String.valueOf(tokenDto.getSchoolName()));
     }
-
 }
