@@ -77,7 +77,7 @@ public class Article extends Timestamped {
         comments.remove(comment);
     }
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private List<Heart> heartList = new ArrayList<>();
 
