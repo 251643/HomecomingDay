@@ -3,15 +3,22 @@ package com.homecomingday.service;
 import com.homecomingday.controller.request.EmailRequestDto;
 import com.homecomingday.controller.request.MailDto;
 import com.homecomingday.controller.response.ResponseDto;
+import com.homecomingday.util.ClassPathResourceReader;
 import com.homecomingday.util.RedisUtil;
 import com.homecomingday.util.MailHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +27,8 @@ public class SendEmailService {
     private final RedisUtil redisUtil;
     @Value("${spring.mail.username}")
     private String FROM_ADDRESS;
+
+    private final String NUMBER_PATH = "static/logo.png";
 
 
     public MailDto createMail( EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {
@@ -44,7 +53,8 @@ public class SendEmailService {
             mailHandler.setSubject(mailDto.getTitle());
           //  String htmlContent = "<p>안녕하세요. Homecoming Day입니다.</p> <p>인증번호는 " + mailDto.getMessage() + " 입니다. </p> <img style='width:800px;' src='cid:sample-img'>";
             String htmlContent = "<div style='width:50%; display: inline-block; margin: 0 25% 0 25%;'>"
-                                   + "<img style='width:200px;' float:left; src='cid:sample-img'>"
+                                 //  + "<img style='width:200px;' float:left; src='cid:sample-img'>"
+                                   + "<p style='font-weight:600;font-size:25px;'>Homecoming Day</p>"
                                    + "<hr style='border: 0; height: 1px; background: #ccc; >"
                                    + "<div style='margin: 0 10% 0 10%;'>"
                                        + "<div style='margin: 10% 0 10% 0;'>"
@@ -61,7 +71,7 @@ public class SendEmailService {
                                  "</div>";
             mailHandler.setText(htmlContent, true);
             // 이미지 삽입
-            mailHandler.setInline("sample-img", "static/logo.png");
+           // mailHandler.setInline("sample-img", new ClassPathResourceReader("logo.png").getContent());
 
             mailHandler.send();
         }
@@ -79,4 +89,5 @@ public class SendEmailService {
         }
         return ResponseDto.success("인증번호가 일치합니다.");
     }
+
 }

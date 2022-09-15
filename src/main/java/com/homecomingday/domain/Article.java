@@ -69,7 +69,7 @@ public class Article extends Timestamped {
         this.title=articleRequestDto.getTitle();
         this.content=articleRequestDto.getContent();
         this.calendarDate=articleRequestDto.getCalendarDate();
-        this.calendarTime=articleRequestDto.getCalendarDate();
+        this.calendarTime=articleRequestDto.getCalendarTime();
         this.calendarLocation=articleRequestDto.getCalendarLocation();
     }
 

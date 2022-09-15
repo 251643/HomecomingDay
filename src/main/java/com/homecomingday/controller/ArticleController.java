@@ -20,13 +20,18 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final ArticleRepository articleRepository;
 
 
     //검색창 페이지 목록조회
     @GetMapping("/searchArticle")
     public List<GetAllArticleDto> searchAllArticle(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.searchArticle(userDetails);
+    }
+
+    //검색창 페이지 인기순 조회
+    @GetMapping("/searchArticle/popular")
+    public List<GetAllArticleDto> searchPopularArticle(UserDetailsImpl userDetails){
+        return articleService.searchPopularArticle(userDetails);
     }
 
 
