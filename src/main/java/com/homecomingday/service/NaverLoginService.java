@@ -2,23 +2,17 @@ package com.homecomingday.service;
 
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.homecomingday.controller.TokenDto;
-import com.homecomingday.controller.response.MemberResponseDto;
 import com.homecomingday.controller.response.NaverMemberInfoDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.RefreshToken;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.repository.RefreshTokenRepository;
-import com.homecomingday.shared.Authority;
 import com.homecomingday.shared.NaverLogin;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -59,12 +51,6 @@ public class NaverLoginService {
 
         //1. 로그인 사용자 정보를 읽어온다.
         apiResult = naverLogin.getUserProfile(oauthToken);
-
-        //String형식의 json데이터
-        /** apiResult json 구조
-         {"resultcode":"00",
-         "message":"success",
-         "response":{"id":"33666449","nickname":"shinn****","age":"20-29","gender":"M","email":"sh@naver.com","name":"\uc2e0\ubc94\ud638"}}		**/
 
         //2. String형식인 apiResult를 json형태로 바꿈
         JSONParser parser = new JSONParser();
@@ -141,11 +127,11 @@ public class NaverLoginService {
 
 
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-        response.setContentType("text/html;charset=utf-8");
-        response.addHeader("Authorization", tokenDto.getAccessToken());
+        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
         response.addHeader("Username", tokenDto.getUsername());
+        response.addHeader("SchoolInfo", String.valueOf(tokenDto.isSchoolInfo()));
+        response.addHeader("SchoolName", String.valueOf(tokenDto.getSchoolName()));
     }
-
 }

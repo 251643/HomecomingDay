@@ -10,10 +10,6 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SchoolInfoDto {
-
-    @NotBlank
-    private String email;
-
     @NotBlank
     private String schoolName;
 

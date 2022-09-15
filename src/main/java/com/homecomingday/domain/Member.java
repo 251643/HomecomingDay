@@ -1,20 +1,22 @@
 package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.homecomingday.controller.request.SchoolInfoDto;
+import com.homecomingday.controller.response.MyPageResponseDto;
+import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Builder
 @Getter
@@ -41,10 +43,13 @@ public class Member extends Timestamped {
   private String admission;
 
   @Column
-  private String schoolname;
+  private String schoolName;
 
   @Column
-  private String departmentname;
+  private String departmentName;
+
+  @Column
+  private String userImage;
 
   @Override
   public boolean equals(Object o) {
@@ -58,8 +63,8 @@ public class Member extends Timestamped {
     return id != null && Objects.equals(id, member.id);
   }
   public void update(SchoolInfoDto schoolInfoDto) {
-    this.schoolname = schoolInfoDto.getSchoolName();
-    this.departmentname = schoolInfoDto.getDepartmentName();
+    this.schoolName = schoolInfoDto.getSchoolName();
+    this.departmentName = schoolInfoDto.getDepartmentName();
     this.admission = schoolInfoDto.getAdmission();
   }
   @Override
@@ -69,5 +74,10 @@ public class Member extends Timestamped {
 
   public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
     return passwordEncoder.matches(password, this.password);
+  }
+
+
+  public void updateMyPage(MyPageResponseDto myPageResponseDto){
+    this.userImage = myPageResponseDto.getUserImage();
   }
 }

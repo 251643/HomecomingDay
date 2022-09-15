@@ -1,15 +1,15 @@
 package com.homecomingday.domain;
 
 import com.homecomingday.shared.Authority;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +26,9 @@ public class UserDetailsImpl implements UserDetails {
     return authorities;
   }
 
+  public Member getMember() {
+    return member;
+  }
   @Override
   public String getPassword() {
     return member.getPassword();
@@ -33,7 +36,7 @@ public class UserDetailsImpl implements UserDetails {
 
   @Override
   public String getUsername() {
-    return member.getUsername();
+    return member.getEmail();
   }
 
   @Override
