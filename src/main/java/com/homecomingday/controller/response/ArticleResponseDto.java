@@ -49,6 +49,7 @@ public class ArticleResponseDto {
 
     private List<CommentResponseDto> commentList;
 
+    private boolean isHeart;
 
 
 
