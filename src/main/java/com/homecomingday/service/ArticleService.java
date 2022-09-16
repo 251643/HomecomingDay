@@ -713,7 +713,9 @@ public class ArticleService {
         return null;
     }
 
-    public String changeCalendarDate(String calendarDate){
+
+    //article에는 저장않고 dto출력시 값 변경경
+   public String changeCalendarDate(String calendarDate){
 
         if(calendarDate.substring(8).equals("Monday")){
             return calendarDate.substring(0, 8) + "월요일";
