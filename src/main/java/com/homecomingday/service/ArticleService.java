@@ -458,6 +458,7 @@ public class ArticleService {
                         .departmentName(article.getMember().getDepartmentName())
                         .views(0L)
                         .imageList(imgbox)
+                        .isHeart(false)
                         .commentCnt(0L) // 0으로 기본세팅
                         .build();
 
@@ -478,6 +479,7 @@ public class ArticleService {
                         .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                         .departmentName(article.getMember().getDepartmentName())
                         .views(0L)
+                        .isHeart(false)
                         .commentCnt(0L) // 0으로 기본세팅
                         .build();
 
@@ -498,6 +500,7 @@ public class ArticleService {
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentName())
                     .views(0L)
+                    .isHeart(false)
                     .commentCnt(0L) // 0으로 기본세팅
                     .build();
 
@@ -568,6 +571,7 @@ public class ArticleService {
                     .views(article.getViews())
                     .heartCnt( article.getHeartCnt())
                     .imageList(pickImage)
+                    .isHeart(heartCheck(articleId, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -587,6 +591,7 @@ public class ArticleService {
                     .departmentName(article.getMember().getDepartmentName())
                     .views(article.getViews())
                     .heartCnt(article.getHeartCnt())
+                    .isHeart(heartCheck(articleId, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -659,34 +664,28 @@ public class ArticleService {
         Member member = userDetails.getMember();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-        boolean a = false;
 
         if(heartRepository.findByMemberAndArticle(member, article) == null){
             Heart heart = new Heart(member, article);
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
-            return a =  true;
+            return true;
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);
             article.removeHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.delete(heart);
-            return a = false;
+            return  false;
         }
     }
 
     ///게시글 좋아요 확인
-    public boolean heartCheck(Long articleId, UserDetailsImpl userDetails) {
-        Member member = userDetails.getMember();
+    public boolean heartCheck(Long articleId, Member member) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
-        if(heartRepository.findByMemberAndArticle(member, article) == null){
-            return false;
-        }else{
-            return true;
-        }
+        return heartRepository.existsByMemberAndArticle(member, article);
 
     }
 

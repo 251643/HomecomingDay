@@ -90,11 +90,11 @@ public class ArticleController {
     public boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
     }
-    //게시글 좋아요 확인
-    @GetMapping("/article/{articleFlag}/{articleId}/heart")
-    public boolean heartCheck(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return articleService.heartCheck(articleId,userDetails);
-    }
+//    //게시글 좋아요 확인
+//    @GetMapping("/article/{articleFlag}/{articleId}/heart")
+//    public boolean heartCheck(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+//        return articleService.heartCheck(articleId,userDetails);
+//    }
 
 
 }
