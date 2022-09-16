@@ -87,7 +87,7 @@ public class ArticleService {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
@@ -158,7 +158,7 @@ public class ArticleService {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
@@ -244,7 +244,7 @@ public class ArticleService {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
@@ -376,7 +376,7 @@ public class ArticleService {
                                     .articleId(findArticle.getId())
                                     .title(findArticle.getTitle())
                                     .content(findArticle.getContent())
-                                    .calendarDate(findArticle.getCalendarDate())
+                                    .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                     .calendarTime(findArticle.getCalendarTime())
                                     .calendarLocation(findArticle.getCalendarLocation())
                                     .username(findArticle.getMember().getUsername())
@@ -411,7 +411,7 @@ public class ArticleService {
                 .views(0L)
                 .member(userDetails.getMember())
                 .articleFlag(articleFlag)
-                .calendarDate(changeCalendarDate(articleRequestDto.getCalendarDate()))
+                .calendarDate(articleRequestDto.getCalendarDate())
                 .calendarTime(articleRequestDto.getCalendarTime())
                 .calendarLocation(articleRequestDto.getCalendarLocation())
                 .schoolName(userDetails.getMember().getSchoolName())
@@ -492,7 +492,7 @@ public class ArticleService {
                     .title(article.getTitle())
                     .username(article.getMember().getUsername())
                     .content(article.getContent())
-                    .calendarDate(article.getCalendarDate())
+                    .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
                     .articleFlag(changearticleFlag(articleFlag))
@@ -581,7 +581,7 @@ public class ArticleService {
                     .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
-                    .calendarDate(article.getCalendarDate())
+                    .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
                     .username(article.getMember().getUsername())
@@ -713,7 +713,9 @@ public class ArticleService {
         return null;
     }
 
-    public String changeCalendarDate(String calendarDate){
+
+    //article에는 저장않고 dto출력시 값 변경경
+   public String changeCalendarDate(String calendarDate){
 
         if(calendarDate.substring(8).equals("Monday")){
             return calendarDate.substring(0, 8) + "월요일";
