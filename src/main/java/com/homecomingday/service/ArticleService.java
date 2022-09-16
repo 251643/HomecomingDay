@@ -41,7 +41,7 @@ public class ArticleService {
     }
 
 
-    //검색창 페이지 인기 목록조회 수정해야댐
+    //검색창 페이지 인기 목록조회 수정했슴다
     public List<GetAllArticleDto> searchPopularArticle(UserDetailsImpl userDetails){
 
         List<Article> articleList = articleRepository.findBySchoolNameOrderByViewsDesc(userDetails.getMember().getSchoolName());
@@ -87,7 +87,7 @@ public class ArticleService {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
@@ -158,7 +158,7 @@ public class ArticleService {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
@@ -234,6 +234,7 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -244,7 +245,7 @@ public class ArticleService {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .calendarDate(findArticle.getCalendarDate())
+                                .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .username(findArticle.getMember().getUsername())
@@ -255,6 +256,7 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -318,7 +320,6 @@ public class ArticleService {
 //                    );
 //
 //                }
-                System.out.println("4");
                     commentResponseDtoList.add(
                             CommentResponseDto.builder()
                                     .commentId(comment.getId())
@@ -366,6 +367,7 @@ public class ArticleService {
                                     .articleFlag(changearticleFlag(articleFlag))
                                     .views(findArticle.getViews())
                                     .heartCnt(findArticle.getHeartCnt())
+                                    .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) commentResponseDtoList.size())
                                     .commentList(commentResponseDtoList)
                                     .build()
@@ -376,7 +378,7 @@ public class ArticleService {
                                     .articleId(findArticle.getId())
                                     .title(findArticle.getTitle())
                                     .content(findArticle.getContent())
-                                    .calendarDate(findArticle.getCalendarDate())
+                                    .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                     .calendarTime(findArticle.getCalendarTime())
                                     .calendarLocation(findArticle.getCalendarLocation())
                                     .username(findArticle.getMember().getUsername())
@@ -387,6 +389,7 @@ public class ArticleService {
                                     .articleFlag(changearticleFlag(articleFlag))
                                     .views(findArticle.getViews())
                                     .heartCnt(findArticle.getHeartCnt())
+                                    .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) commentResponseDtoList.size())
                                     .commentList(commentResponseDtoList)
                                     .build()
@@ -458,6 +461,7 @@ public class ArticleService {
                         .departmentName(article.getMember().getDepartmentName())
                         .views(0L)
                         .imageList(imgbox)
+                        .isHeart(false)
                         .commentCnt(0L) // 0으로 기본세팅
                         .build();
 
@@ -478,6 +482,7 @@ public class ArticleService {
                         .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                         .departmentName(article.getMember().getDepartmentName())
                         .views(0L)
+                        .isHeart(false)
                         .commentCnt(0L) // 0으로 기본세팅
                         .build();
 
@@ -490,7 +495,7 @@ public class ArticleService {
                     .title(article.getTitle())
                     .username(article.getMember().getUsername())
                     .content(article.getContent())
-                    .calendarDate(article.getCalendarDate())
+                    .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
                     .articleFlag(changearticleFlag(articleFlag))
@@ -498,6 +503,7 @@ public class ArticleService {
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                     .departmentName(article.getMember().getDepartmentName())
                     .views(0L)
+                    .isHeart(false)
                     .commentCnt(0L) // 0으로 기본세팅
                     .build();
 
@@ -568,16 +574,17 @@ public class ArticleService {
                     .views(article.getViews())
                     .heartCnt( article.getHeartCnt())
                     .imageList(pickImage)
+                    .isHeart(heartCheck(article, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
-        } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
+        } else { //calendar 파트만 출력
             return ArticleResponseDto.builder()
                     .articleId(article.getId())
                     .articleFlag(changearticleFlag(articleFlag))
                     .title(article.getTitle())
                     .content(article.getContent())
-                    .calendarDate(article.getCalendarDate())
+                    .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
                     .username(article.getMember().getUsername())
@@ -587,6 +594,7 @@ public class ArticleService {
                     .departmentName(article.getMember().getDepartmentName())
                     .views(article.getViews())
                     .heartCnt(article.getHeartCnt())
+                    .isHeart(heartCheck(article, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -659,34 +667,27 @@ public class ArticleService {
         Member member = userDetails.getMember();
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-        boolean a = false;
 
         if(heartRepository.findByMemberAndArticle(member, article) == null){
             Heart heart = new Heart(member, article);
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
-            return a =  true;
+            return true;
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);
             article.removeHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.delete(heart);
-            return a = false;
+            return  false;
         }
     }
 
     ///게시글 좋아요 확인
-    public boolean heartCheck(Long articleId, UserDetailsImpl userDetails) {
-        Member member = userDetails.getMember();
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-
-        if(heartRepository.findByMemberAndArticle(member, article) == null){
-            return false;
-        }else{
-            return true;
-        }
+    public boolean heartCheck(Article article, Member member) {
+//        Article article = articleRepository.findById(articleId)
+//                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+        return heartRepository.existsByMemberAndArticle(member, article);
 
     }
 
@@ -702,7 +703,7 @@ public class ArticleService {
     }
 
     public String changearticleFlag(String articleFlag) {
-        if (articleFlag.equals("help")) {
+        if(articleFlag.equals("help")) {
             return "도움요청";
         } else if(articleFlag.equals("freeTalk")){
             return "자유토크";
@@ -712,6 +713,28 @@ public class ArticleService {
             return "만남일정";
         }
         return null;
+    }
+
+
+    //article에는 저장않고 dto출력시 값 변경경
+   public String changeCalendarDate(String calendarDate){
+
+        if(calendarDate.substring(8).equals("Monday")){
+            return calendarDate.substring(0, 8) + "월요일";
+        }else if(calendarDate.substring(8).equals("Tuesday")) {
+            return calendarDate.substring(0, 8) + "화요일";
+        }else if(calendarDate.substring(8).equals("Wednesday")) {
+            return calendarDate.substring(0, 8) + "수요일";
+        }else if(calendarDate.substring(8).equals("Thursday")) {
+            return calendarDate.substring(0, 8) + "목요일";
+        }else if(calendarDate.substring(8).equals("Friday")) {
+            return calendarDate.substring(0, 8) + "금요일";
+        }else if(calendarDate.substring(8).equals("Saturday")) {
+            return calendarDate.substring(0, 8) + "토요일";
+        }else if(calendarDate.substring(8).equals("Sunday")) {
+            return calendarDate.substring(0, 8) + "일요일";
+        }else
+            return null;
     }
 
 }

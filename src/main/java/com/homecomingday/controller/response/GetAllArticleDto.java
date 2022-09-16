@@ -51,6 +51,8 @@ public class GetAllArticleDto {
 
     private List<CommentResponseDto> commentList;
 
+    private boolean isHeart;
+
 
 
 }
