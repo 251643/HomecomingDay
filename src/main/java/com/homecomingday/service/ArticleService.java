@@ -411,7 +411,7 @@ public class ArticleService {
                 .views(0L)
                 .member(userDetails.getMember())
                 .articleFlag(articleFlag)
-                .calendarDate(articleRequestDto.getCalendarDate())
+                .calendarDate(changeCalendarDate(articleRequestDto.getCalendarDate()))
                 .calendarTime(articleRequestDto.getCalendarTime())
                 .calendarLocation(articleRequestDto.getCalendarLocation())
                 .schoolName(userDetails.getMember().getSchoolName())
@@ -571,7 +571,7 @@ public class ArticleService {
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
-        } else { //calendar 임시 출력 mDate/mTime/place 추가예정 (프론트와 합의하에 임시적으로 이부분만 출력)
+        } else { //calendar 파트만 출력
             return ArticleResponseDto.builder()
                     .articleId(article.getId())
                     .articleFlag(changearticleFlag(articleFlag))
@@ -702,7 +702,7 @@ public class ArticleService {
     }
 
     public String changearticleFlag(String articleFlag) {
-        if (articleFlag.equals("help")) {
+        if(articleFlag.equals("help")) {
             return "도움요청";
         } else if(articleFlag.equals("freeTalk")){
             return "자유토크";
@@ -712,6 +712,26 @@ public class ArticleService {
             return "만남일정";
         }
         return null;
+    }
+
+    public String changeCalendarDate(String calendarDate){
+
+        if(calendarDate.substring(8).equals("Monday")){
+            return calendarDate.substring(0, 8) + "월요일";
+        }else if(calendarDate.substring(8).equals("Tuesday")) {
+            return calendarDate.substring(0, 8) + "화요일";
+        }else if(calendarDate.substring(8).equals("Wednesday")) {
+            return calendarDate.substring(0, 8) + "수요일";
+        }else if(calendarDate.substring(8).equals("Thursday")) {
+            return calendarDate.substring(0, 8) + "목요일";
+        }else if(calendarDate.substring(8).equals("Friday")) {
+            return calendarDate.substring(0, 8) + "금요일";
+        }else if(calendarDate.substring(8).equals("Saturday")) {
+            return calendarDate.substring(0, 8) + "토요일";
+        }else if(calendarDate.substring(8).equals("Sunday")) {
+            return calendarDate.substring(0, 8) + "일요일";
+        }else
+            return null;
     }
 
 }
