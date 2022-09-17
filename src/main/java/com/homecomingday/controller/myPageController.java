@@ -8,6 +8,8 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.MyPageService;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.apache.bcel.classfile.Code;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,12 +32,14 @@ public class myPageController {
     private final MyPageService myPageService;
     private final ArticleRepository articleRepository;
 //    @GetMapping("/myPage/myArticle")
-//    public Slice<MyPageDetailResponseDto> getArticleScroll(
-//                                                      @PageableDefault(size = 10, sort = "id",  direction = Sort.Direction.DESC) Pageable pageable
-//                                                      ) {
-//        return articleRepository.getArticleScroll(pageable);
+//    public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return articleRepository.getArticleScroll(pageable, userDetails);
 //    }
 
+    @GetMapping("/myPage/myArticle")
+    public Page<MyPageDetailResponseDto> getArticleScroll(Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return articleRepository.getArticleScroll2(pageable, userDetails);
+    }
 
     //유저 정보 조회
     @GetMapping("/myPage")
@@ -50,11 +55,12 @@ public class myPageController {
         return myPageService.updateMyPage(member,multipartFile);
     }
 
-    // 내가 쓴 게시글 조회
-    @GetMapping("/myPage/myArticle")
-    public List<MyPageDetailResponseDto> readDetailMyPage(@AuthenticationPrincipal UserDetailsImpl member){
-        return myPageService.readDetailMyPage(member);
-    }
+//    // 내가 쓴 게시글 조회
+//    @GetMapping("/myPage/myArticle")
+//    public List<MyPageDetailResponseDto> readDetailMyPage(@AuthenticationPrincipal UserDetailsImpl member){
+//        return myPageService.readDetailMyPage(member);
+//    }
+
 
 
 }
