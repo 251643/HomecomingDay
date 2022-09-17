@@ -6,5 +6,5 @@ import com.homecomingday.controller.response.SchoolDto;
 import java.util.List;
 
 public interface DepartmentRepositoryCustom {
-    List<DepartmentDto> readDepartmenList();
+    List<DepartmentDto> readDepartmentList();
 }

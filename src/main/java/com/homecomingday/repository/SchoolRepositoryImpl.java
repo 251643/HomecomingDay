@@ -22,6 +22,7 @@ public class SchoolRepositoryImpl implements SchoolRepositoryCustom {
 
     @Override
     public List<SchoolDto> readSchoolList() {
+        int a=1;
 
         List<School> result = queryFactory
                 .selectFrom(school)
@@ -33,7 +34,7 @@ public class SchoolRepositoryImpl implements SchoolRepositoryCustom {
         for (School school : result) {
             schoolDtoList.add(
                     SchoolDto.builder()
-                            .seq(Math.toIntExact(school.getId()))
+                            .seq(a++)
                             .schoolName(school.getSchoolName())
                             .address(school.getAddress())
                             .build()

@@ -39,7 +39,7 @@ public class Scheduler {
 
 
     // 초, 분, 시, 일, 월, 주 순서
-    @Scheduled(cron = "0 0 0 1 * *")
+    @Scheduled(cron = "0 46 1 * * *")
     public void updateSchoolList() throws InterruptedException {
         System.out.println("학교목록 업데이트");
 
@@ -61,18 +61,34 @@ public class Scheduler {
                 if( items.getTotalCount() == 0 )
                     items.setTotalCount(jn3.get("totalCount").asInt());
 
-                School school = School.builder()
-                        .schoolName(jn3.get("schoolName").textValue())
-                        .address(jn3.get("adres").textValue())
-                        .build();
-                schoolRepository.save(school);
+                list.add(new SchoolDto(
+                        //jn3.get("seq").asInt(0),
+                        // jn3.get("region").textValue(),
+                        a++,
+                        jn3.get("schoolName").textValue(),
+                        jn3.get("adres").textValue()
+                ));
+                listDistinct = DeduplicationUtils.deduplication(list, SchoolDto::getSchoolName);
+
             }
+
+            for(SchoolDto schoolDto : listDistinct){
+                School school = School.builder()
+                        .schoolName(schoolDto.getSchoolName())
+                        .address(schoolDto.getAddress())
+                        .build();
+
+                if(!schoolRepository.existsBySchoolName(schoolDto.getSchoolName())){
+                    schoolRepository.save(school);
+                }
+            }
+
         } catch (Exception e) {
             logger.error("CAREER API ERROR", e);
         }
     }
 
-    @Scheduled(cron = "0 22 0 * * *")
+    @Scheduled(cron = "0 46 1 * * *")
     public void updateDepartmentList() throws InterruptedException {
         System.out.println("학과목록 업데이트");
         int a = 1;
@@ -87,6 +103,7 @@ public class Scheduler {
             JsonNode jn = MAPPER.readTree(is);
             JsonNode jn2 = jn.get("dataSearch").get("content");
             Iterator<JsonNode> iter = jn2.elements();
+
             while(iter.hasNext()){
                 JsonNode jn3 = iter.next();
                 if( items.getTotalCount() == 0 )
@@ -94,7 +111,10 @@ public class Scheduler {
                 Department department = Department.builder()
                         .mClass(jn3.get("mClass").textValue())
                         .build();
-                departmentRepository.save(department);
+
+                if(!departmentRepository.existsBymClass(jn3.get("mClass").textValue())){
+                    departmentRepository.save(department);
+                }
             }
         } catch (Exception e) {
             logger.error("CAREER API ERROR", e);

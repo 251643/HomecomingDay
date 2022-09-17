@@ -37,7 +37,7 @@ public class AccountsDataController {
 
     @RequestMapping(value="/departmentSearchs",method={RequestMethod.GET, RequestMethod.POST} )
     public List<DepartmentDto> findDepartment(){
-        return departmentRepositoryImpl.readDepartmenList();//items;
+        return departmentRepositoryImpl.readDepartmentList();//items;
     }
 
     @RequestMapping(value="/admissions",method={RequestMethod.GET, RequestMethod.POST} )

@@ -20,8 +20,8 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom{
     }
 
     @Override
-    public List<DepartmentDto> readDepartmenList() {
-
+    public List<DepartmentDto> readDepartmentList() {
+        int a=1;
         List<Department> result = queryFactory
                 .selectFrom(department)
                 .orderBy(department.id.asc())
@@ -32,7 +32,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom{
         for (Department department : result) {
             departmentDtoList.add(
                     DepartmentDto.builder()
-                            .seq(Math.toIntExact(department.getId()))
+                            .seq(a++)
                             .mClass(department.getMClass())
                             .build()
             );
