@@ -75,7 +75,7 @@ public class MemberController {
 
   @GetMapping("/")
   public String version() {
-    return "솔님 성한님 태훈님 짱짱맨><";
+    return "솔님 성한님 태훈님 짱짱맨><공주님 왕자님 짱";
   }
 
   @GetMapping("/health")
