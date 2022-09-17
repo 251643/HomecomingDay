@@ -22,6 +22,9 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+jar {
+    enabled = false
+}
 
 repositories {
     mavenCentral()

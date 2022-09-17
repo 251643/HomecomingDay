@@ -73,7 +73,15 @@ public class MemberController {
     return sendEmailService.checkEmail(authRequestDto);
   }
 
+  @GetMapping("/")
+  public String version() {
+    return "제발 잘 나와주세요..ㅠ";
+  }
 
+  @GetMapping("/health")
+  public String checkHealth() {
+    return "healthy";
+  }
 
   //로그아웃
 //  @RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST })
