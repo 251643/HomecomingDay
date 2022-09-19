@@ -36,7 +36,7 @@ public class CommitService {
                 .build();
 
         commitRepository.save(commit);
-
+        comment.getCommits().add(commit);
 
         CommitResponseDto commitResponseDto = CommitResponseDto.builder()
                 .childCommentId(commit.getId())
@@ -73,13 +73,17 @@ public class CommitService {
 
     }
 
-    public String deleteteCommit(Long commitId, UserDetailsImpl userDetails) {
+    public String deleteteCommit(Long commentId,Long commitId, UserDetailsImpl userDetails) {
+
+        Comment comment  = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
         Commit commit  = commitRepository.findById(commitId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 대댓글이 존재하지 않습니다"));
 
 
         if(userDetails.getUsername().equals(commit.getMember().getEmail())){
             commitRepository.delete(commit);
+            comment.getCommits().remove(commit);
 
             return commitId +"삭제 성공되었습니다.";
         }

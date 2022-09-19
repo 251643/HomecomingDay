@@ -28,8 +28,8 @@ public class CommitController {
 
     //대댓글 삭제
     @DeleteMapping("/article/{articleFlag}/{articleId}/comment/{commentId}/{commitId}")
-    public String deleteteCommit(@PathVariable Long commitId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commitService.deleteteCommit(commitId,userDetails);
+    public String deleteteCommit(@PathVariable Long commentId,@PathVariable Long commitId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return commitService.deleteteCommit(commentId,commitId,userDetails);
     }
 
 }

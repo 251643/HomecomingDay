@@ -316,7 +316,6 @@ public class ArticleService {
 //                    );
 //
 //                }
-                System.out.println("4");
                     commentResponseDtoList.add(
                             CommentResponseDto.builder()
                                     .commentId(comment.getId())
