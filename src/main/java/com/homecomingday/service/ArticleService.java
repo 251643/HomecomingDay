@@ -274,24 +274,22 @@ public class ArticleService {
 
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
-//        System.out.println("1");
-//        List<Commit> commitList = commitRepository.findAll();
-//        List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-//        for (Commit commit : commitList) {
-//            System.out.println("6");
-//            commitResponseDtoList.add(
-//                    CommitResponseDto.builder()
-//                            .childCommentId(commit.getId())
-//                            .content(commit.getContent())
-//                            .username(commit.getMember().getUsername())
-//                            .userImage(changeImage(commit.getMember().getUserImage()))
-//                            .admission(commit.getMember().getAdmission())
-//                            .departmentName(commit.getMember().getDepartmentName())
-//                            .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
-//                            .build()
-//            );
-//
-//        }
+        List<Commit> commitList = commitRepository.findAll();
+        List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
+        for (Commit commit : commitList) {
+            commitResponseDtoList.add(
+                    CommitResponseDto.builder()
+                            .childCommentId(commit.getId())
+                            .content(commit.getContent())
+                            .username(commit.getMember().getUsername())
+                            .userImage(changeImage(commit.getMember().getUserImage()))
+                            .admission(commit.getMember().getAdmission())
+                            .departmentName(commit.getMember().getDepartmentName())
+                            .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
+                            .build()
+            );
+
+        }
 
         for (Article findArticle : articleList) {
             List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
@@ -328,7 +326,7 @@ public class ArticleService {
                                     .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
                                     .departmentName(comment.getMember().getDepartmentName())
                                     .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-//                                    .childCommentList(commitResponseDtoList)
+                                    .childCommentList(commitResponseDtoList)
                                     .build()
 
                     );
