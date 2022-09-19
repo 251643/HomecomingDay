@@ -419,11 +419,18 @@ public class ArticleService {
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
 
+            int checkNum =1;
+
+            for(MultipartFile image:multipartFile){
+                if(image.isEmpty()) checkNum=0;
+            }
+
+
             List<ImagePostDto> imgbox = new ArrayList<>();
 
 
 
-            if (multipartFile!=null) { //이미지 있을때 출력 로직
+            if (checkNum==1) { //이미지 있을때 출력 로직
                 //이미지 업로드
                 for (MultipartFile uploadedFile : multipartFile) {
                     S3Dto s3Dto = s3Uploader.upload(uploadedFile);
