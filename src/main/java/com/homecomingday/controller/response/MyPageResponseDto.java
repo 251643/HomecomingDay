@@ -24,4 +24,6 @@ public class MyPageResponseDto {
     private String departmentName;
 
     private String admission;
+
+    private int articleCnt;
 }

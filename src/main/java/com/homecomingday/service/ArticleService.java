@@ -106,12 +106,6 @@ public class ArticleService {
         return getAllArticleDtoList;
     }
 
-
-
-
-
-
-
     //검색창 페이지 목록조회
     public List<GetAllArticleDto> searchArticle(UserDetailsImpl userDetails){
         List<Article> articleList = articleRepository.findBySchoolNameOrderByCreatedAtDesc(userDetails.getMember().getSchoolName());
@@ -276,50 +270,12 @@ public class ArticleService {
 
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
-//        System.out.println("1");
-//        List<Commit> commitList = commitRepository.findAll();
-//        List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-//        for (Commit commit : commitList) {
-//            System.out.println("6");
-//            commitResponseDtoList.add(
-//                    CommitResponseDto.builder()
-//                            .childCommentId(commit.getId())
-//                            .content(commit.getContent())
-//                            .username(commit.getMember().getUsername())
-//                            .userImage(changeImage(commit.getMember().getUserImage()))
-//                            .admission(commit.getMember().getAdmission())
-//                            .departmentName(commit.getMember().getDepartmentName())
-//                            .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
-//                            .build()
-//            );
-//
-//        }
 
         for (Article findArticle : articleList) {
             List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
             List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
-//            System.out.println("2");
 
             for (Comment comment : commentList) {
-//                System.out.println("3");
-//                List<Commit> commitList = comment.getCommits();
-//                List<Commit> commitList = commitRepository.findById(comment.getId());
-//                List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-//                for (Commit commit : commitList) {
-//                    System.out.println("6");
-//                    commitResponseDtoList.add(
-//                            CommitResponseDto.builder()
-//                                    .childCommentId(commit.getId())
-//                                    .content(commit.getContent())
-//                                    .username(commit.getMember().getUsername())
-//                                    .userImage(changeImage(commit.getMember().getUserImage()))
-//                                    .admission(commit.getMember().getAdmission())
-//                                    .departmentName(commit.getMember().getDepartmentName())
-//                                    .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
-//                                    .build()
-//                    );
-//
-//                }
                     commentResponseDtoList.add(
                             CommentResponseDto.builder()
                                     .commentId(comment.getId())
@@ -334,9 +290,6 @@ public class ArticleService {
 
                     );
                 }
-
-//            List<Comment>findComment =commentRepository.findAll();
-//        List<ImagePostDto> imageList = new ArrayList<>();
 
                 if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
                     List<Image> findImage = imageRepository.findAll();
