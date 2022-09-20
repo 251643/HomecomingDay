@@ -234,6 +234,7 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -255,6 +256,7 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -273,39 +275,14 @@ public class ArticleService {
         List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolName());
 
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
-//
-//        List<Commit> commitList = commitRepository.findAll();
-//        List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-//        for (Commit commit : commitList) {
-//            commitResponseDtoList.add(
-//                    CommitResponseDto.builder()
-//                            .childCommentId(commit.getId())
-//                            .content(commit.getContent())
-//                            .username(commit.getMember().getUsername())
-//                            .userImage(changeImage(commit.getMember().getUserImage()))
-//                            .admission(commit.getMember().getAdmission())
-//                            .departmentName(commit.getMember().getDepartmentName())
-//                            .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
-//                            .build()
-//            );
-//
-//        }
 
         for (Article findArticle : articleList) {
             List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
             List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
-//            System.out.println("2");
-
             for (Comment comment : commentList) {
-                System.out.println("3");
-                //List<Commit> commitList = comment.getCommits();
                 List<Commit> commitList = commitRepository.findByCommentAndArticle(comment,findArticle);
-
-                System.out.println(comment.getCommits().size());
-                System.out.println(comment.getCommits());
                 List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-                for (Commit commit : commitList) {
-                    System.out.println("6");
+                for (Commit commit : commitList) {           
                     commitResponseDtoList.add(
                             CommitResponseDto.builder()
                                     .childCommentId(commit.getId())
@@ -317,7 +294,6 @@ public class ArticleService {
                                     .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
                                     .build()
                     );
-
                 }
                     commentResponseDtoList.add(
                             CommentResponseDto.builder()
@@ -366,6 +342,7 @@ public class ArticleService {
                                     .articleFlag(changearticleFlag(articleFlag))
                                     .views(findArticle.getViews())
                                     .heartCnt(findArticle.getHeartCnt())
+                                    .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) commentResponseDtoList.size())
                                     .commentList(commentResponseDtoList)
                                     .build()
@@ -387,6 +364,7 @@ public class ArticleService {
                                     .articleFlag(changearticleFlag(articleFlag))
                                     .views(findArticle.getViews())
                                     .heartCnt(findArticle.getHeartCnt())
+                                    .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) commentResponseDtoList.size())
                                     .commentList(commentResponseDtoList)
                                     .build()
@@ -578,7 +556,7 @@ public class ArticleService {
                     .views(article.getViews())
                     .heartCnt( article.getHeartCnt())
                     .imageList(pickImage)
-                    .isHeart(heartCheck(articleId, userDetails.getMember()))
+                    .isHeart(heartCheck(article, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -598,7 +576,7 @@ public class ArticleService {
                     .departmentName(article.getMember().getDepartmentName())
                     .views(article.getViews())
                     .heartCnt(article.getHeartCnt())
-                    .isHeart(heartCheck(articleId, userDetails.getMember()))
+                    .isHeart(heartCheck(article, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -688,10 +666,9 @@ public class ArticleService {
     }
 
     ///게시글 좋아요 확인
-    public boolean heartCheck(Long articleId, Member member) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-
+    public boolean heartCheck(Article article, Member member) {
+//        Article article = articleRepository.findById(articleId)
+//                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
         return heartRepository.existsByMemberAndArticle(member, article);
 
     }
