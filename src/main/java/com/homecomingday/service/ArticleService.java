@@ -234,6 +234,7 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -255,6 +256,7 @@ public class ArticleService {
                                 .articleFlag(changearticleFlag(articleFlag))
                                 .views(findArticle.getViews())
                                 .heartCnt( findArticle.getHeartCnt())
+                                .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
                                 .commentList(commentResponseDtoList)
                                 .build()
@@ -318,7 +320,6 @@ public class ArticleService {
 //                    );
 //
 //                }
-                System.out.println("4");
                     commentResponseDtoList.add(
                             CommentResponseDto.builder()
                                     .commentId(comment.getId())
@@ -366,6 +367,7 @@ public class ArticleService {
                                     .articleFlag(changearticleFlag(articleFlag))
                                     .views(findArticle.getViews())
                                     .heartCnt(findArticle.getHeartCnt())
+                                    .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) commentResponseDtoList.size())
                                     .commentList(commentResponseDtoList)
                                     .build()
@@ -387,6 +389,7 @@ public class ArticleService {
                                     .articleFlag(changearticleFlag(articleFlag))
                                     .views(findArticle.getViews())
                                     .heartCnt(findArticle.getHeartCnt())
+                                    .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) commentResponseDtoList.size())
                                     .commentList(commentResponseDtoList)
                                     .build()
@@ -571,7 +574,7 @@ public class ArticleService {
                     .views(article.getViews())
                     .heartCnt( article.getHeartCnt())
                     .imageList(pickImage)
-                    .isHeart(heartCheck(articleId, userDetails.getMember()))
+                    .isHeart(heartCheck(article, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -591,7 +594,7 @@ public class ArticleService {
                     .departmentName(article.getMember().getDepartmentName())
                     .views(article.getViews())
                     .heartCnt(article.getHeartCnt())
-                    .isHeart(heartCheck(articleId, userDetails.getMember()))
+                    .isHeart(heartCheck(article, userDetails.getMember()))
                     .commentCnt((long) commentResponseDtoList.size())
                     .commentList(commentResponseDtoList)
                     .build();
@@ -681,10 +684,9 @@ public class ArticleService {
     }
 
     ///게시글 좋아요 확인
-    public boolean heartCheck(Long articleId, Member member) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-
+    public boolean heartCheck(Article article, Member member) {
+//        Article article = articleRepository.findById(articleId)
+//                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
         return heartRepository.existsByMemberAndArticle(member, article);
 
     }
