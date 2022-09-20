@@ -1,6 +1,7 @@
 package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.homecomingday.controller.request.CommentRequestDto;
 import com.homecomingday.controller.response.ReviseContentDto;
 import com.homecomingday.util.Timestamped;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -53,6 +56,11 @@ public class Comment extends Timestamped {
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Article article;
 
+
+@JsonManagedReference
+@OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+  private List<Commit> commits= new ArrayList<>();
+
   public Comment(Article article, ReviseContentDto reviseContentDto, UserDetailsImpl userDetails) {
     this.article = article;
     this.content = reviseContentDto.getContent();
@@ -60,7 +68,6 @@ public class Comment extends Timestamped {
 //    this.free = free.getArticlesId();
 //    이메일이 들어올자리
   }
-
 
 
   public boolean validateMember(Member member) {

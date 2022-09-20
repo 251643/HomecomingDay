@@ -3,12 +3,14 @@ package com.homecomingday;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
 @EnableJpaAuditing// 생성시간/수정시간 자동 업데이트
 @SpringBootApplication
+@EnableScheduling
 public class HomecomingDayApplication {
 
 

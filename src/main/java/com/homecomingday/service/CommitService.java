@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 
 @Service
 @Slf4j
@@ -33,10 +35,11 @@ public class CommitService {
                 .content(commentRequestDto.getContent())
                 .comment(comment)
                 .member(userDetails.getMember())
+                .article(comment.getArticle())
                 .build();
 
         commitRepository.save(commit);
-
+        comment.getCommits().add(commit);
 
         CommitResponseDto commitResponseDto = CommitResponseDto.builder()
                 .childCommentId(commit.getId())
@@ -51,6 +54,7 @@ public class CommitService {
         return commitResponseDto;
     }
     //대댓긇 수정
+    @Transactional
     public CommitResponseDto updateCommit(Long commitId, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails) {
         Commit commit  = commitRepository.findById(commitId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 대댓글이 존재하지 않습니다"));
@@ -73,13 +77,17 @@ public class CommitService {
 
     }
 
-    public String deleteteCommit(Long commitId, UserDetailsImpl userDetails) {
+    public String deleteteCommit(Long commentId,Long commitId, UserDetailsImpl userDetails) {
+
+        Comment comment  = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
         Commit commit  = commitRepository.findById(commitId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 대댓글이 존재하지 않습니다"));
 
 
         if(userDetails.getUsername().equals(commit.getMember().getEmail())){
             commitRepository.delete(commit);
+            comment.getCommits().remove(commit);
 
             return commitId +"삭제 성공되었습니다.";
         }

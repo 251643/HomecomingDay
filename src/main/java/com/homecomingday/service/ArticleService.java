@@ -274,8 +274,23 @@ public class ArticleService {
         for (Article findArticle : articleList) {
             List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
             List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
-
             for (Comment comment : commentList) {
+                List<Commit> commitList = commitRepository.findByCommentAndArticle(comment,findArticle);
+                List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
+                for (Commit commit : commitList) {           
+                    commitResponseDtoList.add(
+                            CommitResponseDto.builder()
+                                    .childCommentId(commit.getId())
+                                    .content(commit.getContent())
+                                    .username(commit.getMember().getUsername())
+                                    .userImage(changeImage(commit.getMember().getUserImage()))
+                                    .admission(commit.getMember().getAdmission())
+                                    .departmentName(commit.getMember().getDepartmentName())
+                                    .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
+                                    .build()
+                    );
+                }
+
                     commentResponseDtoList.add(
                             CommentResponseDto.builder()
                                     .commentId(comment.getId())
@@ -285,7 +300,7 @@ public class ArticleService {
                                     .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
                                     .departmentName(comment.getMember().getDepartmentName())
                                     .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-//                                    .childCommentList(commitResponseDtoList)
+                                    .childCommentList(commitResponseDtoList)
                                     .build()
 
                     );
@@ -378,11 +393,18 @@ public class ArticleService {
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
 
+            int checkNum =1;
+
+            for(MultipartFile image:multipartFile){
+                if(image.isEmpty()) checkNum=0;
+            }
+
+
             List<ImagePostDto> imgbox = new ArrayList<>();
 
 
 
-            if (multipartFile!=null) { //이미지 있을때 출력 로직
+            if (checkNum==1) { //이미지 있을때 출력 로직
                 //이미지 업로드
                 for (MultipartFile uploadedFile : multipartFile) {
                     S3Dto s3Dto = s3Uploader.upload(uploadedFile);
@@ -647,7 +669,7 @@ public class ArticleService {
     private String changeImage(String userImage) {
 
         if(userImage ==null){
-            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/5d44c9fd-1bac-47d3-9b68-17506b43491fKakaoTalk_20220913_175821034.png";
+            return "https://woochangbk.s3.ap-northeast-2.amazonaws.com/52a5f48d-7452-48a6-b167-1497931c7cf7%ED%94%84%EB%A1%9C%ED%95%84%20%EC%9D%B4%EB%AF%B8%EC%A7%80%20%EC%A0%80%EC%9E%A5%EC%9A%A9.png";
 
         }else {
             return userImage;
