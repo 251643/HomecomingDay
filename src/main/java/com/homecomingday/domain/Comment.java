@@ -56,6 +56,11 @@ public class Comment extends Timestamped {
   @OnDelete(action = OnDeleteAction.CASCADE)
   private Article article;
 
+
+@JsonManagedReference
+@OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+  private List<Commit> commits= new ArrayList<>();
+
   public Comment(Article article, ReviseContentDto reviseContentDto, UserDetailsImpl userDetails) {
     this.article = article;
     this.content = reviseContentDto.getContent();
@@ -64,9 +69,6 @@ public class Comment extends Timestamped {
 //    이메일이 들어올자리
   }
 
-  @JsonManagedReference
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
-  private List<Commit> commits= new ArrayList<>();
 
   public boolean validateMember(Member member) {
     return !this.member.equals(member);
