@@ -29,6 +29,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew # (6)
         shell: bash
+        
+      ## gradle caching (캐시를 미리 생성해 빌드시 작업시간을 단축시켜 준다.)##
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       ## create application.properties
       - name: make dev application.properties
