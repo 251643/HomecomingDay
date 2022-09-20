@@ -33,6 +33,12 @@ public class Commit extends Timestamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment comment;
 
+    @JoinColumn(name = "article_id",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Article article;
+
+
     @JoinColumn(name = "member_id",nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)

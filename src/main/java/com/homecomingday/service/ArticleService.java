@@ -273,23 +273,23 @@ public class ArticleService {
         List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolName());
 
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
-
-        List<Commit> commitList = commitRepository.findAll();
-        List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-        for (Commit commit : commitList) {
-            commitResponseDtoList.add(
-                    CommitResponseDto.builder()
-                            .childCommentId(commit.getId())
-                            .content(commit.getContent())
-                            .username(commit.getMember().getUsername())
-                            .userImage(changeImage(commit.getMember().getUserImage()))
-                            .admission(commit.getMember().getAdmission())
-                            .departmentName(commit.getMember().getDepartmentName())
-                            .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
-                            .build()
-            );
-
-        }
+//
+//        List<Commit> commitList = commitRepository.findAll();
+//        List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
+//        for (Commit commit : commitList) {
+//            commitResponseDtoList.add(
+//                    CommitResponseDto.builder()
+//                            .childCommentId(commit.getId())
+//                            .content(commit.getContent())
+//                            .username(commit.getMember().getUsername())
+//                            .userImage(changeImage(commit.getMember().getUserImage()))
+//                            .admission(commit.getMember().getAdmission())
+//                            .departmentName(commit.getMember().getDepartmentName())
+//                            .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
+//                            .build()
+//            );
+//
+//        }
 
         for (Article findArticle : articleList) {
             List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
@@ -297,25 +297,28 @@ public class ArticleService {
 //            System.out.println("2");
 
             for (Comment comment : commentList) {
-//                System.out.println("3");
-//                List<Commit> commitList = comment.getCommits();
-//                List<Commit> commitList = commitRepository.findById(comment.getId());
-//                List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-//                for (Commit commit : commitList) {
-//                    System.out.println("6");
-//                    commitResponseDtoList.add(
-//                            CommitResponseDto.builder()
-//                                    .childCommentId(commit.getId())
-//                                    .content(commit.getContent())
-//                                    .username(commit.getMember().getUsername())
-//                                    .userImage(changeImage(commit.getMember().getUserImage()))
-//                                    .admission(commit.getMember().getAdmission())
-//                                    .departmentName(commit.getMember().getDepartmentName())
-//                                    .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
-//                                    .build()
-//                    );
-//
-//                }
+                System.out.println("3");
+                //List<Commit> commitList = comment.getCommits();
+                List<Commit> commitList = commitRepository.findByCommentAndArticle(comment,findArticle);
+
+                System.out.println(comment.getCommits().size());
+                System.out.println(comment.getCommits());
+                List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
+                for (Commit commit : commitList) {
+                    System.out.println("6");
+                    commitResponseDtoList.add(
+                            CommitResponseDto.builder()
+                                    .childCommentId(commit.getId())
+                                    .content(commit.getContent())
+                                    .username(commit.getMember().getUsername())
+                                    .userImage(changeImage(commit.getMember().getUserImage()))
+                                    .admission(commit.getMember().getAdmission())
+                                    .departmentName(commit.getMember().getDepartmentName())
+                                    .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
+                                    .build()
+                    );
+
+                }
                     commentResponseDtoList.add(
                             CommentResponseDto.builder()
                                     .commentId(comment.getId())
