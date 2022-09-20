@@ -9,6 +9,7 @@ import com.homecomingday.controller.response.MemberResponseDto;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.UserDetailsImpl;
+import com.homecomingday.exception.CustomException;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
+
+import static com.homecomingday.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -34,9 +37,12 @@ public class MemberService {
 
   @Transactional
   public ResponseDto<?> createMember(MemberRequestDto requestDto) {
+//    if (null != isPresentMember(requestDto.getEmail())) {
+//      return ResponseDto.fail("DUPLICATED_NICKNAME",
+//          "중복된 닉네임 입니다.");
+//    }
     if (null != isPresentMember(requestDto.getEmail())) {
-      return ResponseDto.fail("DUPLICATED_NICKNAME",
-          "중복된 닉네임 입니다.");
+      throw new CustomException(DUPLE_EMAIL);
     }
 
 //    if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
@@ -159,9 +165,12 @@ public class MemberService {
 
   public ResponseDto<?> checkEmail(EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {
     if (null != isPresentMember(emailSendRequestDto.getEmail())) {
-      return ResponseDto.fail("DUPLICATED_EMAIL",
-              "동일한 이메일이 존재합니다.");
+      throw new CustomException(MEMBER_NOT_FOUND);
     }
+//    if (null != isPresentMember(emailSendRequestDto.getEmail())) {
+//      return ResponseDto.fail("DUPLICATED_EMAIL",
+//              "동일한 이메일이 존재합니다.");
+//    }
     return ResponseDto.success(emailSendRequestDto.getEmail());
   }
 }
