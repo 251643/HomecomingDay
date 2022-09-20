@@ -10,7 +10,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.*;
 
 import javax.persistence.EntityManager;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,34 +34,35 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(article.Id.desc())
                 .fetchResults();
-        System.out.println(1);
-        System.out.println("size>>>>>>>>>>>>>>>>>"+result.getResults().size());
 
-            System.out.println(2);
             List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
 
-            for (Article articles : result.getResults()) {
-                articleResponseDtoList.add(
-                        MyPageDetailResponseDto.builder()
-                                .articleId(articles.getId())
-                                .title(articles.getTitle())
-                                .username(articles.getMember().getUsername())
-                                .departmentName(articles.getMember().getDepartmentName())
-                                .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
-                                .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
-                                .articleFlag(changearticleFlag(articles.getArticleFlag()))
-                                .views(articles.getViews())
-                                .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
-                                .build()
-                );
-            }
+           if(result.getResults().size() >0){
+               for (Article articles : result.getResults()) {
+                   articleResponseDtoList.add(
+                           MyPageDetailResponseDto.builder()
+                                   .articleId(articles.getId())
+                                   .title(articles.getTitle())
+                                   .username(articles.getMember().getUsername())
+                                   .departmentName(articles.getMember().getDepartmentName())
+                                   .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
+                                   .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
+                                   .articleFlag(changearticleFlag(articles.getArticleFlag()))
+                                   .views(articles.getViews())
+                                   .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
+                                   .build()
+                   );
+               }
 
-            boolean hasNext = false;
-            if (articleResponseDtoList.size() > pageable.getPageSize()) {
-                articleResponseDtoList.remove(pageable.getPageSize());
-                hasNext = true;
-            }
-            return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
+               boolean hasNext = false;
+               if (articleResponseDtoList.size() > pageable.getPageSize()) {
+                   articleResponseDtoList.remove(pageable.getPageSize());
+                   hasNext = true;
+               }
+               return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
+           }else{
+               throw new CustomException(ARTICLES_NOT_FOUND);
+           }
     }
 
     @Override
