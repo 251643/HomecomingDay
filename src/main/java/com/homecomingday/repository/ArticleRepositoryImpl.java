@@ -3,7 +3,6 @@ package com.homecomingday.repository;
 import com.homecomingday.controller.response.MyPageDetailResponseDto;
 import com.homecomingday.domain.Article;
 import com.homecomingday.domain.UserDetailsImpl;
-import com.homecomingday.exception.CustomException;
 import com.homecomingday.util.Time;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.homecomingday.domain.QArticle.*;
-import static com.homecomingday.exception.ErrorCode.ARTICLES_NOT_FOUND;
+
 
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
