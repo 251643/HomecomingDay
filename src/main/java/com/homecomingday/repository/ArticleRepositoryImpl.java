@@ -37,7 +37,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
             List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
 
-           if(result.getResults().size() >0){
+           
                for (Article articles : result.getResults()) {
                    articleResponseDtoList.add(
                            MyPageDetailResponseDto.builder()
@@ -60,9 +60,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                    hasNext = true;
                }
                return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
-           }else{
-               throw new CustomException(ARTICLES_NOT_FOUND);
-           }
+
     }
 
     @Override
