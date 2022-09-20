@@ -43,7 +43,7 @@ public class S3Uploader {
     public S3Dto upload(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
 
-        String result = amazonS3Client.getUrl(bucket, fileName).toString();
+        String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -57,7 +57,7 @@ public class S3Uploader {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
         }
 
-        return new S3Dto(fileName, result);
+        return new S3Dto(fileName, uploadImageUrl);
 
     }
 
@@ -65,50 +65,25 @@ public class S3Uploader {
 
     //프로필 이미지 업로드
     public String upload1(MultipartFile multipartFile) throws IOException {
-        File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> 파일 변환 실패"));
+        String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
 
-        return uploadToS31(uploadFile);
-    }
+        String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
-    //프로필 이미지 S3로 파일 업로드하기
-    @Transactional
-    public String uploadToS31(File uploadFile) throws IOException {
 
-        String fileName = UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
-        String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
-        removeNewFile(uploadFile);
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(multipartFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
 
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+        }
 
         return uploadImageUrl;
     }
 
-    // 프로필 S3로 업로드
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3.getUrl(bucket, fileName).toString();
-    }
-
-    // 프로필 등록후 로컬에 저장된 이미지 지우기
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("File delete success");
-        }
-        log.info("File delete fail");
-    }
-
-    // 로컬에 파일 업로드 하기
-    private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());     // 현재 프로젝트 절대경로
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-                return Optional.of(convertFile);
-            }
-
-        }
-        return null;
-    }
 
 
     //이미지 리사이징하기
@@ -150,5 +125,7 @@ public class S3Uploader {
             System.err.println(e.getErrorMessage());
         }
     }
+
+
 
 }
