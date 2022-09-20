@@ -34,6 +34,8 @@ public class MyPageService {
     //유저 정보 조회
     public MyPageResponseDto readMyPage(UserDetailsImpl member) {
 
+        int articleCnt = articleRepository.countByMember(member.getMember());
+
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                 .schoolName(member.getMember().getSchoolName())
                 .email(member.getUsername())
@@ -41,6 +43,7 @@ public class MyPageService {
                 .userImage(changeImage(member.getMember().getUserImage()))
                 .departmentName(member.getMember().getDepartmentName())
                 .admission(member.getMember().getAdmission().substring(2,4)+"학번")
+                .articleCnt(articleCnt)
                 .build();
         return myPageResponseDto;
     }

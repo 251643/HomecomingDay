@@ -3,17 +3,18 @@ package com.homecomingday.repository;
 import com.homecomingday.controller.response.MyPageDetailResponseDto;
 import com.homecomingday.domain.Article;
 import com.homecomingday.domain.UserDetailsImpl;
+import com.homecomingday.exception.CustomException;
 import com.homecomingday.util.Time;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.*;
 
 import javax.persistence.EntityManager;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.homecomingday.domain.QArticle.*;
+import static com.homecomingday.exception.ErrorCode.ARTICLES_NOT_FOUND;
 
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
@@ -25,50 +26,60 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     @Override
     public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable, UserDetailsImpl userDetails) {
 
-        List<Article> result = queryFactory
+        QueryResults<Article> result = queryFactory
                 .selectFrom(article)
                 .where(article.member.email.eq(userDetails.getMember().getEmail()),
                         article.schoolName.eq(userDetails.getMember().getSchoolName()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(article.Id.desc())
-                .fetch();
+                .fetchResults();
 
-        List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
+            List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
 
-        for (Article articles : result) {
-            articleResponseDtoList.add(
-                    MyPageDetailResponseDto.builder()
-                            .articleId(articles.getId())
-                            .title(articles.getTitle())
-                            .username(articles.getMember().getUsername())
-                            .departmentName(articles.getMember().getDepartmentName())
-                            .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
-                            .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
-                            .articleFlag(changearticleFlag(articles.getArticleFlag()))
-                            .views(articles.getViews())
-                            .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
-                            .build()
-            );
-        }
+           if(result.getResults().size() >0){
+               for (Article articles : result.getResults()) {
+                   articleResponseDtoList.add(
+                           MyPageDetailResponseDto.builder()
+                                   .articleId(articles.getId())
+                                   .title(articles.getTitle())
+                                   .username(articles.getMember().getUsername())
+                                   .departmentName(articles.getMember().getDepartmentName())
+                                   .createdAt(Time.convertLocaldatetimeToTime(articles.getCreatedAt()))
+                                   .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
+                                   .articleFlag(changearticleFlag(articles.getArticleFlag()))
+                                   .views(articles.getViews())
+                                   .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
+                                   .build()
+                   );
+               }
 
-        boolean hasNext = false;
-        if (articleResponseDtoList.size() > pageable.getPageSize()) {
-            articleResponseDtoList.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-        return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
+               boolean hasNext = false;
+               if (articleResponseDtoList.size() > pageable.getPageSize()) {
+                   articleResponseDtoList.remove(pageable.getPageSize());
+                   hasNext = true;
+               }
+               return new SliceImpl<>(articleResponseDtoList, pageable, hasNext);
+           }else{
+               throw new CustomException(ARTICLES_NOT_FOUND);
+           }
     }
 
     @Override
     public Page<MyPageDetailResponseDto> getArticleScroll2(Pageable pageable, UserDetailsImpl userDetails) {
-
         List<Article> result = queryFactory
                 .selectFrom(article)
                 .where(article.member.email.eq(userDetails.getMember().getEmail()),
                         article.schoolName.eq(userDetails.getMember().getSchoolName()))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                .limit(pageable.getPageSize())
+                .orderBy(article.Id.desc())
+                .fetch();
+
+        List<Article> total = queryFactory
+                .selectFrom(article)
+                .where(article.member.email.eq(userDetails.getMember().getEmail()),
+                        article.schoolName.eq(userDetails.getMember().getSchoolName()))
                 .orderBy(article.Id.desc())
                 .fetch();
 
@@ -90,7 +101,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             );
         }
 
-        return new PageImpl<>(articleResponseDtoList, pageable, result.size());
+        return new PageImpl<>(articleResponseDtoList, pageable, total.size());
     }
 
     public String changearticleFlag(String articleFlag) {
