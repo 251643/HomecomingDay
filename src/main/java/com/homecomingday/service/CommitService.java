@@ -33,6 +33,7 @@ public class CommitService {
                 .content(commentRequestDto.getContent())
                 .comment(comment)
                 .member(userDetails.getMember())
+                .article(comment.getArticle())
                 .build();
 
         commitRepository.save(commit);
