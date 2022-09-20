@@ -9,12 +9,10 @@ import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.Code;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -31,14 +29,26 @@ public class myPageController {
 
     private final MyPageService myPageService;
     private final ArticleRepository articleRepository;
-//    @GetMapping("/myPage/myArticle")
-//    public Slice<MyPageDetailResponseDto> getArticleScroll(Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return articleRepository.getArticleScroll(pageable, userDetails);
+    @GetMapping("/myPage/myArticle")
+    public ResponseEntity<Slice<MyPageDetailResponseDto>> getArticleScroll(@RequestParam(value = "page") Integer page,
+                                                                           @RequestParam(value = "size") Integer size,
+                                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(articleRepository.getArticleScroll(pageable, userDetails));
+    }
+//    @GetMapping("/myPage/myArticle2")
+//    public ResponseEntity<Slice<MyPageDetailResponseDto>> getArticleScroll2(Pageable pageable,
+//                                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        System.out.println("요청 들어옴");
+//       // Pageable pageable = PageRequest.of(page, size);
+//        return ResponseEntity.ok(articleRepository.getArticleScroll(pageable, userDetails));
 //    }
 
-    @GetMapping("/myPage/myArticle")
-    public Page<MyPageDetailResponseDto> getArticleScroll(Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return articleRepository.getArticleScroll2(pageable, userDetails);
+    @GetMapping("/myPage/myArticle2")
+    public ResponseEntity<Page<MyPageDetailResponseDto>> getArticleScroll(Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        return ResponseEntity.ok(articleRepository.getArticleScroll2(pageable, userDetails));
     }
 
     //유저 정보 조회
@@ -60,7 +70,7 @@ public class myPageController {
 //    public List<MyPageDetailResponseDto> readDetailMyPage(@AuthenticationPrincipal UserDetailsImpl member){
 //        return myPageService.readDetailMyPage(member);
 //    }
-
+//
 
 
 }

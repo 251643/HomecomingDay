@@ -1,6 +1,7 @@
 package com.homecomingday.repository;
 
 import com.homecomingday.domain.Article;
+import com.homecomingday.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> , Articl
     List <Article> findBySchoolNameOrderByCreatedAtDesc(String schoolName);
 
     List<Article> findByArticleFlagAndSchoolNameOrderByViewsDesc(String articleFlag, String schoolName);
+
+    int countByMember(Member member);
 }
