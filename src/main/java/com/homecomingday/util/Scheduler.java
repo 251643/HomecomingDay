@@ -39,7 +39,7 @@ public class Scheduler {
 
 
     // 초, 분, 시, 일, 월, 주 순서
-    @Scheduled(cron = "0 46 1 * * *")
+    @Scheduled(cron = "0 0 0 1 * *")
     public void updateSchoolList() throws InterruptedException {
         System.out.println("학교목록 업데이트");
 
@@ -88,7 +88,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "0 46 1 * * *")
+    @Scheduled(cron = "0 0 0 1 * *")
     public void updateDepartmentList() throws InterruptedException {
         System.out.println("학과목록 업데이트");
         int a = 1;
