@@ -81,9 +81,9 @@ public class S3Uploader {
 
         int demandWidth;
         // 줄이려고 하는 이미지 크기
-        if(checkNum==1){
+        if(checkNum==1){//checkNum이 1이면 메인게시물
             demandWidth = 330;
-        }else {
+        }else { //checkNum이 2면 프로필이미지로 사이즈 조정
             demandWidth = 160;
         }
         int originWidth = srcImg.getWidth();
