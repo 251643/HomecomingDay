@@ -49,6 +49,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                    .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
                                    .articleFlag(changearticleFlag(articles.getArticleFlag()))
                                    .views(articles.getViews())
+                                   .heartCnt((long) articles.getHeartList().size())
                                    .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
                                    .build()
                    );
