@@ -75,6 +75,10 @@ dependencies {
     // 3. querydsl dependencies 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // Scalr
+    implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+
 }
 
 
