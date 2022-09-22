@@ -284,7 +284,7 @@ public class ArticleService {
                                     .content(commit.getContent())
                                     .username(commit.getMember().getUsername())
                                     .userImage(changeImage(commit.getMember().getUserImage()))
-                                    .admission(commit.getMember().getAdmission())
+                                    .admission(commit.getMember().getAdmission().substring(2, 4) + "학번")
                                     .departmentName(commit.getMember().getDepartmentName())
                                     .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
                                     .build()
