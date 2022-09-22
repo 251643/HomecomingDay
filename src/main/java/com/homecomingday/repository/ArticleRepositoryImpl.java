@@ -3,6 +3,7 @@ package com.homecomingday.repository;
 import com.homecomingday.controller.response.MyPageDetailResponseDto;
 import com.homecomingday.domain.Article;
 import com.homecomingday.domain.UserDetailsImpl;
+
 import com.homecomingday.util.Time;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.homecomingday.domain.QArticle.*;
-
 
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
@@ -36,7 +36,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
             List<MyPageDetailResponseDto> articleResponseDtoList = new ArrayList<>();
 
-           
+
                for (Article articles : result.getResults()) {
                    articleResponseDtoList.add(
                            MyPageDetailResponseDto.builder()
@@ -48,6 +48,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                    .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
                                    .articleFlag(changearticleFlag(articles.getArticleFlag()))
                                    .views(articles.getViews())
+                                   .heartCnt((long) articles.getHeartList().size())
                                    .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
                                    .build()
                    );
@@ -93,6 +94,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                             .admission(articles.getMember().getAdmission().substring(2, 4) + "학번")
                             .articleFlag(changearticleFlag(articles.getArticleFlag()))
                             .views(articles.getViews())
+                            .heartCnt((long) articles.getHeartList().size())
                             .commentCnt((long) articles.getComments().size()) // 0으로 기본세팅
                             .build()
             );
