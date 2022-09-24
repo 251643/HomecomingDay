@@ -51,6 +51,12 @@ public class myPageController {
         return ResponseEntity.ok(articleRepository.getArticleScroll2(pageable, userDetails));
     }
 
+    @GetMapping("/myPage/reset")
+    public String reset(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        return userDetails.getUsername() + "으로 요청들어옴";
+    }
+
     //유저 정보 조회
     @GetMapping("/myPage")
     public MyPageResponseDto readMyPage( @AuthenticationPrincipal UserDetailsImpl member){
