@@ -50,6 +50,9 @@ public class Article extends Timestamped {
     private String calendarLocation;
 
     @Column
+    private Integer maxPeople;
+
+    @Column
     private String schoolName;
 
     @JsonIgnore
@@ -71,6 +74,7 @@ public class Article extends Timestamped {
         this.calendarDate=articleRequestDto.getCalendarDate();
         this.calendarTime=articleRequestDto.getCalendarTime();
         this.calendarLocation=articleRequestDto.getCalendarLocation();
+        this.maxPeople=articleRequestDto.getMaxPeople();
     }
 
     public void deleteComment(Comment comment) {

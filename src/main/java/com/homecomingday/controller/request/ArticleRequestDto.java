@@ -18,6 +18,8 @@ public class ArticleRequestDto {
 
     private String calendarLocation;
 
+    private Integer maxPeople;
+
 
 
 

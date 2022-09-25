@@ -385,6 +385,7 @@ public class ArticleService {
                 .calendarDate(articleRequestDto.getCalendarDate())
                 .calendarTime(articleRequestDto.getCalendarTime())
                 .calendarLocation(articleRequestDto.getCalendarLocation())
+                .maxPeople(articleRequestDto.getMaxPeople())
                 .schoolName(userDetails.getMember().getSchoolName())
                 .build();
         articleRepository.save(article);
@@ -470,6 +471,7 @@ public class ArticleService {
                     .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
+                    .maxPeople(article.getMaxPeople())
                     .articleFlag(changearticleFlag(articleFlag))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
@@ -709,6 +711,12 @@ public class ArticleService {
             return null;
     }
 
+    public CheckJoinDto checkJoin(Long articleId, UserDetailsImpl userDetails, String email) {
+
+
+
+        return null;
+    }
 }
 
 
