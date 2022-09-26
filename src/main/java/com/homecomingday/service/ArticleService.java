@@ -738,7 +738,7 @@ public class ArticleService {
                             .userImage(userDetails.getMember().getUserImage())
                             .username(userDetails.getMember().getUsername())
                             .department(userDetails.getMember().getDepartmentName())
-                            .admission(userDetails.getMember().getAdmission())
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                             .joinCheck(true)
                             .joinPeople(article.getParticipants().size())
                             .build();
@@ -752,7 +752,7 @@ public class ArticleService {
                             .userImage(userDetails.getMember().getUserImage())
                             .username(userDetails.getMember().getUsername())
                             .department(userDetails.getMember().getDepartmentName())
-                            .admission(userDetails.getMember().getAdmission())
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                             .joinCheck(false)
                             .joinPeople(article.getParticipants().size())
                             .build();
@@ -770,7 +770,7 @@ public class ArticleService {
                             .userImage(userDetails.getMember().getUserImage())
                             .username(userDetails.getMember().getUsername())
                             .department(userDetails.getMember().getDepartmentName())
-                            .admission(userDetails.getMember().getAdmission())
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
                             .joinCheck(false)
                             .joinPeople(article.getParticipants().size())
                             .build();
@@ -793,12 +793,13 @@ public class ArticleService {
                             .userImage(joinPeop.getMember().getUserImage())
                             .username(joinPeop.getMember().getUsername())
                             .department(joinPeop.getMember().getDepartmentName())
-                            .admission(joinPeop.getMember().getAdmission())
+                            .admission(joinPeop.getMember().getAdmission().substring(2, 4) + "학번")
                             .build()
             );
         }
         return CheckAllParticipantDto.builder()
                 .articleId(articleId)
+                .joinPeople(article.getParticipants().size())
                 .joinPeopleList(joinPeopleDtos)
                 .build();
 
