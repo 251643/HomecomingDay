@@ -21,4 +21,7 @@ public class joinPeopleDto {
     private String department;
 
     private String admission;
+
+    private boolean joinCheck;
+
 }

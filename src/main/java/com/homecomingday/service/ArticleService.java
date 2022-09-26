@@ -794,6 +794,7 @@ public class ArticleService {
                             .username(joinPeop.getMember().getUsername())
                             .department(joinPeop.getMember().getDepartmentName())
                             .admission(joinPeop.getMember().getAdmission().substring(2, 4) + "학번")
+                            .joinCheck(true)
                             .build()
             );
         }
