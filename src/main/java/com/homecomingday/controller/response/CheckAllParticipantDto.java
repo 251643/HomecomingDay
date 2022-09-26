@@ -16,5 +16,7 @@ public class CheckAllParticipantDto {
 
     private Long articleId;
 
+    private Integer joinPeople;
+
     private List<joinPeopleDto> joinPeopleList;
 }
