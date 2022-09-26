@@ -42,6 +42,10 @@ public class NotificationController {
     @ResponseStatus(HttpStatus.OK)
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl memberDetails,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+        System.out.println(3);
+        System.out.println(memberDetails.getMember().getId());
+        System.out.println(lastEventId);
+
         return notificationService.subscribe(memberDetails.getMember().getId(), lastEventId);
     }
 

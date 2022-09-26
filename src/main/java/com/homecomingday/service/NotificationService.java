@@ -34,6 +34,8 @@ public class NotificationService {
     public SseEmitter subscribe(Long userId, String lastEventId) {
         //emitter 하나하나 에 고유의 값을 주기 위해
         String emitterId = makeTimeIncludeId(userId);
+        System.out.println(emitterId);
+        System.out.println("3");
 
         Long timeout = 60L * 1000L * 60L; // 1시간
         // 생성된 emiiterId를 기반으로 emitter를 저장
@@ -42,7 +44,7 @@ public class NotificationService {
         //emitter의 시간이 만료된 후 레포에서 삭제
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
-
+        System.out.println("3.5");
         // 503 에러를 방지하기 위해 처음 연결 진행 시 더미 데이터를 전달
         String eventId = makeTimeIncludeId(userId);
         // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
@@ -52,7 +54,8 @@ public class NotificationService {
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
         }
-
+        System.out.println(4);
+        System.out.println(emitter);
         return emitter;
     }
 
