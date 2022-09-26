@@ -103,6 +103,7 @@ public class ArticleController {
         return articleService.checkJoin(articleId,userDetails,email);
     }
 
+    //참여한 인원 조회
     @GetMapping("/article/calendar/join/{articleId}")
     public CheckAllParticipantDto checkJoinPeople(@PathVariable Long articleId){
         return articleService.checkJoinPeople(articleId);
