@@ -38,10 +38,10 @@ public class EmitterRepositoryImpl implements EmitterRepository{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    @Override
-    public void saveEventCache(String key, Notification notification) {
-
-    }
+//    @Override
+//    public void saveEventCache(String key, Notification notification) {
+//
+//    }
 
     @Override // 회원에게 수신된 모든 이벤트를 찾는다.
     public Map<String, Object> findAllEventCacheStartWithId(String memberId) {
