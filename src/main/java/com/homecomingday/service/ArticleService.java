@@ -766,6 +766,32 @@ public class ArticleService {
 
         return null;
     }
+
+  //참여하기 인원 조회
+    public CheckAllParticipantDto checkJoinPeople(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+       List<joinPeopleDto> joinPeopleDtos=new ArrayList<>();
+
+        for(Participant joinPeop : article.getParticipants()){
+            joinPeopleDtos.add(
+                    joinPeopleDto.builder()
+                            .email(article.getMember().getEmail())
+                            .userImage(article.getMember().getUserImage())
+                            .username(article.getMember().getUsername())
+                            .department(article.getMember().getDepartmentName())
+                            .admission(article.getMember().getAdmission())
+                            .build()
+            );
+        }
+        return CheckAllParticipantDto.builder()
+                .articleId(articleId)
+                .joinPeopleList(joinPeopleDtos)
+                .build();
+
+
+
+    }
 }
 
 

@@ -102,4 +102,9 @@ public class ArticleController {
      public CheckJoinDto checkJoin(@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody String email){
         return articleService.checkJoin(articleId,userDetails,email);
     }
+
+    @GetMapping("/article/calendar/join/{articleId}")
+    public CheckAllParticipantDto checkJoinPeople(@PathVariable Long articleId){
+        return articleService.checkJoinPeople(articleId);
+    }
 }
