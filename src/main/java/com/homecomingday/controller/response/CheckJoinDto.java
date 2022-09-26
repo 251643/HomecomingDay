@@ -1,13 +1,18 @@
 package com.homecomingday.controller.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CheckJoinDto {
 
     private Long articleId;
 
     private String email;
+
+    private boolean joinCheck;
+
+    private Integer joinPeople;
 }

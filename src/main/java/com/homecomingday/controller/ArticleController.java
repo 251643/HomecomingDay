@@ -96,9 +96,10 @@ public class ArticleController {
 //        return articleService.heartCheck(articleId,userDetails);
 //    }
 
-    @PostMapping("/article/calendar/join/{articleId}")
+
+    //참여하기 버튼
+   @PostMapping("/article/calendar/join/{articleId}")
      public CheckJoinDto checkJoin(@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody String email){
         return articleService.checkJoin(articleId,userDetails,email);
     }
-
 }
