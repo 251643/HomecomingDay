@@ -40,13 +40,15 @@ public class NotificationController {
     @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     @ResponseStatus(HttpStatus.OK)
-    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl memberDetails,
+    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl member,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        System.out.println(3);
-        System.out.println(memberDetails.getMember().getId());
+        System.out.println(1);
         System.out.println(lastEventId);
+        System.out.println(member);
+        System.out.println(member.getMember());
+        System.out.println(member.getMember().getUsername());
 
-        return notificationService.subscribe(memberDetails.getMember().getId(), lastEventId);
+        return notificationService.subscribe(member.getMember().getId(), lastEventId);
     }
 
 //    //test
