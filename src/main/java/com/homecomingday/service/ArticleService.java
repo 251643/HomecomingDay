@@ -776,11 +776,11 @@ public class ArticleService {
         for(Participant joinPeop : article.getParticipants()){
             joinPeopleDtos.add(
                     joinPeopleDto.builder()
-                            .email(article.getMember().getEmail())
-                            .userImage(article.getMember().getUserImage())
-                            .username(article.getMember().getUsername())
-                            .department(article.getMember().getDepartmentName())
-                            .admission(article.getMember().getAdmission())
+                            .email(joinPeop.getMember().getEmail())
+                            .userImage(joinPeop.getMember().getUserImage())
+                            .username(joinPeop.getMember().getUsername())
+                            .department(joinPeop.getMember().getDepartmentName())
+                            .admission(joinPeop.getMember().getAdmission())
                             .build()
             );
         }
