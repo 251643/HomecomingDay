@@ -24,30 +24,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class NotificationService {
-    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-
     private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
-
     private final NotificationRepository notificationRepository;
 
-
     public SseEmitter subscribe(Long userId, String lastEventId) {
-//        // 1
-//        String id = userId + "_" + System.currentTimeMillis();
-//
-//        // 생성된 emiiterId를 기반으로 emitter를 저장
-//        SseEmitter emitter = emitterRepository.save(id, new SseEmitter(DEFAULT_TIMEOUT));
-//        //시간 만료후 Repository에서 삭제
-//        emitter.onCompletion(() -> emitterRepository.deleteById(id));
-//        emitter.onTimeout(() -> emitterRepository.deleteById(id));
-//
-//        // 503 에러를 방지하기 위한 더미 이벤트 전송
-//        sendToClient(emitter, id, "EventStream Created. [userId=" + userId + "]");
-
         //emitter 하나하나 에 고유의 값을 주기 위해
         String emitterId = makeTimeIncludeId(userId);
 
@@ -63,12 +47,10 @@ public class NotificationService {
         String eventId = makeTimeIncludeId(userId);
         // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + userId + "]");
+
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
-        if (!lastEventId.isEmpty()) {
-            Map<String, Object> events = emitterRepository.findAllEventCacheStartWithId(String.valueOf(userId));
-            events.entrySet().stream()
-                    .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-                    .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
+        if (hasLostData(lastEventId)) {
+            sendLostData(lastEventId, userId, emitterId, emitter);
         }
 
         return emitter;
@@ -81,24 +63,50 @@ public class NotificationService {
         return userId + "_" + System.currentTimeMillis();
     }
 
-    // 유효시간이 다 지난다면 503 에러가 발생하기 때문에 더미데이터를 발행
-    private void sendToClient(SseEmitter emitter, String id, Object data) {
-        try {
-            emitter.send(SseEmitter.event()
-                    .id(id)
-                    .name("sse")
-                    .data(data));
-        } catch (IOException exception) {
-            emitterRepository.deleteById(id);
-            throw new RuntimeException("see 연결 오류!");
-        }
+    // Last - event - id 가 존재한다는 것은 받지 못한 데이터가 있다는 것이다.
+    private boolean hasLostData(String lastEventId) {
+        return !lastEventId.isEmpty();
+    }
+    // 받지못한 데이터가 있다면 last - event - id를 기준으로 그 뒤의 데이터를 추출해 알림을 보내주면 된다.
+    private void sendLostData(String lastEventId, Long userId, String emitterId, SseEmitter emitter) {
+        Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByUserId(String.valueOf(userId));
+        eventCaches.entrySet().stream()
+                .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
+                .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
     }
 
+
+//    // 유효시간이 다 지난다면 503 에러가 발생하기 때문에 더미데이터를 발행
+//    private void sendToClient(SseEmitter emitter, String id, Object data) {
+//        try {
+//            emitter.send(SseEmitter.event()
+//                    .id(id)
+//                    .name("sse")
+//                    .data(data));
+//        } catch (IOException exception) {
+//            emitterRepository.deleteById(id);
+//            throw new RuntimeException("see 연결 오류!");
+//        }
+//    }
+    // 유효시간이 다 지난다면 503 에러가 발생하기 때문에 더미데이터를 발행
+    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
+            try {
+                emitter.send(SseEmitter.event()
+                        .id(eventId)
+                        .data(data));
+            } catch (IOException exception) {
+                emitterRepository.deleteById(emitterId);
+                log.error("sse 연결오류!!!", exception);
+            }
+        }
+
+
+
     //댓글이나 좋아요 누르면 알림
-    @Async //비동기 메세지
-    public void send(Member receiver, NoticeType noticeType, String message, Long articlesId, String title, LocalDateTime createdAt) {
+    @Async
+    public void send(Member receiver, NoticeType alarmType, String message, Long articlesId, String title) {
 //        여기 createdAt은 댓글 생성될때 찍히는시간,
-        Notification notification = notificationRepository.save(createNotification(receiver, noticeType, message, articlesId, title));
+        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title));
         log.info("DB 메시지 저장 확인 : {}", message);
         String receiverId = String.valueOf(receiver.getId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
@@ -125,16 +133,6 @@ public class NotificationService {
                 .build();
     }
 
-    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
-        try {
-            emitter.send(SseEmitter.event()
-                    .id(eventId)
-                    .data(data));
-        } catch (IOException exception) {
-            emitterRepository.deleteById(emitterId);
-            log.error("sse 연결오류!!!", exception);
-        }
-    }
     //알림 전체 조회
     @Transactional
     public List<NotificationResponseDto> findAllNotifications(Long userId) {
@@ -169,20 +167,19 @@ public class NotificationService {
 
     //알림 전체 삭제
     @Transactional
-    public String deleteAllByNotification(UserDetailsImpl userDetails) {
+    public void deleteAllByNotifications(UserDetailsImpl userDetails) {
         Long receiverId = userDetails.getMember().getId();
         notificationRepository.deleteAllByReceiver_Id(receiverId);
-        return "알림 전체 삭제 되었습니다";
+
     }
 
     //단일 알림 삭제
     @Transactional
-    public String deleteByNotifications(Long notificationId) {
-        if (notificationId != null) {
-//            throw new CustomException(ErrorCode.NOT_EXIST_NOTIFICATION);
-            notificationRepository.deleteById(notificationId);
+    public void deleteByNotifications(Long notificationId) {
+        if (notificationId == null) {
+            throw new NotFoundException("알림존재하지 않음");
         }
-        return notificationId+" 삭제 되었습니다.";
+        notificationRepository.deleteById(notificationId);
     }
 
 

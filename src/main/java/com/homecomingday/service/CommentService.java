@@ -63,7 +63,7 @@ public class CommentService {
 //            if(!Objects.equals(comment.getMember().getId(), article1.getMember().getId())) {
 //
 //            }
-            notificationService.send(article1.getMember(), NoticeType.comment, message, article1.getId(), article1.getTitle(), comment.getCreatedAt());
+            notificationService.send(article1.getMember(), NoticeType.comment, message, article1.getId(), article1.getTitle());
 
 
         return commentResponseDto;
