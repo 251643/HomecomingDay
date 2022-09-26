@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -42,12 +43,8 @@ public class NotificationController {
     @ResponseStatus(HttpStatus.OK)
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl member,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        System.out.println(1);
-        System.out.println(lastEventId);
-        System.out.println(member);
-        System.out.println(member.getMember());
-        System.out.println(member.getMember().getUsername());
-
+        String test = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(test);
         return notificationService.subscribe(member.getMember().getId(), lastEventId);
     }
 
