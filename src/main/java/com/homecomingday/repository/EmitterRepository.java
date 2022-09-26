@@ -9,12 +9,12 @@ import java.util.Map;
 public interface EmitterRepository {
 
     //Emitter 저장
-   SseEmitter save(String id, SseEmitter sseEmitter);
+    SseEmitter save(String emitterId, SseEmitter sseEmitter);
     //Emitter 삭제
     void deleteById(String id);
 
     //해당 회원과 관련된 모든 이벤트를 찾는다.
-    Map<String, Object> findAllEventCacheStartWithId(String userId);
+    Map<String,Object> findAllEventCacheStartWithByUserId(String userId);
 
     //이벤트를 저장
     void saveEventCache(String eventCacheId, Object event);
@@ -24,4 +24,10 @@ public interface EmitterRepository {
 
     //이벤트를 저장한다.
 //    void saveEventCache(String key, Notification notification);
+
+    // 해당 회원과 관련된 모든 Emitter를 지운다.
+    void deleteAllEmitterStartWithId(String memberId);
+    //해당 회원과 관련된 모든 이벤트를 지운다.
+    void deleteAllEventCacheStartWithId(String memberId);
+
 }

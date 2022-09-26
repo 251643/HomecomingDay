@@ -1,9 +1,11 @@
 package com.homecomingday.controller;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.homecomingday.controller.request.NotificationCountDto;
 import com.homecomingday.controller.response.NotificationResponseDto;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.service.NotificationService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,18 +31,26 @@ public class NotificationController {
      */
 
 //    알림 구독
-    @GetMapping(value ="/notification/subscribe" , produces = "text/event-stream")
-    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                @RequestHeader(value="Last-Event-ID",required = false,defaultValue = "")
-                                String lastEventId){
-        return notificationService.subscribe(userDetails.getMember().getId(),lastEventId);
-    }
-    //test
-    @GetMapping(value = "/subscribe/{id}", produces = "text/event-stream")
-    public SseEmitter subscribe(@PathVariable Long id,
+//    @GetMapping(value ="/notification/subscribe" , produces = "text/event-stream")
+//    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl member,
+//                                @RequestHeader(value="Last-Event-ID",required = false,defaultValue = "")
+//                                String lastEventId){
+//        return notificationService.subscribe(member.getMember().getId(),lastEventId);
+//    }
+    @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+    @ResponseStatus(HttpStatus.OK)
+    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl memberDetails,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        return notificationService.subscribe(id, lastEventId);
+        return notificationService.subscribe(memberDetails.getMember().getId(), lastEventId);
     }
+
+//    //test
+//    @GetMapping(value = "/subscribe/{id}", produces = "text/event-stream")
+//    public SseEmitter subscribe(@PathVariable Long id,
+//                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+//        return notificationService.subscribe(id, lastEventId);
+//    }
     //알림전체조회
     @GetMapping(value = "/notification")
     public List<NotificationResponseDto> findAllNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -61,17 +71,17 @@ public class NotificationController {
 
     //알림 전체 삭제
     @DeleteMapping(value = "/notification")
-    public String deleteNotification(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<Object> deleteNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return notificationService.deleteAllByNotification(userDetails);
-//        return new ResponseEntity<>(new StatusResponseDto("알림 목록 전체삭제 성공",""), HttpStatus.OK);
+        notificationService.deleteAllByNotifications(userDetails);
+        return new ResponseEntity<>(new NotFoundException("알림 목록 전체삭제 성공"), HttpStatus.OK);
     }
     //단일 알림 삭제
     @DeleteMapping(value = "/notification/{notificationId}")
-    public String deleteNotification(@PathVariable Long notificationId){
+    public ResponseEntity<Object> deleteNotification(@PathVariable Long notificationId){
 
-        return notificationService.deleteByNotifications(notificationId);
-//        return new ResponseEntity<>(new StatusResponseDto("알림 목록 삭제 성공",""), HttpStatus.OK);
+        notificationService.deleteByNotifications(notificationId);
+        return new ResponseEntity<>(new NotFoundException("알림 목록 삭제 성공"), HttpStatus.OK);
     }
 //
 //

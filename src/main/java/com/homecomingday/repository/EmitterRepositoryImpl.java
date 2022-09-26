@@ -27,7 +27,11 @@ public class EmitterRepositoryImpl implements EmitterRepository{
         emitters.put(emitterId,sseEmitter);
         return sseEmitter;
     }
+    @Override //이벤트를 저장
+    public void saveEventCache(String eventCacheId, Object event) {
+        eventCache.put(eventCacheId,event);
 
+    }
 
 
     @Override // 구분자를 회원 ID를 사용하기에 StartWith를 사용 - 회원과 관련된 모든 Emitter를 찾는다.
@@ -38,13 +42,10 @@ public class EmitterRepositoryImpl implements EmitterRepository{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-//    @Override
-//    public void saveEventCache(String key, Notification notification) {
-//
-//    }
+
 
     @Override // 회원에게 수신된 모든 이벤트를 찾는다.
-    public Map<String, Object> findAllEventCacheStartWithId(String memberId) {
+    public Map<String, Object> findAllEventCacheStartWithByUserId(String memberId) {
         return eventCache.entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(memberId))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -54,12 +55,28 @@ public class EmitterRepositoryImpl implements EmitterRepository{
     @Override
     public void deleteById(String id) {
         emitters.remove(id);
-
     }
-    @Override //이벤트를 저장
-    public void saveEventCache(String eventCacheId, Object event) {
-        eventCache.put(eventCacheId,event);
 
+    @Override
+    public void deleteAllEmitterStartWithId(String memberId) {
+        emitters.forEach(
+                (key, emitter) -> {
+                    if (key.startsWith(memberId)) {
+                        emitters.remove(key);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void deleteAllEventCacheStartWithId(String memberId) {
+        eventCache.forEach(
+                (key, emitter) -> {
+                    if (key.startsWith(memberId)) {
+                        eventCache.remove(key);
+                    }
+                }
+        );
     }
 
 
