@@ -8,9 +8,15 @@ import lombok.*;
 @AllArgsConstructor
 public class CheckJoinDto {
 
-    private Long articleId;
-
     private String email;
+
+    private String userImage;
+
+    private String username;
+
+    private String department;
+
+    private String admission;
 
     private boolean joinCheck;
 

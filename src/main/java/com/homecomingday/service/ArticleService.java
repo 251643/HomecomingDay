@@ -734,8 +734,11 @@ public class ArticleService {
                     participantRepository.save(newParticipant);
 
                     return CheckJoinDto.builder()
-                            .articleId(articleId)
                             .email(userDetails.getUsername())
+                            .userImage(userDetails.getMember().getUserImage())
+                            .username(userDetails.getMember().getUsername())
+                            .department(userDetails.getMember().getDepartmentName())
+                            .admission(userDetails.getMember().getAdmission())
                             .joinCheck(true)
                             .joinPeople(article.getParticipants().size())
                             .build();
@@ -745,8 +748,11 @@ public class ArticleService {
                     participantRepository.delete(participant);
 
                     return CheckJoinDto.builder()
-                            .articleId(articleId)
                             .email(userDetails.getUsername())
+                            .userImage(userDetails.getMember().getUserImage())
+                            .username(userDetails.getMember().getUsername())
+                            .department(userDetails.getMember().getDepartmentName())
+                            .admission(userDetails.getMember().getAdmission())
                             .joinCheck(false)
                             .joinPeople(article.getParticipants().size())
                             .build();
@@ -760,8 +766,11 @@ public class ArticleService {
                     participantRepository.delete(participant);
 
                     return CheckJoinDto.builder()
-                            .articleId(articleId)
                             .email(userDetails.getUsername())
+                            .userImage(userDetails.getMember().getUserImage())
+                            .username(userDetails.getMember().getUsername())
+                            .department(userDetails.getMember().getDepartmentName())
+                            .admission(userDetails.getMember().getAdmission())
                             .joinCheck(false)
                             .joinPeople(article.getParticipants().size())
                             .build();
