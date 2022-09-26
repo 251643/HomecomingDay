@@ -35,12 +35,12 @@ public class NotificationController {
                                 String lastEventId){
         return notificationService.subscribe(userDetails.getMember().getId(),lastEventId);
     }
-//    //test
-//    @GetMapping(value = "/subscribe/{id}", produces = "text/event-stream")
-//    public SseEmitter subscribe(@PathVariable Long id,
-//                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-//        return notificationService.subscribe(id, lastEventId);
-//    }
+    //test
+    @GetMapping(value = "/subscribe/{id}", produces = "text/event-stream")
+    public SseEmitter subscribe(@PathVariable Long id,
+                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+        return notificationService.subscribe(id, lastEventId);
+    }
     //알림전체조회
     @GetMapping(value = "/notification")
     public List<NotificationResponseDto> findAllNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {

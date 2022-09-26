@@ -1,13 +1,12 @@
 package com.homecomingday.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.homecomingday.controller.request.NotificationCountDto;
 import com.homecomingday.controller.response.NotificationResponseDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.NoticeType;
 import com.homecomingday.domain.Notification;
 import com.homecomingday.domain.UserDetailsImpl;
-import com.homecomingday.exception.CustomException;
-import com.homecomingday.exception.ErrorCode;
 import com.homecomingday.repository.EmitterRepository;
 import com.homecomingday.repository.EmitterRepositoryImpl;
 import com.homecomingday.repository.NotificationRepository;
@@ -37,18 +36,33 @@ public class NotificationService {
 
 
     public SseEmitter subscribe(Long userId, String lastEventId) {
-        // 1
-        String id = userId + "_" + System.currentTimeMillis();
+//        // 1
+//        String id = userId + "_" + System.currentTimeMillis();
+//
+//        // 생성된 emiiterId를 기반으로 emitter를 저장
+//        SseEmitter emitter = emitterRepository.save(id, new SseEmitter(DEFAULT_TIMEOUT));
+//        //시간 만료후 Repository에서 삭제
+//        emitter.onCompletion(() -> emitterRepository.deleteById(id));
+//        emitter.onTimeout(() -> emitterRepository.deleteById(id));
+//
+//        // 503 에러를 방지하기 위한 더미 이벤트 전송
+//        sendToClient(emitter, id, "EventStream Created. [userId=" + userId + "]");
 
+        //emitter 하나하나 에 고유의 값을 주기 위해
+        String emitterId = makeTimeIncludeId(userId);
+
+        Long timeout = 60L * 1000L * 60L; // 1시간
         // 생성된 emiiterId를 기반으로 emitter를 저장
-        SseEmitter emitter = emitterRepository.save(id, new SseEmitter(DEFAULT_TIMEOUT));
-        //시간 만료후 Repository에서 삭제
-        emitter.onCompletion(() -> emitterRepository.deleteById(id));
-        emitter.onTimeout(() -> emitterRepository.deleteById(id));
+        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(timeout));
 
-        // 503 에러를 방지하기 위한 더미 이벤트 전송
-        sendToClient(emitter, id, "EventStream Created. [userId=" + userId + "]");
+        //emitter의 시간이 만료된 후 레포에서 삭제
+        emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
+        emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
 
+        // 503 에러를 방지하기 위해 처음 연결 진행 시 더미 데이터를 전달
+        String eventId = makeTimeIncludeId(userId);
+        // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
+        sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + userId + "]");
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (!lastEventId.isEmpty()) {
             Map<String, Object> events = emitterRepository.findAllEventCacheStartWithId(String.valueOf(userId));
@@ -58,6 +72,13 @@ public class NotificationService {
         }
 
         return emitter;
+    }
+
+    // SseEmitter를 구분 -> 구분자로 시간을 사용함
+    // 시간을 붙혀주는 이유 -> 브라우저에서 여러개의 구독을 진행 시
+    //탭 마다 SssEmitter 구분을 위해 시간을 붙여 구분하기 위해 아래와 같이 진행
+    private String makeTimeIncludeId(Long userId) {
+        return userId + "_" + System.currentTimeMillis();
     }
 
     // 유효시간이 다 지난다면 503 에러가 발생하기 때문에 더미데이터를 발행
@@ -129,7 +150,7 @@ public class NotificationService {
 
         //알림을 받은 사람의 id 와 알림의 id 를 받아와서 해당 알림을 찾는다.
         Optional<Notification> notification = notificationRepository.findById(notificationId);
-        Notification checkNotification = notification.orElseThrow(()-> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        Notification checkNotification = notification.orElseThrow(()-> new NotFoundException("사용자가 없습니다."));
         checkNotification.changeState(); // 읽음처리
     }
 

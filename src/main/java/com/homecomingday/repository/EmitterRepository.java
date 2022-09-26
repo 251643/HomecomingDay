@@ -23,5 +23,5 @@ public interface EmitterRepository {
     Map<String, SseEmitter> findAllEmitterStartWithByUserId(String userId);
 
     //이벤트를 저장한다.
-    void saveEventCache(String key, Notification notification);
+//    void saveEventCache(String key, Notification notification);
 }
