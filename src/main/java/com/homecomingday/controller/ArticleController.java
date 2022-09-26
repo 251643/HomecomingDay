@@ -97,4 +97,15 @@ public class ArticleController {
 //    }
 
 
+    //참여하기 버튼
+   @PostMapping("/article/calendar/join/{articleId}")
+     public CheckJoinDto checkJoin(@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody String email){
+        return articleService.checkJoin(articleId,userDetails,email);
+    }
+
+    //참여한 인원 조회
+    @GetMapping("/article/calendar/join/{articleId}")
+    public CheckAllParticipantDto checkJoinPeople(@PathVariable Long articleId){
+        return articleService.checkJoinPeople(articleId);
+    }
 }

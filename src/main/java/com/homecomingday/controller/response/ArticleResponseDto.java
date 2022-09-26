@@ -29,6 +29,8 @@ public class ArticleResponseDto {
 
     private String calendarLocation;
 
+    private Integer maxPeople;
+
     private String username;
 
     private String userImage;

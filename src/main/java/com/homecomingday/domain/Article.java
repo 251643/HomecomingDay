@@ -50,12 +50,15 @@ public class Article extends Timestamped {
     private String calendarLocation;
 
     @Column
+    private Integer maxPeople;
+
+    @Column
     private String schoolName;
 
     @JsonIgnore
     private long heartCnt;
 
-    //  @Transient //사진은 보여지기만 하면 되므로 불필요하게 관게를 맺기보단 일시적으로 체류만 시켜주면됨
+    //@Transient //사진은 보여지기만 하면 되므로 불필요하게 관게를 맺기보단 일시적으로 체류만 시켜주면됨
     @JsonManagedReference
     @OneToMany(mappedBy = "article",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List <Image>imageList = new ArrayList<>();
@@ -71,6 +74,7 @@ public class Article extends Timestamped {
         this.calendarDate=articleRequestDto.getCalendarDate();
         this.calendarTime=articleRequestDto.getCalendarTime();
         this.calendarLocation=articleRequestDto.getCalendarLocation();
+        this.maxPeople=articleRequestDto.getMaxPeople();
     }
 
     public void deleteComment(Comment comment) {
@@ -80,6 +84,10 @@ public class Article extends Timestamped {
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonIgnore
     private List<Heart> heartList = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Participant> participants=new ArrayList<>();
 
 
     public void addHeart(Heart heart) {
@@ -92,5 +100,10 @@ public class Article extends Timestamped {
     public void setHeartCnt(int heartListSize) {
         this.heartCnt = heartListSize;
     }
+
+    public void addParticipant(Participant participant){this.participants.add(participant);}
+
+    public void removeParticipant(Participant participant){this.participants.remove(participant);}
+
 
 }

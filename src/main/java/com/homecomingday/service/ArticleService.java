@@ -31,6 +31,9 @@ public class ArticleService {
     private final CommitRepository commitRepository;
     private final ImageRepository imageRepository;
     private final HeartRepository heartRepository;
+    private final ParticipantRepository participantRepository;
+
+
 
 
     //현재 게시물 받아오기
@@ -385,6 +388,7 @@ public class ArticleService {
                 .calendarDate(articleRequestDto.getCalendarDate())
                 .calendarTime(articleRequestDto.getCalendarTime())
                 .calendarLocation(articleRequestDto.getCalendarLocation())
+                .maxPeople(articleRequestDto.getMaxPeople())
                 .schoolName(userDetails.getMember().getSchoolName())
                 .build();
         articleRepository.save(article);
@@ -392,7 +396,7 @@ public class ArticleService {
 
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
-            System.out.println(">>>>>>>>>>>>>>>>>>>>"+multipartFile);
+
 //            int checkNum =1;
 //
 //            for(MultipartFile image:multipartFile){
@@ -470,6 +474,7 @@ public class ArticleService {
                     .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
+                    .maxPeople(article.getMaxPeople())
                     .articleFlag(changearticleFlag(articleFlag))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
@@ -709,6 +714,84 @@ public class ArticleService {
             return null;
     }
 
+    //참여하기 버튼
+    @Transactional
+    public CheckJoinDto checkJoin(Long articleId, UserDetailsImpl userDetails, String email) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+        Member loginMember = userDetails.getMember();
+
+        List<Participant> checkParticipant = participantRepository.findAllByMember(loginMember);
+        if(article.getParticipants().size()<article.getMaxPeople()){ //모집인원이 충족되지 않았을때
+                if(participantRepository.findByMemberAndArticle(loginMember,article) == null){ //참여를 누르지 않았을때
+                    Participant newParticipant=new Participant(loginMember,article);
+                    article.addParticipant(newParticipant);
+                    participantRepository.save(newParticipant);
+
+                    return CheckJoinDto.builder()
+                            .articleId(articleId)
+                            .email(userDetails.getUsername())
+                            .joinCheck(true)
+                            .joinPeople(article.getParticipants().size())
+                            .build();
+                }else{//기존에 참여를 누른 상태에서 한번더 눌렀을 때
+                    Participant participant=participantRepository.findByMemberAndArticle(loginMember,article);
+                    article.removeParticipant(participant);
+                    participantRepository.delete(participant);
+
+                    return CheckJoinDto.builder()
+                            .articleId(articleId)
+                            .email(userDetails.getUsername())
+                            .joinCheck(false)
+                            .joinPeople(article.getParticipants().size())
+                            .build();
+                }
+        }else if(article.getParticipants().size()==article.getMaxPeople()) { //모집인원이 참여인원이 동일할때
+                if(participantRepository.findByMemberAndArticle(loginMember,article) == null) {
+                    throw new IllegalArgumentException("인원이 충족되어 참여할 수 없습니다");
+                }else{
+                    Participant participant=participantRepository.findByMemberAndArticle(loginMember,article);
+                    article.removeParticipant(participant);
+                    participantRepository.delete(participant);
+
+                    return CheckJoinDto.builder()
+                            .articleId(articleId)
+                            .email(userDetails.getUsername())
+                            .joinCheck(false)
+                            .joinPeople(article.getParticipants().size())
+                            .build();
+                }
+        }else
+
+        return null;
+    }
+
+  //참여하기 인원 조회
+    public CheckAllParticipantDto checkJoinPeople(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+       List<joinPeopleDto> joinPeopleDtos=new ArrayList<>();
+
+        for(Participant joinPeop : article.getParticipants()){
+            joinPeopleDtos.add(
+                    joinPeopleDto.builder()
+                            .email(article.getMember().getEmail())
+                            .userImage(article.getMember().getUserImage())
+                            .username(article.getMember().getUsername())
+                            .department(article.getMember().getDepartmentName())
+                            .admission(article.getMember().getAdmission())
+                            .build()
+            );
+        }
+        return CheckAllParticipantDto.builder()
+                .articleId(articleId)
+                .joinPeopleList(joinPeopleDtos)
+                .build();
+
+
+
+    }
 }
 
 
