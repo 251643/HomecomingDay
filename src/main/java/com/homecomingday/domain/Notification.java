@@ -1,18 +1,14 @@
 package com.homecomingday.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.homecomingday.util.Timestamped;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-
-/**
- * 알림 Entity
- */
 
 @Entity
 @Getter
@@ -28,32 +24,28 @@ public class Notification extends Timestamped {
     @Enumerated(EnumType.STRING)
     private NoticeType noticeType;
 
-    /**
-     * 알림 message
-     */
+    //알림 메세지
     @Column(nullable = false)
     private String message;
 
     @Column(nullable = false)
     private Boolean readState;
 
-    /**
-     * 클릭 시 이동할 수 있는 link 필요
-     */
+    @Column
+    private String title;
+
 
     @Column(nullable = false)
     private Long url;
 
-    /**
-     * 멤버 변수이름 변경
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne
+    @JsonBackReference
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "receiver_member_id")
-    private Member receiver;
+    private Member member;
 
-    @Column
-    private String title;
+
 
 
     @Builder
@@ -63,14 +55,13 @@ public class Notification extends Timestamped {
         this.message = message;
         this.readState = readState;
         this.url = articlesId;
-        this.receiver = receiver;
+        this.member = receiver;
         this.title = title;
     }
 
     public void changeState() {
         readState = true;
     }
-
 
 
 

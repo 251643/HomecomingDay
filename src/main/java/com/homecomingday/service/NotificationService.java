@@ -10,6 +10,7 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.EmitterRepository;
 import com.homecomingday.repository.EmitterRepositoryImpl;
 import com.homecomingday.repository.NotificationRepository;
+import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +37,6 @@ public class NotificationService {
         //emitter 하나하나 에 고유의 값을 주기 위해
         String emitterId = makeTimeIncludeId(userId);
         System.out.println(emitterId);
-        System.out.println("3");
 
         Long timeout = 60L * 1000L * 60L; // 1시간
         // 생성된 emiiterId를 기반으로 emitter를 저장
@@ -44,7 +45,6 @@ public class NotificationService {
         //emitter의 시간이 만료된 후 레포에서 삭제
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
-        System.out.println("3.5");
         // 503 에러를 방지하기 위해 처음 연결 진행 시 더미 데이터를 전달
         String eventId = makeTimeIncludeId(userId);
         // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
@@ -54,7 +54,6 @@ public class NotificationService {
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
         }
-        System.out.println(4);
         System.out.println(emitter);
         return emitter;
     }
@@ -140,10 +139,43 @@ public class NotificationService {
     @Transactional
     public List<NotificationResponseDto> findAllNotifications(Long userId) {
         List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(userId);
+        for (Notification notification : notifications) {
+            notification.changeState();
+        }
         return notifications.stream()
                 .map(NotificationResponseDto::create)
                 .collect(Collectors.toList());
     }
+
+
+    //알림 전체 조회
+//    @Transactional
+//    public List<NotificationResponseDto> findAllNotifications(Long userId) {
+//        System.out.println("1");
+//        List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(userId);
+//        System.out.println("2");
+//        System.out.println(notifications);
+//        List<NotificationResponseDto> notificationResponseDtoList = new ArrayList<>();
+//        System.out.println("3");
+//        for (Notification notification : notifications) {
+//            notificationResponseDtoList.add(
+//                    NotificationResponseDto.builder()
+//                            .id(notification.getId())
+//                            .noticeType(notification.getNoticeType())
+//                            .articleId(notification.getUrl())
+//                            .title(notification.getTitle())
+//                            .readStatus(notification.getReadState())
+//                            .createdAt(Time.convertLocaldatetimeToTime(notification.getCreatedAt()))
+//                            .build()
+//            );
+//        }
+//        System.out.println(notificationResponseDtoList);
+//        System.out.println(notifications);
+////        return notifications.stream()
+////                .map(NotificationResponseDto::create)
+////                .collect(Collectors.toList());
+//        return notificationResponseDtoList;
+//    }
 
     //알림 전체조회 후 읽음 처리
     @Transactional
@@ -172,7 +204,7 @@ public class NotificationService {
     @Transactional
     public void deleteAllByNotifications(UserDetailsImpl userDetails) {
         Long receiverId = userDetails.getMember().getId();
-        notificationRepository.deleteAllByReceiver_Id(receiverId);
+        notificationRepository.deleteAllByMember_Id(receiverId);
 
     }
 

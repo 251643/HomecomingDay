@@ -14,17 +14,15 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 //    @Query(value = "select n from Notification n WHERE n.receiver.id = :memberId order by n.receiver.id ")
 //    List<Notification> findAllByReceiver_MemberId(@Param("memberId")Long memberId);
 
-    @Query(value = "select n from Notification n where n.receiver.id = :memberId order by n.id desc")
+
+    @Query(value = "select n from Notification n where n.member.id = :memberId order by n.id desc")
     List<Notification> findAllByReceiver_MemberId(@Param("memberId")Long memberId);
 
-
-    @Query(value = "select count(n) from Notification n where n.receiver.id =:memberId and n.readState = false")
+    @Query(value = "select count(n) from Notification n where n.member.id =:memberId and n.readState = false")
     Long countUnReadStateNotification(@Param("memberId") Long memberId);
 
 
-
-    void deleteAllByReceiver_Id(Long receiverId);
-
+    void deleteAllByMember_Id(Long receiverId);
 
 //    void deleteAllByReceiver_MemberId(Long receiverId);
 }
