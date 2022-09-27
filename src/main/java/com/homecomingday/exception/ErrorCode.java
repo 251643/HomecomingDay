@@ -41,6 +41,10 @@ public enum ErrorCode {
     //Article
     ARTICLES_NOT_FOUND(HttpStatus.NOT_FOUND, "A001", "존재하지 않는 게시글입니다."),
 
+    //Join
+    PARTICIPANT_NOT_JOIN(HttpStatus.INTERNAL_SERVER_ERROR,"J001","최대 인원에 도달했습니다"),
+
+
     //comment, commit
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "존재하지 않는 댓글입니다."),
 
