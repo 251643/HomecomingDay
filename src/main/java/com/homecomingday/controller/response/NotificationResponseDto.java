@@ -18,7 +18,9 @@ public class NotificationResponseDto {
     private Long notificationId;
     private Long articleId;
 
-    private String username;
+    private String message;
+
+//    private String username;
 
     private Boolean readStatus;
 
@@ -30,10 +32,11 @@ public class NotificationResponseDto {
 
 
     @Builder
-    public NotificationResponseDto(Long id, Comment comment, Long articleId, Boolean readStatus,
+    public NotificationResponseDto(Long id, String message, Long articleId, Boolean readStatus,
                                    NoticeType noticeType, String title, String createdAt) {
         this.notificationId = id;
-        this.username = comment.getMember().getUsername();
+        this.message = message;
+//        this.username = comment.getMember().getUsername();
         this.articleId = articleId;
         this.readStatus = readStatus;
         this.title = title;
@@ -42,15 +45,13 @@ public class NotificationResponseDto {
     }
 
     public static NotificationResponseDto create(Notification notification) {
-//        String now = String.valueOf(ChronoUnit.MINUTES.between(notification.getCreatedAt() , LocalDateTime.now()));
-//        String createdAt = Time.convertLocaldatetimeToTime(LocalDateTime.parse(now));
-
         long now = ChronoUnit.MINUTES.between(notification.getCreatedAt() , LocalDateTime.now());
         Time time = new Time();
         String createdAt = time.times(now);
 
         return NotificationResponseDto.builder()
                 .id(notification.getId())
+                .message(notification.getMessage())
                 .noticeType(notification.getNoticeType())
                 .articleId(notification.getUrl())
                 .title(notification.getTitle())

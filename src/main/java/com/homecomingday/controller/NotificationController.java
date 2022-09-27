@@ -43,6 +43,7 @@ public class NotificationController {
     @ResponseStatus(HttpStatus.OK)
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl member,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+        //확인용
         String test = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println(test);
         return notificationService.subscribe(member.getMember().getId(), lastEventId);
@@ -58,7 +59,7 @@ public class NotificationController {
     @GetMapping(value = "/notification")
     public List<NotificationResponseDto> findAllNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return notificationService.findAllNotifications(userDetails.getMember().getId());
-    }
+}
 
     //알림 전체조회 후 읽음 처리
     @GetMapping("/notification/{notificationId}")
