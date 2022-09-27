@@ -146,7 +146,7 @@ public class ArticleService {
                                 .departmentName(findArticle.getMember().getDepartmentName())
                                 .articleFlag(changearticleFlag(findArticle.getArticleFlag()))
                                 .views(findArticle.getViews())
-                                .heartCnt( findArticle.getHeartCnt())
+                                .heartCnt(findArticle.getHeartCnt())
                                 .commentCnt((long) findArticle.getComments().size())
                                 .build()
                 );
@@ -611,16 +611,14 @@ public class ArticleService {
         }
 
 
-
         if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
 
             article.updateArticle(articleRequestDto);
 
-
-            return articleFlag + "  " + myId + "번 게시글이 수정";
+            return articleFlag + "  " + myId + "번 게시글 수정";
         }
 
-        return articleFlag + "  " + myId + "번 게시글이 수정 실패";
+        return articleFlag + "  " + myId + "번 게시글 수정 실패";
     }
 
 
@@ -700,20 +698,20 @@ public class ArticleService {
     //article에는 저장않고 dto출력시 값 변경경
    public String changeCalendarDate(String calendarDate){
 
-        if(calendarDate.substring(8).equals("Monday")){
-            return calendarDate.substring(0, 8) + "월요일";
-        }else if(calendarDate.substring(8).equals("Tuesday")) {
-            return calendarDate.substring(0, 8) + "화요일";
-        }else if(calendarDate.substring(8).equals("Wednesday")) {
-            return calendarDate.substring(0, 8) + "수요일";
-        }else if(calendarDate.substring(8).equals("Thursday")) {
-            return calendarDate.substring(0, 8) + "목요일";
-        }else if(calendarDate.substring(8).equals("Friday")) {
-            return calendarDate.substring(0, 8) + "금요일";
-        }else if(calendarDate.substring(8).equals("Saturday")) {
-            return calendarDate.substring(0, 8) + "토요일";
-        }else if(calendarDate.substring(8).equals("Sunday")) {
-            return calendarDate.substring(0, 8) + "일요일";
+        if(calendarDate.substring(14).equals("Monday")){
+            return calendarDate.substring(0, 14) + "월요일";
+        }else if(calendarDate.substring(14).equals("Tuesday")) {
+            return calendarDate.substring(0, 14) + "화요일";
+        }else if(calendarDate.substring(14).equals("Wednesday")) {
+            return calendarDate.substring(0, 14) + "수요일";
+        }else if(calendarDate.substring(14).equals("Thursday")) {
+            return calendarDate.substring(0, 14) + "목요일";
+        }else if(calendarDate.substring(14).equals("Friday")) {
+            return calendarDate.substring(0, 14) + "금요일";
+        }else if(calendarDate.substring(14).equals("Saturday")) {
+            return calendarDate.substring(0, 14) + "토요일";
+        }else if(calendarDate.substring(14).equals("Sunday")) {
+            return calendarDate.substring(0, 14) + "일요일";
         }else
             return null;
     }
