@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -50,6 +49,10 @@ public class Member extends Timestamped {
 
   @Column
   private String userImage;
+
+  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+  @JsonManagedReference
+  private List<Notification> notification = new ArrayList<>();
 
   @Override
   public boolean equals(Object o) {

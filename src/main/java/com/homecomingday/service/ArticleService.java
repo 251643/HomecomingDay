@@ -31,6 +31,9 @@ public class ArticleService {
     private final CommitRepository commitRepository;
     private final ImageRepository imageRepository;
     private final HeartRepository heartRepository;
+    private final ParticipantRepository participantRepository;
+
+
 
 
     //현재 게시물 받아오기
@@ -90,6 +93,7 @@ public class ArticleService {
                                 .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
+                                .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -142,7 +146,7 @@ public class ArticleService {
                                 .departmentName(findArticle.getMember().getDepartmentName())
                                 .articleFlag(changearticleFlag(findArticle.getArticleFlag()))
                                 .views(findArticle.getViews())
-                                .heartCnt( findArticle.getHeartCnt())
+                                .heartCnt(findArticle.getHeartCnt())
                                 .commentCnt((long) findArticle.getComments().size())
                                 .build()
                 );
@@ -155,6 +159,7 @@ public class ArticleService {
                                 .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
+                                .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -242,6 +247,7 @@ public class ArticleService {
                                 .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
+                                .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -284,7 +290,7 @@ public class ArticleService {
                                     .content(commit.getContent())
                                     .username(commit.getMember().getUsername())
                                     .userImage(changeImage(commit.getMember().getUserImage()))
-                                    .admission(commit.getMember().getAdmission())
+                                    .admission(commit.getMember().getAdmission().substring(2, 4) + "학번")
                                     .departmentName(commit.getMember().getDepartmentName())
                                     .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
                                     .build()
@@ -328,6 +334,7 @@ public class ArticleService {
                                     .content(findArticle.getContent())
                                     .imageList(pickImage)
                                     .username(findArticle.getMember().getUsername())
+                                    .userId(findArticle.getMember().getId())
                                     .userImage(changeImage(findArticle.getMember().getUserImage()))
                                     .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                     .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -349,7 +356,9 @@ public class ArticleService {
                                     .calendarDate(changeCalendarDate(findArticle.getCalendarDate()))
                                     .calendarTime(findArticle.getCalendarTime())
                                     .calendarLocation(findArticle.getCalendarLocation())
+                                    .maxPeople(findArticle.getMaxPeople())
                                     .username(findArticle.getMember().getUsername())
+                                    .userId(findArticle.getMember().getId())
                                     .userImage(changeImage(findArticle.getMember().getUserImage()))
                                     .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                     .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -392,58 +401,72 @@ public class ArticleService {
 
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
-
-            int checkNum =1;
-
-            for(MultipartFile image:multipartFile){
-                if(image.isEmpty()) checkNum=0;
-            }
-
-
+            System.out.println(">>>>>>>>>>>>>>>>>>>>"+multipartFile);
             List<ImagePostDto> imgbox = new ArrayList<>();
 
-
-
-            if (checkNum==1) { //이미지 있을때 출력 로직
+            if (!(multipartFile==null)) { //이미지 있을때 출력 로직
                 //이미지 업로드
-                for (MultipartFile uploadedFile : multipartFile) {
-                    S3Dto s3Dto = s3Uploader.upload(uploadedFile);
-
-                    Image image = Image.builder()
-                            .imgUrl(s3Dto.getUploadImageUrl())
-                            .urlPath(s3Dto.getFileName())
-                            .article(article)
-                            .member(article.getMember())
-                            .build();
-                    imageRepository.save(image);
-
-                    ImagePostDto imagePostDto = ImagePostDto.builder()
-                            .imageId(image.getId())
-                            .imgUrl(image.getImgUrl())
-                            .build();
-
-                    imgbox.add(imagePostDto);
-
+                int checkNum =1;
+                for(MultipartFile image:multipartFile){
+                    if(image.isEmpty()) checkNum=0;
                 }
-                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-                        .articleId(article.getId())
-                        .articleFlag(changearticleFlag(articleFlag))
-                        .title(article.getTitle())
-                        .content(article.getContent())
-                        .username(article.getMember().getUsername())
-                        .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                        .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
-                        .departmentName(article.getMember().getDepartmentName())
-                        .views(0L)
-                        .imageList(imgbox)
-                        .isHeart(false)
-                        .commentCnt(0L) // 0으로 기본세팅
-                        .build();
+                if (checkNum==1) { //이미지 있을때 출력 로직a
+                    for (MultipartFile uploadedFile : multipartFile) {
+                        S3Dto s3Dto = s3Uploader.upload(uploadedFile);
+
+                        Image image = Image.builder()
+                                .imgUrl(s3Dto.getUploadImageUrl())
+                                .urlPath(s3Dto.getFileName())
+                                .article(article)
+                                .member(article.getMember())
+                                .build();
+                        imageRepository.save(image);
+
+                        ImagePostDto imagePostDto = ImagePostDto.builder()
+                                .imageId(image.getId())
+                                .imgUrl(image.getImgUrl())
+                                .build();
+
+                        imgbox.add(imagePostDto);
+                    }
+                    ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                            .articleId(article.getId())
+                            .articleFlag(changearticleFlag(articleFlag))
+                            .title(article.getTitle())
+                            .content(article.getContent())
+                            .username(article.getMember().getUsername())
+                            .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                            .departmentName(article.getMember().getDepartmentName())
+                            .views(0L)
+                            .imageList(imgbox)
+                            .isHeart(false)
+                            .commentCnt(0L) // 0으로 기본세팅
+                            .build();
 
 //            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
 //            Article2ResponseDto article2ResponseDto=
 //                    new Article2ResponseDto(article,articleFlag,admission1,imgbox);
-                return articleResponseDto;
+                    return articleResponseDto;
+                } else { //이미지 없을때 출력 로직
+
+
+                    ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                            .articleId(article.getId())
+                            .articleFlag(changearticleFlag(articleFlag))
+                            .title(article.getTitle())
+                            .content(article.getContent())
+                            .username(article.getMember().getUsername())
+                            .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                            .departmentName(article.getMember().getDepartmentName())
+                            .views(0L)
+                            .isHeart(false)
+                            .commentCnt(0L) // 0으로 기본세팅
+                            .build();
+
+                    return articleResponseDto;
+                }
             } else { //이미지 없을때 출력 로직
 
 
@@ -605,16 +628,14 @@ public class ArticleService {
         }
 
 
-
         if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
 
             article.updateArticle(articleRequestDto);
 
-
-            return articleFlag + "  " + myId + "번 게시글이 수정";
+            return articleFlag + "  " + myId + "번 게시글 수정";
         }
 
-        return articleFlag + "  " + myId + "번 게시글이 수정 실패";
+        return articleFlag + "  " + myId + "번 게시글 수정 실패";
     }
 
 
@@ -694,24 +715,113 @@ public class ArticleService {
     //article에는 저장않고 dto출력시 값 변경경
    public String changeCalendarDate(String calendarDate){
 
-        if(calendarDate.substring(8).equals("Monday")){
-            return calendarDate.substring(0, 8) + "월요일";
-        }else if(calendarDate.substring(8).equals("Tuesday")) {
-            return calendarDate.substring(0, 8) + "화요일";
-        }else if(calendarDate.substring(8).equals("Wednesday")) {
-            return calendarDate.substring(0, 8) + "수요일";
-        }else if(calendarDate.substring(8).equals("Thursday")) {
-            return calendarDate.substring(0, 8) + "목요일";
-        }else if(calendarDate.substring(8).equals("Friday")) {
-            return calendarDate.substring(0, 8) + "금요일";
-        }else if(calendarDate.substring(8).equals("Saturday")) {
-            return calendarDate.substring(0, 8) + "토요일";
-        }else if(calendarDate.substring(8).equals("Sunday")) {
-            return calendarDate.substring(0, 8) + "일요일";
+        if(calendarDate.substring(14).equals("Monday")){
+            return calendarDate.substring(0, 14) + "월요일";
+        }else if(calendarDate.substring(14).equals("Tuesday")) {
+            return calendarDate.substring(0, 14) + "화요일";
+        }else if(calendarDate.substring(14).equals("Wednesday")) {
+            return calendarDate.substring(0, 14) + "수요일";
+        }else if(calendarDate.substring(14).equals("Thursday")) {
+            return calendarDate.substring(0, 14) + "목요일";
+        }else if(calendarDate.substring(14).equals("Friday")) {
+            return calendarDate.substring(0, 14) + "금요일";
+        }else if(calendarDate.substring(14).equals("Saturday")) {
+            return calendarDate.substring(0, 14) + "토요일";
+        }else if(calendarDate.substring(14).equals("Sunday")) {
+            return calendarDate.substring(0, 14) + "일요일";
         }else
             return null;
     }
 
+    //참여하기 버튼
+    @Transactional
+    public CheckJoinDto checkJoin(Long articleId, UserDetailsImpl userDetails, String email) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+        Member loginMember = userDetails.getMember();
+
+        List<Participant> checkParticipant = participantRepository.findAllByMember(loginMember);
+        if(article.getParticipants().size()<article.getMaxPeople()){ //모집인원이 충족되지 않았을때
+                if(participantRepository.findByMemberAndArticle(loginMember,article) == null){ //참여를 누르지 않았을때
+                    Participant newParticipant=new Participant(loginMember,article);
+                    article.addParticipant(newParticipant);
+                    participantRepository.save(newParticipant);
+
+                    return CheckJoinDto.builder()
+                            .email(userDetails.getUsername())
+                            .userImage(userDetails.getMember().getUserImage())
+                            .username(userDetails.getMember().getUsername())
+                            .department(userDetails.getMember().getDepartmentName())
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                            .joinCheck(true)
+                            .joinPeople(article.getParticipants().size())
+                            .build();
+                }else{//기존에 참여를 누른 상태에서 한번더 눌렀을 때
+                    Participant participant=participantRepository.findByMemberAndArticle(loginMember,article);
+                    article.removeParticipant(participant);
+                    participantRepository.delete(participant);
+
+                    return CheckJoinDto.builder()
+                            .email(userDetails.getUsername())
+                            .userImage(userDetails.getMember().getUserImage())
+                            .username(userDetails.getMember().getUsername())
+                            .department(userDetails.getMember().getDepartmentName())
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                            .joinCheck(false)
+                            .joinPeople(article.getParticipants().size())
+                            .build();
+                }
+        }else if(article.getParticipants().size()==article.getMaxPeople()) { //모집인원이 참여인원이 동일할때
+                if(participantRepository.findByMemberAndArticle(loginMember,article) == null) {
+                    throw new IllegalArgumentException("인원이 충족되어 참여할 수 없습니다");
+                }else{
+                    Participant participant=participantRepository.findByMemberAndArticle(loginMember,article);
+                    article.removeParticipant(participant);
+                    participantRepository.delete(participant);
+
+                    return CheckJoinDto.builder()
+                            .email(userDetails.getUsername())
+                            .userImage(userDetails.getMember().getUserImage())
+                            .username(userDetails.getMember().getUsername())
+                            .department(userDetails.getMember().getDepartmentName())
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                            .joinCheck(false)
+                            .joinPeople(article.getParticipants().size())
+                            .build();
+                }
+        }else
+
+        return null;
+    }
+
+  //참여하기 인원 조회
+    public CheckAllParticipantDto checkJoinPeople(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+       List<joinPeopleDto> joinPeopleDtos=new ArrayList<>();
+
+        for(Participant joinPeop : article.getParticipants()){
+            joinPeopleDtos.add(
+                    joinPeopleDto.builder()
+                            .email(joinPeop.getMember().getEmail())
+                            .userImage(joinPeop.getMember().getUserImage())
+                            .username(joinPeop.getMember().getUsername())
+                            .department(joinPeop.getMember().getDepartmentName())
+                            .admission(joinPeop.getMember().getAdmission().substring(2, 4) + "학번")
+                            .joinCheck(true)
+                            .build()
+            );
+        }
+        return CheckAllParticipantDto.builder()
+                .articleId(articleId)
+                .joinPeople(article.getParticipants().size())
+                .joinPeopleList(joinPeopleDtos)
+                .build();
+
+
+
+    }
 }
 
 

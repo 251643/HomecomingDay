@@ -1,5 +1,7 @@
 package com.homecomingday.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.homecomingday.controller.TokenDto;
 import com.homecomingday.controller.request.EmailRequestDto;
 import com.homecomingday.controller.request.LoginRequestDto;
@@ -9,17 +11,29 @@ import com.homecomingday.controller.response.MemberResponseDto;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.domain.UserDetailsImpl;
+import com.homecomingday.jwt.JwtDecoder;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
+import com.homecomingday.shared.Authority;
+import com.homecomingday.util.RedisUtil;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.utils.StringUtils;
+
+import static com.homecomingday.jwt.JwtFilter.BEARER_PREFIX;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +44,8 @@ public class MemberService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final TokenProvider tokenProvider;
+  private final JwtDecoder jwtDecoder;
+  private final RedisUtil redisUtil;
 
 
   @Transactional
@@ -38,6 +54,9 @@ public class MemberService {
       return ResponseDto.fail("DUPLICATED_NICKNAME",
           "중복된 닉네임 입니다.");
     }
+//    if (null != isPresentMember(requestDto.getEmail())) {
+//      throw new CustomException(DUPLE_EMAIL);
+//    }
 
 //    if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
 //      return ResponseDto.fail("PASSWORDS_NOT_MATCHED",
@@ -158,10 +177,44 @@ public class MemberService {
   }
 
   public ResponseDto<?> checkEmail(EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {
+
     if (null != isPresentMember(emailSendRequestDto.getEmail())) {
       return ResponseDto.fail("DUPLICATED_EMAIL",
               "동일한 이메일이 존재합니다.");
     }
     return ResponseDto.success(emailSendRequestDto.getEmail());
+  }
+
+  public ResponseDto<?> updateAccessToken(String refreshToken){
+    //리프레시토큰 만료시간이 지나지 않았을 경우
+
+    if (!tokenProvider.validateToken(refreshToken)) {
+      return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+    }
+    Member member = tokenProvider.getMemberFromAuthentication();
+    if (null == member) {
+      return ResponseDto.fail("MEMBER_NOT_FOUND",
+              "사용자를 찾을 수 없습니다.");
+    }
+
+      UserDetailsImpl userDetails = new UserDetailsImpl(member);
+
+      //액세스 토큰 생성
+      final String token = TokenProvider.generateAccessToken(userDetails);
+      System.out.println("새로운 액세스 토큰: "+token);
+
+      HttpHeaders headers = new HttpHeaders();
+      headers.set("Authorization","Bearer "+token);
+
+      return ResponseDto.success(TokenDto.builder()
+                      .grantType("Bearer")
+                      .accessToken(token)
+                      //.accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+                      .refreshToken(refreshToken)
+                      .username(userDetails.getMember().getUsername())
+                      .schoolInfo(StringUtils.isNotBlank(userDetails.getMember().getSchoolName()))
+                      .schoolName(userDetails.getMember().getSchoolName())
+                      .build());
+
   }
 }
