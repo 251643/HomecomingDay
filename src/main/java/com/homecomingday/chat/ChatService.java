@@ -41,6 +41,7 @@ public class ChatService {
     //채팅
     @Transactional
     public void sendMessage(ChatMessageDto chatMessageDto, Member member) {
+        System.out.println("여기 들어옴");
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomUuid(chatMessageDto.getRoomId()).orElseThrow(
                 () -> new IllegalArgumentException("채팅방이 존재하지 않습니다.")
         );
