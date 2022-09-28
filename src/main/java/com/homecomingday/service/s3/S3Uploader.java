@@ -80,11 +80,14 @@ public class S3Uploader {
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
         int demandWidth;
+        int demandHeight;
         // 줄이려고 하는 이미지 크기
         if(checkNum==1){//checkNum이 1이면 메인게시물
             demandWidth = 330;
+            demandHeight = 250;
         }else { //checkNum이 2면 프로필이미지로 사이즈 조정
             demandWidth = 160;
+            demandHeight = 160;
         }
         int originWidth = srcImg.getWidth();
         int originHeight = srcImg.getHeight();
@@ -94,12 +97,13 @@ public class S3Uploader {
         int newHeight;
 
         // 원본 넓이가 더 작을경우 리사이징 안함.
-        if (demandWidth > originWidth) {
+        if (demandWidth > originWidth&&demandHeight > originHeight ) {
             newWidth = originWidth;
             newHeight = originHeight;
         }else {
             newWidth = demandWidth;
             newHeight = (demandWidth * originHeight) / originWidth;
+           // newHeigh = demandHeight; 차후 속도체크후 결정
         }
 
         // 이미지 기본 너비 높이 설정값으로 변경

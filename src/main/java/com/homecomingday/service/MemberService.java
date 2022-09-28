@@ -54,6 +54,9 @@ public class MemberService {
       return ResponseDto.fail("DUPLICATED_NICKNAME",
           "중복된 닉네임 입니다.");
     }
+//    if (null != isPresentMember(requestDto.getEmail())) {
+//      throw new CustomException(DUPLE_EMAIL);
+//    }
 
 //    if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
 //      return ResponseDto.fail("PASSWORDS_NOT_MATCHED",
@@ -174,9 +177,7 @@ public class MemberService {
   }
 
   public ResponseDto<?> checkEmail(EmailRequestDto.EmailSendRequestDto emailSendRequestDto) {
-//    if (null != isPresentMember(emailSendRequestDto.getEmail())) {
-//      throw new CustomException(MEMBER_NOT_FOUND);
-//    }
+
     if (null != isPresentMember(emailSendRequestDto.getEmail())) {
       return ResponseDto.fail("DUPLICATED_EMAIL",
               "동일한 이메일이 존재합니다.");
