@@ -33,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
 //                .allowedOrigins("https://devtools-gewfe9kn1-green9930.vercel.app,https://devtools-si83a57cz-green9930.vercel.app, http://localhost:3000");
                 // 여기에 열어놓읗 주소 적어놓으면 된다.
 //                .allowedOrigins("*");
-                .allowedOrigins("https://homecomingdays.net"," http://localhost:3000"," http://43.201.48.73");
+                .allowedOrigins("https://homecomingdays.net"," http://localhost:3000"," http://localhost:8080"," http://43.201.48.73");
 
 
     }
