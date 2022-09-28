@@ -9,6 +9,7 @@ import com.homecomingday.service.NaverUserInfoService;
 import com.homecomingday.service.SendEmailService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,5 +98,8 @@ public class MemberController {
 //    System.out.println(state);
 //    return naverLoginService.naverLoginCallback(model, code, state, session, response);
 //  }
-
+  @PostMapping("/refresh")
+  public ResponseDto<?> loginByRefreshToken(@RequestHeader("RefreshToken") String refreshToken){
+    return memberService.updateAccessToken(refreshToken);
+  }
 }

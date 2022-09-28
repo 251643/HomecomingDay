@@ -71,6 +71,7 @@ dependencies {
 
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
 
     // 3. querydsl dependencies 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
@@ -79,6 +80,10 @@ dependencies {
     // Scalr
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation ('it.ozimov:embedded-redis:0.7.3') { exclude group: "org.slf4j", module: "slf4j-simple" }
+
+    implementation 'com.auth0:java-jwt:3.13.0'
 }
 
 
