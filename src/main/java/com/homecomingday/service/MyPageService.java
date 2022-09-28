@@ -38,6 +38,7 @@ public class MyPageService {
 
         MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                 .schoolName(member.getMember().getSchoolName())
+                .userId(member.getMember().getId())
                 .email(member.getUsername())
                 .username(member.getMember().getUsername())
                 .userImage(changeImage(member.getMember().getUserImage()))
