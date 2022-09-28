@@ -33,6 +33,8 @@ public class GetAllArticleDto {
 
     private String username;
 
+    private Long userId;
+
     private String createdAt;
 
     private String admission;
