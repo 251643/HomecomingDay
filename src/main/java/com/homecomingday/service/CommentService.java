@@ -1,12 +1,11 @@
 package com.homecomingday.service;
 
 import com.homecomingday.controller.request.CommentRequestDto;
-import com.homecomingday.controller.response.CommentChangeDto;
 import com.homecomingday.controller.response.CommentResponseDto;
-import com.homecomingday.controller.response.ReviseContentDto;
 import com.homecomingday.domain.Article;
 import com.homecomingday.domain.Comment;
 import com.homecomingday.domain.UserDetailsImpl;
+import com.homecomingday.domain.NoticeType;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.repository.CommentRepository;
 import com.homecomingday.util.Time;
@@ -15,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 
 @Service
@@ -25,6 +27,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     private final ArticleRepository articleRepository;
+    private final NotificationService notificationService;
 
 
     // 댓글 작성
@@ -52,6 +55,26 @@ public class CommentService {
                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
                 .articleId(articleId)
                 .build();
+
+
+            //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
+            String message = article1.getMember().getUsername() + "님! 게시글에 댓글이 달렸어요~\n\n" +
+                    "확인하러가기 https://www.homecomingdaycare.com/" + articleFlag + "/" + articleId;
+//                    "확인하러가기 http://localhost:8080/" + articleFlag + "/" + articleId;
+
+//            if(!Objects.equals(comment.getMember().getId(), article1.getMember().getId())) {
+//
+//            }
+        long now = ChronoUnit.MINUTES.between(comment.getCreatedAt() , LocalDateTime.now());
+        Time time = new Time();
+        String createdAt = time.times(now);
+
+        //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
+        if(!Objects.equals(comment.getMember().getId(), article1.getMember().getId())) {
+            notificationService.send(article1.getMember(), NoticeType.comment, message, article1.getId(), article1.getTitle(),createdAt,comment);
+            log.info("Alarm 대상 : {}, Alram 메시지 = {}", article1.getMember().getUsername(), message);
+        }
+//            notificationService.send(article1.getMember(), NoticeType.comment, message, article1.getId(), article1.getTitle());
 
 
         return commentResponseDto;
