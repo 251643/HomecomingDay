@@ -45,18 +45,23 @@ public class Notification extends Timestamped {
     @JoinColumn(name = "receiver_member_id")
     private Member member;
 
-
+    @ManyToOne
+    @JsonBackReference
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "receiver_comment_id")
+    private Comment comment;
 
 
     @Builder
     public Notification(NoticeType noticeType, String message, Boolean readState,
-                        Long articlesId, Member receiver, String title) {
+                        Long articlesId, Member receiver, String title,Comment comment) {
         this.noticeType = noticeType;
         this.message = message;
         this.readState = readState;
         this.url = articlesId;
         this.member = receiver;
         this.title = title;
+        this. comment = comment;
     }
 
     public void changeState() {
