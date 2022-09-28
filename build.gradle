@@ -63,7 +63,8 @@ dependencies {
 
 
     //S3 의존성 주입
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE',ext:"pom"
 
     //이메일인증
     implementation 'org.springframework.boot:spring-boot-starter-mail'
