@@ -3,14 +3,11 @@ package com.homecomingday.service;
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.homecomingday.controller.request.NotificationCountDto;
 import com.homecomingday.controller.response.NotificationResponseDto;
-import com.homecomingday.domain.Member;
-import com.homecomingday.domain.NoticeType;
-import com.homecomingday.domain.Notification;
-import com.homecomingday.domain.UserDetailsImpl;
+import com.homecomingday.domain.*;
+import com.homecomingday.repository.CommentRepository;
 import com.homecomingday.repository.EmitterRepository;
 import com.homecomingday.repository.EmitterRepositoryImpl;
 import com.homecomingday.repository.NotificationRepository;
-import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -19,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -106,9 +101,10 @@ public class NotificationService {
 
     //댓글이나 좋아요 누르면 알림
     @Async
-    public void send(Member receiver, NoticeType alarmType, String message, Long articlesId, String title) {
+    public void send(Member receiver, NoticeType alarmType, String message, Long articlesId, String title,String createdAt,Comment comment) {
+
 //        여기 createdAt은 댓글 생성될때 찍히는시간,
-        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title));
+        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title,comment));
         log.info("DB 메시지 저장 확인 : {}", message);
         String receiverId = String.valueOf(receiver.getId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
@@ -123,7 +119,7 @@ public class NotificationService {
 
 
     private Notification createNotification(Member receiver, NoticeType noticeType, String message,
-                                            Long articlesId, String title) {
+                                            Long articlesId, String title,Comment comment) {
 
         return Notification.builder()
                 .receiver(receiver)
@@ -132,6 +128,7 @@ public class NotificationService {
                 .articlesId(articlesId)
                 .title(title)
                 .readState(false) // 현재 읽음상태
+                .comment(comment)
                 .build();
     }
 

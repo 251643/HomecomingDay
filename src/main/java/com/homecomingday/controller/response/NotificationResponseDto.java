@@ -20,11 +20,13 @@ public class NotificationResponseDto {
 
     private String message;
 
-//    private String username;
+    private String username;
 
     private Boolean readStatus;
 
     private NoticeType noticeType;
+
+    private String articleFlag;
 
     private String title;
 
@@ -32,13 +34,14 @@ public class NotificationResponseDto {
 
 
     @Builder
-    public NotificationResponseDto(Long id, String message, Long articleId, Boolean readStatus,
-                                   NoticeType noticeType, String title, String createdAt) {
+    public NotificationResponseDto(Long id, String message,String username, Long articleId, Boolean readStatus,
+                                   NoticeType noticeType, String title, String createdAt, String articleFlag) {
         this.notificationId = id;
         this.message = message;
-//        this.username = comment.getMember().getUsername();
+        this.username = username;
         this.articleId = articleId;
         this.readStatus = readStatus;
+        this.articleFlag = articleFlag;
         this.title = title;
         this.noticeType = noticeType;
         this.createdAt = createdAt;
@@ -55,8 +58,27 @@ public class NotificationResponseDto {
                 .noticeType(notification.getNoticeType())
                 .articleId(notification.getUrl())
                 .title(notification.getTitle())
+                .username(notification.getComment().getMember().getUsername())
+                .articleFlag(notification.getComment().getArticleFlag())
                 .readStatus(notification.getReadState())
                 .createdAt(createdAt)
                 .build();
     }
+//
+//    public static NotificationResponseDto create(Notification notification,Comment comment) {
+//        long now = ChronoUnit.MINUTES.between(notification.getCreatedAt() , LocalDateTime.now());
+//        Time time = new Time();
+//        String createdAt = time.times(now);
+//
+//        return NotificationResponseDto.builder()
+//                .id(notification.getId())
+//                .message(notification.getMessage())
+//                .noticeType(notification.getNoticeType())
+//                .username(notification.getMember().getUsername())
+//                .articleId(notification.getUrl())
+//                .title(notification.getTitle())
+//                .readStatus(notification.getReadState())
+//                .createdAt(createdAt)
+//                .build();
+//    }
 }
