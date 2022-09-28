@@ -392,7 +392,6 @@ public class ArticleService {
                 .calendarDate(articleRequestDto.getCalendarDate())
                 .calendarTime(articleRequestDto.getCalendarTime())
                 .calendarLocation(articleRequestDto.getCalendarLocation())
-                .maxPeople(articleRequestDto.getMaxPeople())
                 .schoolName(userDetails.getMember().getSchoolName())
                 .build();
         articleRepository.save(article);
@@ -400,55 +399,72 @@ public class ArticleService {
 
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
-
-            int checkNum =1;
-
-            for(MultipartFile image:multipartFile){
-                if(image.isEmpty()) checkNum=0;
-            }
+            System.out.println(">>>>>>>>>>>>>>>>>>>>"+multipartFile);
             List<ImagePostDto> imgbox = new ArrayList<>();
 
-            if (checkNum==1) { //이미지 있을때 출력 로직
-//            if (!(multipartFile==null)) { //이미지 있을때 출력 로직
+            if (!(multipartFile==null)) { //이미지 있을때 출력 로직
                 //이미지 업로드
-                for (MultipartFile uploadedFile : multipartFile) {
-                    S3Dto s3Dto = s3Uploader.upload(uploadedFile);
-
-                    Image image = Image.builder()
-                            .imgUrl(s3Dto.getUploadImageUrl())
-                            .urlPath(s3Dto.getFileName())
-                            .article(article)
-                            .member(article.getMember())
-                            .build();
-                    imageRepository.save(image);
-
-                    ImagePostDto imagePostDto = ImagePostDto.builder()
-                            .imageId(image.getId())
-                            .imgUrl(image.getImgUrl())
-                            .build();
-
-                    imgbox.add(imagePostDto);
-
+                int checkNum =1;
+                for(MultipartFile image:multipartFile){
+                    if(image.isEmpty()) checkNum=0;
                 }
-                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-                        .articleId(article.getId())
-                        .articleFlag(changearticleFlag(articleFlag))
-                        .title(article.getTitle())
-                        .content(article.getContent())
-                        .username(article.getMember().getUsername())
-                        .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
-                        .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
-                        .departmentName(article.getMember().getDepartmentName())
-                        .views(0L)
-                        .imageList(imgbox)
-                        .isHeart(false)
-                        .commentCnt(0L) // 0으로 기본세팅
-                        .build();
+                if (checkNum==1) { //이미지 있을때 출력 로직a
+                    for (MultipartFile uploadedFile : multipartFile) {
+                        S3Dto s3Dto = s3Uploader.upload(uploadedFile);
+
+                        Image image = Image.builder()
+                                .imgUrl(s3Dto.getUploadImageUrl())
+                                .urlPath(s3Dto.getFileName())
+                                .article(article)
+                                .member(article.getMember())
+                                .build();
+                        imageRepository.save(image);
+
+                        ImagePostDto imagePostDto = ImagePostDto.builder()
+                                .imageId(image.getId())
+                                .imgUrl(image.getImgUrl())
+                                .build();
+
+                        imgbox.add(imagePostDto);
+                    }
+                    ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                            .articleId(article.getId())
+                            .articleFlag(changearticleFlag(articleFlag))
+                            .title(article.getTitle())
+                            .content(article.getContent())
+                            .username(article.getMember().getUsername())
+                            .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                            .departmentName(article.getMember().getDepartmentName())
+                            .views(0L)
+                            .imageList(imgbox)
+                            .isHeart(false)
+                            .commentCnt(0L) // 0으로 기본세팅
+                            .build();
 
 //            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
 //            Article2ResponseDto article2ResponseDto=
 //                    new Article2ResponseDto(article,articleFlag,admission1,imgbox);
-                return articleResponseDto;
+                    return articleResponseDto;
+                } else { //이미지 없을때 출력 로직
+
+
+                    ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                            .articleId(article.getId())
+                            .articleFlag(changearticleFlag(articleFlag))
+                            .title(article.getTitle())
+                            .content(article.getContent())
+                            .username(article.getMember().getUsername())
+                            .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
+                            .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
+                            .departmentName(article.getMember().getDepartmentName())
+                            .views(0L)
+                            .isHeart(false)
+                            .commentCnt(0L) // 0으로 기본세팅
+                            .build();
+
+                    return articleResponseDto;
+                }
             } else { //이미지 없을때 출력 로직
 
 
@@ -478,7 +494,6 @@ public class ArticleService {
                     .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
-                    .maxPeople(article.getMaxPeople())
                     .articleFlag(changearticleFlag(articleFlag))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
