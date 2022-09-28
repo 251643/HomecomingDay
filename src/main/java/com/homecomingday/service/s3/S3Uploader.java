@@ -112,11 +112,11 @@ public class S3Uploader {
         // 이미지 저장
         File resizedImage = new File(fileName);
 
-        if(resizedImage.createNewFile()) {
+//        if(resizedImage.createNewFile()) {
             ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
             return Optional.of(resizedImage);
-        }
-        return Optional.empty();
+//        }
+//        return Optional.empty();
     }
 
 
