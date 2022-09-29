@@ -7,7 +7,10 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +23,7 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
 
 
     //검색창 페이지 목록조회
@@ -90,11 +94,28 @@ public class ArticleController {
     public boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
     }
-//    //게시글 좋아요 확인
-//    @GetMapping("/article/{articleFlag}/{articleId}/heart")
-//    public boolean heartCheck(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        return articleService.heartCheck(articleId,userDetails);
-//    }
+
+    //참여하기 버튼
+   @PostMapping("/article/calendar/join/{articleId}")
+     public CheckJoinDto checkJoin(@PathVariable Long articleId,@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody String email){
+        return articleService.checkJoin(articleId,userDetails,email);
+    }
+
+    //참여한 인원 조회
+    @GetMapping("/article/calendar/join/{articleId}")
+    public CheckAllParticipantDto checkJoinPeople(@PathVariable Long articleId){
+        return articleService.checkJoinPeople(articleId);
+    }
+
+    //무한스크롤 api
+    @GetMapping("/article2/{articleFlag}")
+    public ResponseEntity<Page<GetAllArticleDto>> getReadAllArticle(@PathVariable String articleFlag,
+                                                                    Pageable pageable,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return ResponseEntity.ok(articleRepository.getReadAllArticle(pageable, userDetails, articleFlag));
+
+    }
 
 
 }

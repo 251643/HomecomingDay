@@ -29,9 +29,13 @@ public class GetAllArticleDto {
 
     private String calendarLocation;
 
+    private Integer maxPeople;
+
     private List<ImagePostDto> imageList;
 
     private String username;
+
+    private Long userId;
 
     private String createdAt;
 

@@ -48,6 +48,19 @@ jobs:
           touch ./application.properties
           echo "${{ secrets.PROPERTIES }}" > ./application.properties
         shell: bash
+        
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8' 
+          mysql database: 'HomecomigDay' 
+          mysql user: 'admin'
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
+
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.1.0
+        with:
+          redis-version: 6
 
       - name: Build with Gradle
         run: ./gradlew clean build # (7)
@@ -81,4 +94,4 @@ jobs:
 
 
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name homecomingday --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name develop --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name homecomingday --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name develop2 --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip

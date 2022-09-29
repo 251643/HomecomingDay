@@ -1,5 +1,7 @@
 package com.homecomingday.jwt;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.homecomingday.controller.TokenDto;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.Member;
@@ -12,8 +14,11 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,20 +39,20 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@Configuration
 public class TokenProvider {
 
   private static final String AUTHORITIES_KEY = "auth";
   private static final String BEARER_PREFIX = "Bearer ";
   private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30 * 2 ;            //30분
   private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 7;     //7일
+  private static Key key;
 
-  private final Key key;
 
   private final RefreshTokenRepository refreshTokenRepository;
-//  private final UserDetailsServiceImpl userDetailsService;
 
   public TokenProvider(@Value("${jwt.secret}") String secretKey,
-      RefreshTokenRepository refreshTokenRepository) {
+                       RefreshTokenRepository refreshTokenRepository) {
     this.refreshTokenRepository = refreshTokenRepository;
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -58,33 +63,33 @@ public class TokenProvider {
 
     Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
     String accessToken = Jwts.builder()
-        .setSubject(member.getEmail())
-        .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
-        .setExpiration(accessTokenExpiresIn)
-        .signWith(key, SignatureAlgorithm.HS256)
-        .compact();
+            .setSubject(member.getEmail())
+            .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
+            .setExpiration(accessTokenExpiresIn)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
 
     String refreshToken = Jwts.builder()
-        .setExpiration(new Date(now + REFRESH_TOKEN_EXPRIRE_TIME))
-        .signWith(key, SignatureAlgorithm.HS256)
-        .compact();
+            .setExpiration(new Date(now + REFRESH_TOKEN_EXPRIRE_TIME))
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
 
     RefreshToken refreshTokenObject = RefreshToken.builder()
-        .id(member.getId())
-        .member(member)
-        .token(refreshToken)
-        .build();
+            .id(member.getId())
+            .member(member)
+            .token(refreshToken)
+            .build();
 
     refreshTokenRepository.save(refreshTokenObject);
     return TokenDto.builder()
-        .grantType(BEARER_PREFIX)
-        .accessToken(accessToken)
-        .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-        .refreshToken(refreshToken)
-        .username(member.getUsername())
-        .schoolInfo(StringUtils.isNotBlank(member.getSchoolName()))
-        .schoolName(member.getSchoolName())
-        .build();
+            .grantType(BEARER_PREFIX)
+            .accessToken(accessToken)
+            .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+            .refreshToken(refreshToken)
+            .username(member.getUsername())
+            .schoolInfo(StringUtils.isNotBlank(member.getSchoolName()))
+            .schoolName(member.getSchoolName())
+            .build();
 
   }
 
@@ -108,7 +113,7 @@ public class TokenProvider {
   public Member getMemberFromAuthentication() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || AnonymousAuthenticationToken.class.
-        isAssignableFrom(authentication.getClass())) {
+            isAssignableFrom(authentication.getClass())) {
       return null;
     }
     return ((UserDetailsImpl) authentication.getPrincipal()).getMember();
@@ -189,4 +194,24 @@ public class TokenProvider {
 //
 //    return accessToken;
 //  }
+
+  //액세스토큰 생성
+  public static String generateAccessToken(UserDetailsImpl userDetails) {
+    String accessToken = null;
+    try {
+      long now = (new Date().getTime());
+      Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+      accessToken = Jwts.builder()
+              .setSubject(userDetails.getMember().getEmail())
+              .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
+              .setExpiration(accessTokenExpiresIn)
+              .signWith(key, SignatureAlgorithm.HS256)
+              .compact();
+
+    } catch (Exception e) {
+
+    }
+    System.out.println(accessToken);
+    return accessToken;
+  }
 }

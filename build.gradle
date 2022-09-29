@@ -63,7 +63,8 @@ dependencies {
 
 
     //S3 의존성 주입
-    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE',ext:"pom"
 
     //이메일인증
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -71,10 +72,29 @@ dependencies {
 
     //redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
 
     // 3. querydsl dependencies 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // Scalr
+    implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+    implementation 'commons-io:commons-io:2.9.0'
+
+    //이미지 메타 데이터 읽어내는 의존성 - 이미지 orientation을 읽어내기 위함
+    implementation group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
+
+    //MockMultipartFile 로 변환시킬때 사용하기위한 의존성
+    implementation group: 'org.springframework', name: 'spring-test', version: '5.3.9'
+    compileOnly(group: 'org.springframework', name: 'spring-test')
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation ('it.ozimov:embedded-redis:0.7.3') { exclude group: "org.slf4j", module: "slf4j-simple" }
+
+    implementation 'com.auth0:java-jwt:3.13.0'
+
 }
 
 

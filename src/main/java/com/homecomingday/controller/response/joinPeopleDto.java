@@ -1,31 +1,27 @@
 package com.homecomingday.controller.response;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Getter
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MyPageResponseDto {
-
-    private String schoolName;
-
-    private Long userId;
+public class joinPeopleDto {
 
     private String email;
 
-    private String username;
-
     private String userImage;
 
-    private String departmentName;
+    private String username;
+
+    private String department;
 
     private String admission;
 
-    private int articleCnt;
+    private boolean joinCheck;
+
 }

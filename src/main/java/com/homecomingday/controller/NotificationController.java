@@ -5,11 +5,14 @@ import com.homecomingday.controller.request.NotificationCountDto;
 import com.homecomingday.controller.response.NotificationResponseDto;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.service.NotificationService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
