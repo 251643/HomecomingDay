@@ -496,6 +496,7 @@ public class ArticleService {
                     .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
+                    .maxPeople(article.getMaxPeople())
                     .articleFlag(changearticleFlag(articleFlag))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(userDetails.getMember().getAdmission().substring(2, 4) + "학번")
@@ -585,6 +586,7 @@ public class ArticleService {
                     .calendarDate(changeCalendarDate(article.getCalendarDate()))
                     .calendarTime(article.getCalendarTime())
                     .calendarLocation(article.getCalendarLocation())
+                    .maxPeople(article.getMaxPeople())
                     .username(article.getMember().getUsername())
                     .userImage(changeImage(article.getMember().getUserImage()))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
@@ -628,16 +630,25 @@ public class ArticleService {
         }
 
 
-        if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
+        if(!articleFlag.equals("calendar")) {
+            if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
+                article.updateArticle(articleRequestDto);
+                return articleFlag + "  " + myId + "번 게시글 수정";
 
-            article.updateArticle(articleRequestDto);
+            }
 
-            return articleFlag + "  " + myId + "번 게시글 수정";
+        } else { //글의 종류가 만남일정인 경우에만
+            if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
+               if(articleRequestDto.getMaxPeople()>=article.getParticipants().size()) {
+                   article.updateArticle(articleRequestDto);
+
+                   return articleFlag + "  " + myId + "번 게시글 수정";
+               }
+            }
+
         }
-
         return articleFlag + "  " + myId + "번 게시글 수정 실패";
     }
-
 
     //게시글 삭제
     public String deleteArticles(String articleFlag, Long articleId, UserDetailsImpl userDetails) {
