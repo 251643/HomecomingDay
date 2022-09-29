@@ -402,7 +402,6 @@ public class ArticleService {
 
         if (!articleFlag.equals("calendar")) { //만남일정만 제외하고 이 부분에서 true시에 출력
 
-            System.out.println(">>>>>>>>>>>>>>>>>>>>"+multipartFile);
             List<ImagePostDto> imgbox = new ArrayList<>();
 
             if (!(multipartFile==null)) { //이미지 있을때 출력 로직
