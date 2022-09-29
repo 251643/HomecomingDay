@@ -817,7 +817,7 @@ public class ArticleService {
             joinPeopleDtos.add(
                     joinPeopleDto.builder()
                             .email(joinPeop.getMember().getEmail())
-                            .userImage(joinPeop.getMember().getUserImage())
+                            .userImage(changeImage(joinPeop.getMember().getUserImage()))
                             .username(joinPeop.getMember().getUsername())
                             .department(joinPeop.getMember().getDepartmentName())
                             .admission(joinPeop.getMember().getAdmission().substring(2, 4) + "학번")
