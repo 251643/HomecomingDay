@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.homecomingday.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -24,23 +24,21 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.homecomingday.jwt.TokenProvider.*;
-@RequiredArgsConstructor
-@Configuration
+@Component
 public class JwtDecoder {
-
-
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    public JwtDecoder(@Value("${jwt.secret}") String secretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+    private static Key key;
 
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
-
-    byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
-    Key key = Keys.hmacShaKeyFor(keyBytes);
     public String decodeUsername(String token) {
 
         String username = "";
         try {
             username = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+
             //Date expiration = claims.get("exp", Date.class);
             //String data = claims.get("data", String.class);
         } catch (ExpiredJwtException e) { // 토큰이 만료되었을 경우
