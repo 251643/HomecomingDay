@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -23,8 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.homecomingday.jwt.TokenProvider.*;
-@Component
 @RequiredArgsConstructor
+@Configuration
 public class JwtDecoder {
 
 
