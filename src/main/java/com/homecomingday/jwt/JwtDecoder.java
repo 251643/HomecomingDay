@@ -30,10 +30,7 @@ public class JwtDecoder {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${jwt.secret}")
-    private String jwtSecretKey;
-
-    byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+    byte[] keyBytes = Decoders.BASE64.decode("dkqkRnjdiehlsmsepdlrjsdfsdfsdafdsdksqkRnawlsWkwhffkrprFSDFSDFnlcksgdmawlsWKWkwmdsksekdmfklsdfjkldsjfsdmfklsdfsdlhfksdjfksdfjSDFSADFSDdklsfjklsad");
     Key key = Keys.hmacShaKeyFor(keyBytes);
     public String decodeUsername(String token) {
 
@@ -41,7 +38,6 @@ public class JwtDecoder {
         try {
             username = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
 
-            System.out.println("username>>>>>>>>>>>>" + username);
             //Date expiration = claims.get("exp", Date.class);
             //String data = claims.get("data", String.class);
         } catch (ExpiredJwtException e) { // 토큰이 만료되었을 경우
