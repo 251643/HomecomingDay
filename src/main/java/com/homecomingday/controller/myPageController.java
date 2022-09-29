@@ -29,21 +29,6 @@ public class myPageController {
 
     private final MyPageService myPageService;
     private final ArticleRepository articleRepository;
-    @GetMapping("/myPage/myArticle")
-    public ResponseEntity<Slice<MyPageDetailResponseDto>> getArticleScroll(@RequestParam(value = "page") Integer page,
-                                                                           @RequestParam(value = "size") Integer size,
-                                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(articleRepository.getArticleScroll(pageable, userDetails));
-    }
-//    @GetMapping("/myPage/myArticle2")
-//    public ResponseEntity<Slice<MyPageDetailResponseDto>> getArticleScroll2(Pageable pageable,
-//                                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        System.out.println("요청 들어옴");
-//       // Pageable pageable = PageRequest.of(page, size);
-//        return ResponseEntity.ok(articleRepository.getArticleScroll(pageable, userDetails));
-//    }
 
     @GetMapping("/myPage/myArticle2")
     public ResponseEntity<Page<MyPageDetailResponseDto>> getArticleScroll(Pageable pageable, @AuthenticationPrincipal UserDetailsImpl userDetails) {
