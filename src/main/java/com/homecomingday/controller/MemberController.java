@@ -98,8 +98,8 @@ public class MemberController {
 //    System.out.println(state);
 //    return naverLoginService.naverLoginCallback(model, code, state, session, response);
 //  }
-  @PostMapping("/refresh")
-  public ResponseDto<?> loginByRefreshToken(@RequestHeader("RefreshToken") String refreshToken){
-    return memberService.updateAccessToken(refreshToken);
-  }
+//  @PostMapping("/refresh")
+//  public ResponseDto<?> loginByRefreshToken(@RequestHeader("RefreshToken") String refreshToken){
+//    return memberService.updateAccessToken(refreshToken);
+//  }
 }

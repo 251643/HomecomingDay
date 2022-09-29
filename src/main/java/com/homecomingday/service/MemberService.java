@@ -185,36 +185,36 @@ public class MemberService {
     return ResponseDto.success(emailSendRequestDto.getEmail());
   }
 
-  public ResponseDto<?> updateAccessToken(String refreshToken){
-    //리프레시토큰 만료시간이 지나지 않았을 경우
-
-    if (!tokenProvider.validateToken(refreshToken)) {
-      return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
-    }
-    Member member = tokenProvider.getMemberFromAuthentication();
-    if (null == member) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-              "사용자를 찾을 수 없습니다.");
-    }
-
-      UserDetailsImpl userDetails = new UserDetailsImpl(member);
-
-      //액세스 토큰 생성
-      final String token = TokenProvider.generateAccessToken(userDetails);
-      System.out.println("새로운 액세스 토큰: "+token);
-
-      HttpHeaders headers = new HttpHeaders();
-      headers.set("Authorization","Bearer "+token);
-
-      return ResponseDto.success(TokenDto.builder()
-                      .grantType("Bearer")
-                      .accessToken(token)
-                      //.accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-                      .refreshToken(refreshToken)
-                      .username(userDetails.getMember().getUsername())
-                      .schoolInfo(StringUtils.isNotBlank(userDetails.getMember().getSchoolName()))
-                      .schoolName(userDetails.getMember().getSchoolName())
-                      .build());
-
-  }
+//  public ResponseDto<?> updateAccessToken(String refreshToken){
+//    //리프레시토큰 만료시간이 지나지 않았을 경우
+//
+//    if (!tokenProvider.validateToken(refreshToken)) {
+//      return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+//    }
+//    Member member = tokenProvider.getMemberFromAuthentication();
+//    if (null == member) {
+//      return ResponseDto.fail("MEMBER_NOT_FOUND",
+//              "사용자를 찾을 수 없습니다.");
+//    }
+//
+//      UserDetailsImpl userDetails = new UserDetailsImpl(member);
+//
+//      //액세스 토큰 생성
+//      final String token = TokenProvider.generateAccessToken(userDetails);
+//      System.out.println("새로운 액세스 토큰: "+token);
+//
+//      HttpHeaders headers = new HttpHeaders();
+//      headers.set("Authorization","Bearer "+token);
+//
+//      return ResponseDto.success(TokenDto.builder()
+//                      .grantType("Bearer")
+//                      .accessToken(token)
+//                      //.accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+//                      .refreshToken(refreshToken)
+//                      .username(userDetails.getMember().getUsername())
+//                      .schoolInfo(StringUtils.isNotBlank(userDetails.getMember().getSchoolName()))
+//                      .schoolName(userDetails.getMember().getSchoolName())
+//                      .build());
+//
+//  }
 }
