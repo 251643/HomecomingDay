@@ -529,6 +529,23 @@ public class ArticleService {
 //        List<ImagePostDto> imageList = new ArrayList<>();
 
         for (Comment comment : findComment) {
+
+            List<Commit> commitList = commitRepository.findByCommentAndArticle(comment,article);
+            List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
+            for (Commit commit : commitList) {
+                commitResponseDtoList.add(
+                        CommitResponseDto.builder()
+                                .childCommentId(commit.getId())
+                                .content(commit.getContent())
+                                .username(commit.getMember().getUsername())
+                                .userImage(changeImage(commit.getMember().getUserImage()))
+                                .admission(commit.getMember().getAdmission().substring(2, 4) + "학번")
+                                .departmentName(commit.getMember().getDepartmentName())
+                                .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
+                                .build()
+                );
+            }
+
             if (comment.getArticle().getId().equals(articleId)) {
                 commentResponseDtoList.add(
                         CommentResponseDto.builder()
@@ -539,6 +556,7 @@ public class ArticleService {
                                 .admission(comment.getMember().getAdmission().substring(2, 4)+"학번")
                                 .departmentName(comment.getMember().getDepartmentName())
                                 .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
+                                .childCommentList(commitResponseDtoList)
                                 .articleId(articleId)
                                 .build()
                 );
@@ -816,7 +834,7 @@ public class ArticleService {
             joinPeopleDtos.add(
                     joinPeopleDto.builder()
                             .email(joinPeop.getMember().getEmail())
-                            .userImage(joinPeop.getMember().getUserImage())
+                            .userImage(changeImage(joinPeop.getMember().getUserImage()))
                             .username(joinPeop.getMember().getUsername())
                             .department(joinPeop.getMember().getDepartmentName())
                             .admission(joinPeop.getMember().getAdmission().substring(2, 4) + "학번")
