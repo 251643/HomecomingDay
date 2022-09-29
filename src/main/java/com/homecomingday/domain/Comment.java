@@ -61,9 +61,6 @@ public class Comment extends Timestamped {
 @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
   private List<Commit> commits= new ArrayList<>();
 
-  @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-  @JsonManagedReference
-  private List<Notification> notification = new ArrayList<>();
 
   public Comment(Article article, ReviseContentDto reviseContentDto, UserDetailsImpl userDetails) {
     this.article = article;

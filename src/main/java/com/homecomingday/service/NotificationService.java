@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -101,11 +102,26 @@ public class NotificationService {
 
     //댓글이나 좋아요 누르면 알림
     @Async
-    public void send(Member receiver, NoticeType alarmType, String message, Long articlesId, String title,String createdAt,Comment comment) {
+    public void send(Member receiver, NoticeType alarmType, Long articlesId, String title,String creatAt,Comment comment) {
 
 //        여기 createdAt은 댓글 생성될때 찍히는시간,
-        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title,comment));
-        log.info("DB 메시지 저장 확인 : {}", message);
+        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, articlesId, title, comment));
+        String receiverId = String.valueOf(receiver.getId());
+        String eventId = receiverId + "_" + System.currentTimeMillis();
+        Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
+        emitters.forEach(
+                (key, emitter) -> {
+                    emitterRepository.saveEventCache(key, notification);
+                    sendNotification(emitter, eventId, key, NotificationResponseDto.create(notification));
+                }
+        );
+    }
+
+    @Async
+    public void send(Member receiver, NoticeType alarmType,  Long articlesId, String title,String creatAt,Heart heart) {
+
+//        여기 createdAt은 댓글 생성될때 찍히는시간,
+        Notification  notification = notificationRepository.save(createNotification(receiver, alarmType, articlesId, title, heart));
         String receiverId = String.valueOf(receiver.getId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
@@ -118,17 +134,28 @@ public class NotificationService {
     }
 
 
-    private Notification createNotification(Member receiver, NoticeType noticeType, String message,
+    private Notification createNotification(Member receiver, NoticeType noticeType,
                                             Long articlesId, String title,Comment comment) {
 
         return Notification.builder()
                 .receiver(receiver)
                 .noticeType(noticeType)
-                .message(message)
                 .articlesId(articlesId)
                 .title(title)
                 .readState(false) // 현재 읽음상태
                 .comment(comment)
+                .build();
+    }
+    private Notification createNotification(Member receiver, NoticeType noticeType,
+                                            Long articlesId, String title,Heart heart) {
+
+        return Notification.builder()
+                .receiver(receiver)
+                .noticeType(noticeType)
+                .articlesId(articlesId)
+                .title(title)
+                .readState(false) // 현재 읽음상태
+                .heart(heart)
                 .build();
     }
 
