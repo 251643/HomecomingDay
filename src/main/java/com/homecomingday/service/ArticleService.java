@@ -16,8 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -32,7 +35,11 @@ public class ArticleService {
     private final CommitRepository commitRepository;
     private final ImageRepository imageRepository;
     private final HeartRepository heartRepository;
+
+    private final NotificationService notificationService;
+
     private final ParticipantRepository participantRepository;
+
 
 
 
@@ -699,6 +706,18 @@ public class ArticleService {
             article.addHeart(heart);
             article.setHeartCnt(article.getHeartList().size());
             heartRepository.save(heart);
+            //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
+//            String message = article.getMember().getUsername() + "님! 게시글에 좋아요가 달렸어요~" ;
+//
+            long now = ChronoUnit.MINUTES.between(heart.getCreatedAt() , LocalDateTime.now());
+            Time time = new Time();
+            String createdAt = time.times(now);
+
+            //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
+            if(!Objects.equals(heart.getMember().getId(), article.getMember().getId())) {
+                notificationService.send(article.getMember(), NoticeType.heart, article.getId(), article.getTitle(),createdAt,heart);
+            }
+
             return true;
         }else  {
             Heart heart = heartRepository.findByMemberAndArticle(member, article);

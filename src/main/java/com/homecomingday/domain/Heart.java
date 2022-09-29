@@ -1,6 +1,7 @@
 package com.homecomingday.domain;
 
 
+import com.homecomingday.util.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Heart {
+public class Heart extends Timestamped {
 
 
     @Id
