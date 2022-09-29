@@ -4,12 +4,10 @@ import com.homecomingday.controller.request.*;
 import com.homecomingday.controller.response.ResponseDto;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.service.MemberService;
-import com.homecomingday.service.NaverLoginService;
 import com.homecomingday.service.NaverUserInfoService;
 import com.homecomingday.service.SendEmailService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +21,6 @@ import javax.validation.Valid;
 public class MemberController {
 
   private final MemberService memberService;
-  private final NaverLoginService naverLoginService;
   private final NaverUserInfoService naverUserInfoService;
   private final SendEmailService sendEmailService;
 

@@ -40,6 +40,7 @@ public class NaverUserInfoService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
+
     public TokenDto naverUserInfo(String AccessToken,  HttpServletResponse response) throws ParseException {
         String token = AccessToken; // 네이버 로그인 접근 토큰;
         if(token == null){ // && token.equals("")){
@@ -118,6 +119,7 @@ public class NaverUserInfoService {
             throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
         }
     }
+
     private Member registerNaver(NaverMemberInfoDto naverMemberInfoDto) {
 
         Member naverMember = memberRepository.findByEmail(naverMemberInfoDto.getEmail())
@@ -144,6 +146,7 @@ public class NaverUserInfoService {
         return naverMember;
     }
 
+
     private void forceLogin(Member member) {
         UserDetails userDetails = new UserDetailsImpl(member);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -152,10 +155,11 @@ public class NaverUserInfoService {
 
 
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-        response.addHeader("Authorization", tokenDto.getAccessToken());
+        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
         response.addHeader("Username", tokenDto.getUsername());
         response.addHeader("SchoolInfo", String.valueOf(tokenDto.isSchoolInfo()));
+        response.addHeader("SchoolName", String.valueOf(tokenDto.getSchoolName()));
     }
 }
