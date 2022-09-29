@@ -265,7 +265,6 @@ public class ArticleService {
             }
         }
 
-
         return getAllArticleDtoList;
     }
 
@@ -445,9 +444,6 @@ public class ArticleService {
                             .commentCnt(0L) // 0으로 기본세팅
                             .build();
 
-//            String admission1=userDetails.getMember().getAdmission().substring(2,4)+"학번";
-//            Article2ResponseDto article2ResponseDto=
-//                    new Article2ResponseDto(article,articleFlag,admission1,imgbox);
                     return articleResponseDto;
                 } else { //이미지 없을때 출력 로직
 
