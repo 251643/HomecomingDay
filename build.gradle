@@ -80,7 +80,7 @@ dependencies {
 
     // Scalr
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
-
+    implementation 'commons-io:commons-io:2.9.0'
 
     // Marvin
     implementation 'com.github.downgoon:marvin:1.5.5'
