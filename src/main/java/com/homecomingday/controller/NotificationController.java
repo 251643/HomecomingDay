@@ -5,14 +5,11 @@ import com.homecomingday.controller.request.NotificationCountDto;
 import com.homecomingday.controller.response.NotificationResponseDto;
 import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.service.NotificationService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -38,16 +35,16 @@ public class NotificationController {
 //                                String lastEventId){
 //        return notificationService.subscribe(member.getMember().getId(),lastEventId);
 //    }
-    @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
-    @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    @ResponseStatus(HttpStatus.OK)
-    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl member,
-                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        //확인용
-        String test = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(test);
-        return notificationService.subscribe(member.getMember().getId(), lastEventId);
-    }
+//    @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
+//    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+//    @ResponseStatus(HttpStatus.OK)
+//    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl member,
+//                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+//        //확인용
+//        String test = SecurityContextHolder.getContext().getAuthentication().getName();
+//        System.out.println(test);
+//        return notificationService.subscribe(member.getMember().getId(), lastEventId);
+//    }
 
 //    //test
 //    @GetMapping(value = "/subscribe/{id}", produces = "text/event-stream")
