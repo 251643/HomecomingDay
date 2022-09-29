@@ -60,7 +60,8 @@ public class NaverUserInfoService {
         JSONObject response_obj = (JSONObject)jsonObj.get("response");
         String name = (String)response_obj.get("name");
         String email = (String)response_obj.get("email");
-
+        System.out.println("로그인한 사람 이름 : " + name);
+        System.out.println("로그인한 사람 메일 : " + email);
         NaverMemberInfoDto naverMemberInfoDto = new NaverMemberInfoDto(email, name);
 
         Member member = registerNaver(naverMemberInfoDto);
