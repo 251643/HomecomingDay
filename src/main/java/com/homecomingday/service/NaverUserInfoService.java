@@ -45,6 +45,7 @@ public class NaverUserInfoService {
         if(token == null){ // && token.equals("")){
             throw new RuntimeException("AccessToken값이 없습니다.");
         }
+        System.out.println("AccessToken>>>>>>>>>>>>>>>>>>>>" + AccessToken);
         String apiURL = "https://openapi.naver.com/v1/nid/me";
 
         Map<String, String> requestHeaders = new HashMap<>();
