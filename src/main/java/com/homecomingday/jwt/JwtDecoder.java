@@ -30,7 +30,10 @@ public class JwtDecoder {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    byte[] keyBytes = Decoders.BASE64.decode("dkqkRnjdiehlsmsepdlrjsdfsdfsdafdsdksqkRnawlsWkwhffkrprFSDFSDFnlcksgdmawlsWKWkwmdsksekdmfklsdfjkldsjfsdmfklsdfsdlhfksdjfksdfjSDFSADFSDdklsfjklsad");
+    @Value("${jwt.secret}")
+    private String jwtSecretKey;
+
+    byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
     Key key = Keys.hmacShaKeyFor(keyBytes);
     public String decodeUsername(String token) {
 
