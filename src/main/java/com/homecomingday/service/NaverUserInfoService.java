@@ -8,7 +8,7 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.repository.RefreshTokenRepository;
-import com.homecomingday.shared.NaverLogin;
+
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
