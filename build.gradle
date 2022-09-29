@@ -82,11 +82,13 @@ dependencies {
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
     implementation 'commons-io:commons-io:2.9.0'
 
-    // Marvin
-    implementation 'com.github.downgoon:marvin:1.5.5'
-    implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
-    compileOnly(group: 'org.springframework', name: 'spring-test')
+    //이미지 메타 데이터 읽어내는 의존성 - 이미지 orientation을 읽어내기 위함
+    implementation group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
 
+    //MockMultipartFile 로 변환시킬때 사용하기위한 의존성
+    implementation group: 'org.springframework', name: 'spring-test', version: '5.3.9'
+    compileOnly(group: 'org.springframework', name: 'spring-test')
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation ('it.ozimov:embedded-redis:0.7.3') { exclude group: "org.slf4j", module: "slf4j-simple" }

@@ -394,6 +394,7 @@ public class ArticleService {
                 .calendarDate(articleRequestDto.getCalendarDate())
                 .calendarTime(articleRequestDto.getCalendarTime())
                 .calendarLocation(articleRequestDto.getCalendarLocation())
+                .maxPeople(articleRequestDto.getMaxPeople())
                 .schoolName(userDetails.getMember().getSchoolName())
                 .build();
         articleRepository.save(article);
