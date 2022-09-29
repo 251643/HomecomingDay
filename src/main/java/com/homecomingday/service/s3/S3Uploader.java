@@ -49,16 +49,19 @@ public class S3Uploader {
 
         MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
 
-        ObjectMetadata newData=new ObjectMetadata();
-        newData.setContentLength(resizingFile.getSize());
-        newData.setContentType(multipartFile.getContentType());
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(resizingFile.getSize());
+        objectMetadata.setContentType(resizingFile.getContentType());
 
-        try(InputStream inputStream=resizingFile.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, newData)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        }catch(IOException e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
-        }
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
+
+//        try(InputStream inputStream=resizingFile.getInputStream()) {
+//            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, newData)
+//                    .withCannedAcl(CannedAccessControlList.PublicRead));
+//        }catch(IOException e){
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+//        }
 //        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile));
 //        removeNewFile(resizingFile);
         return new S3Dto(fileName, uploadImageUrl);
@@ -73,16 +76,12 @@ public class S3Uploader {
 
         MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 2);
 
-        ObjectMetadata newData=new ObjectMetadata();
-        newData.setContentLength(resizingFile.getSize());
-        newData.setContentType(multipartFile.getContentType());
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(resizingFile.getSize());
+        objectMetadata.setContentType(resizingFile.getContentType());
 
-        try(InputStream inputStream=resizingFile.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, newData)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        }catch(IOException e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
-        }
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
 //        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile));
 //        removeNewFile(resizingFile);
@@ -127,9 +126,8 @@ public class S3Uploader {
         BufferedImage destImg = Scalr.resize(srcImg, newWidth, newHeight);
 
         // 이미지 저장
-        File resizedImage = new File(fileName);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
+        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
         baos.flush();
         destImg.flush();
 
@@ -143,11 +141,11 @@ public class S3Uploader {
     }
 
 
-//    private void removeNewFile(File targetFile) {
-//        if (targetFile.delete()) {
-//            log.info("파일이 삭제되었습니다.");
-//        } else {
-//            log.info("파일이 삭제되지 못했습니다.");
-//        }
-//    }
+    private void removeNewFile(File targetFile) {
+        if (targetFile.delete()) {
+            log.info("파일이 삭제되었습니다.");
+        } else {
+            log.info("파일이 삭제되지 못했습니다.");
+        }
+    }
 }
