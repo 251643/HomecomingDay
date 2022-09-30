@@ -127,4 +127,19 @@ public class ArticleController {
 
     }
 
+
+    //무한스크롤 인기순 검색
+    @GetMapping("/searchArticle2/popular")
+    public ResponseEntity<Page<GetAllArticleDto>> searchPopularArticle(Pageable pageable,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.ok(articleRepository.searchPopularArticle(pageable,userDetails));
+
+    }
+
+    //무한스크롤 검색
+    @GetMapping("/searchArticle2")
+    public ResponseEntity<Page<GetAllArticleDto>> searchAllArticle(Pageable pageable,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.ok(articleRepository.searchAllArticle(pageable,userDetails));
+    }
+
+
 }
