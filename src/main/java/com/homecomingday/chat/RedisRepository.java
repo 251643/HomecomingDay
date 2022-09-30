@@ -68,6 +68,8 @@ public class RedisRepository {
     // step2
     // 채팅방에서 사용자가 읽지 않은 메세지의 갯수 초기화
     public void initChatRoomMessageInfo(String roomUuid, Long memberId) {
+        System.out.println("roomId>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+roomUuid);
+        System.out.println("memberId>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+memberId);
         chatRoomUnReadMessageInfo.put(roomUuid, memberId, 0);
     }
 

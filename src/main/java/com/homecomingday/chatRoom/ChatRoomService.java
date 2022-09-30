@@ -131,7 +131,6 @@ public class ChatRoomService {
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             ChatRoomResponseDto responseDto = createChatRoomDto(chatRoomUser);
             responseDtos.add(responseDto);
-            System.out.println("getUnreadCount>>>>>>>>>>>>>>>>"+responseDto.getUnreadCount());
             unreadCnt += responseDto.getUnreadCount();
             //정렬
             responseDtos.sort(Collections.reverseOrder());
