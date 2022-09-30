@@ -10,4 +10,6 @@ import org.springframework.data.domain.Slice;
 public interface ArticleRepositoryCustom {
     Page<MyPageDetailResponseDto> getArticleScroll2(Pageable pageable, UserDetailsImpl userDetails);
     Page<GetAllArticleDto> getReadAllArticle(Pageable pageable, UserDetailsImpl userDetails, String articleFlag);
+
+    Page<GetAllArticleDto> readPopularArticle(Pageable pageable, UserDetailsImpl userDetails, String articleFlag);
 }
