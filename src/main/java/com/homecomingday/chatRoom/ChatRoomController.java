@@ -43,7 +43,7 @@ public class ChatRoomController {
 
     //내가 가진 채팅방 조회
     @GetMapping ("/chat/rooms/{page}")
-    public ChatRoomListResponseDto getChatRoom (@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public List<ChatRoomResponseDto> getChatRoom (@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                 @PathVariable int page
                                                  ) {
         page -= 1;

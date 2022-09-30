@@ -119,7 +119,7 @@ public class ChatRoomService {
     }
 
     //채팅방 조회
-    public ChatRoomListResponseDto getChatRoom(UserDetailsImpl userDetails, int page) {
+    public List<ChatRoomResponseDto> getChatRoom(UserDetailsImpl userDetails, int page) {
 
         // user로 챗룸 유저를 찾고 >> 챗룸 유저에서 채팅방을 찾는다
         // 마지막나온 메시지 ,내용 ,시간
@@ -127,21 +127,22 @@ public class ChatRoomService {
         List<ChatRoomResponseDto> responseDtos = new ArrayList<>();
         Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember(),pageable);
         //List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember());
-        int unreadCnt = 0;
+        int totalCnt = 0;
+        for(ChatRoomUser chatRoomUser : chatRoomUsers) {
+            String roomUuid = chatRoomUser.getChatRoom().getChatRoomUuid();
+            totalCnt += redisRepository.getChatRoomMessageCount(roomUuid, chatRoomUser.getMember().getId());
+        }
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
-            ChatRoomResponseDto responseDto = createChatRoomDto(chatRoomUser);
+            ChatRoomResponseDto responseDto = createChatRoomDto(chatRoomUser, totalCnt);
             responseDtos.add(responseDto);
-            unreadCnt += responseDto.getUnreadCount();
+
             //정렬
             responseDtos.sort(Collections.reverseOrder());
         }
-        ChatRoomListResponseDto chatRoomListResponseDto = new ChatRoomListResponseDto(responseDtos, unreadCnt);
-
-        return chatRoomListResponseDto;
+        return responseDtos;
     }
 
-
-    public ChatRoomResponseDto createChatRoomDto(ChatRoomUser chatRoomUser) {
+    public ChatRoomResponseDto createChatRoomDto(ChatRoomUser chatRoomUser, int totalCnt) {
         String roomName = chatRoomUser.getName();
         String roomUuid = chatRoomUser.getChatRoom().getChatRoomUuid();
         String lastMessage;
@@ -162,7 +163,7 @@ public class ChatRoomService {
         String dayBefore = Time.convertLocaldatetimeToTime(lastTime);
         return new ChatRoomResponseDto(roomName, roomUuid, lastMessage, lastTime, unReadMessageCount, dayBefore,
                 chatRoomUser.getMember().getAdmission(), chatRoomUser.getMember().getDepartmentName(),
-                changeImage(chatRoomUser.getOtherUserImage()));
+                changeImage(chatRoomUser.getOtherUserImage()), totalCnt);
     }
 
     //채팅방 삭제
