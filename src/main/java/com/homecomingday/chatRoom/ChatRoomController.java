@@ -33,6 +33,7 @@ public class ChatRoomController {
         Long chatPartnerUserId = requestDto.getUserId();
         Long myUserId = userDetails.getMember().getId();
 
+        System.out.println(userDetails.getMember().getUsername()+ "채팅방 생성 요청");
         // redis repository에 채팅방에 존재하는 사람 마다 안 읽은 메세지의 갯수 초기화
         redisRepository.initChatRoomMessageInfo(chatRoomUuid, myUserId);
         redisRepository.initChatRoomMessageInfo(chatRoomUuid, chatPartnerUserId);
@@ -46,6 +47,7 @@ public class ChatRoomController {
                                                 @PathVariable int page
                                                  ) {
         page -= 1;
+        System.out.println(userDetails.getMember().getUsername()+ "채팅방 조회 요청");
         return chatRoomService.getChatRoom(userDetails, page);
     }
 
@@ -54,6 +56,8 @@ public class ChatRoomController {
     public void deleteChatRoom(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         //roonId=uuid
         //방번호랑 나간 사람
+        System.out.println(roomId+"삭제 요청");
+        System.out.println(userDetails.getMember().getUsername()+"삭제 요청");
         ChatRoom chatroom = chatRoomRepository.findByChatRoomUuid(roomId).orElseThrow(
                 () -> new NotFoundException("존재하지 않는 채팅방입니다.")
         );
@@ -65,6 +69,7 @@ public class ChatRoomController {
     @GetMapping("/chat/rooms/{roomId}/messages")
     public List<ChatMessageTestDto> getPreviousChatMessage(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
 
+        System.out.println(userDetails.getMember().getUsername()+ "채팅방 이전채팅불러오기 요청");
         return chatRoomService.getPreviousChatMessage(roomId, userDetails);
     }
 
@@ -74,6 +79,7 @@ public class ChatRoomController {
             @PathVariable String roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails){
 
+        System.out.println(userDetails.getMember().getUsername()+ "채팅방 상대방정보 요청");
         return chatRoomService.getOtherUserInfo(roomId, userDetails);
     }
 }
