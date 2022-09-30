@@ -19,6 +19,10 @@ public class CommitResponseDto {
 
     private String username;
 
+    private Long userId;
+
+    private String email;
+
     private String userImage;
 
     private String admission;

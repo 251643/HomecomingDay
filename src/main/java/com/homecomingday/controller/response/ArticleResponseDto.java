@@ -33,6 +33,10 @@ public class ArticleResponseDto {
 
     private String username;
 
+    private Long userId;
+
+    private String email;
+
     private String userImage;
 
     private String createdAt;

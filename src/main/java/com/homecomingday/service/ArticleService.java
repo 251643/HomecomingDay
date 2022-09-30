@@ -53,27 +53,15 @@ public class ArticleService {
         for(Article findArticle : articleList){
 
             if (!findArticle.getArticleFlag().equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
-                List<Image> findImage = imageRepository.findAll();
-                List<ImagePostDto> pickImage = new ArrayList<>();
-
-                for (Image image : findImage) {
-                    if (image.getArticle().getId().equals(findArticle.getId())) {
-                        pickImage.add(
-                                ImagePostDto.builder()
-                                        .imageId(image.getId())
-                                        .imgUrl(image.getImgUrl())
-                                        .build()
-                        );
-                    }
-                }
 
                 getAllArticleDtoList.add(
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
+                                .userId(findArticle.getMember().getId())
+                                .email(findArticle.getMember().getEmail())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -95,6 +83,8 @@ public class ArticleService {
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
+                                .userId(findArticle.getMember().getId())
+                                .email(findArticle.getMember().getEmail())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -118,28 +108,17 @@ public class ArticleService {
 
         for(Article findArticle : articleList){
 
-            if (!findArticle.getArticleFlag().equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
-                List<Image> findImage = imageRepository.findAll();
-                List<ImagePostDto> pickImage = new ArrayList<>();
+            if(!findArticle.getArticleFlag().equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
 
-                for (Image image : findImage) {
-                    if (image.getArticle().getId().equals(findArticle.getId())) {
-                        pickImage.add(
-                                ImagePostDto.builder()
-                                        .imageId(image.getId())
-                                        .imgUrl(image.getImgUrl())
-                                        .build()
-                        );
-                    }
-                }
 
                 getAllArticleDtoList.add(
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
+                                .userId(findArticle.getMember().getId())
+                                .email(findArticle.getMember().getEmail())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -161,6 +140,8 @@ public class ArticleService {
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
+                                .userId(findArticle.getMember().getId())
+                                .email(findArticle.getMember().getEmail())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -193,6 +174,8 @@ public class ArticleService {
                                 .commentId(comment.getId())
                                 .content(comment.getContent())
                                 .username(comment.getMember().getUsername())
+                                .userId(comment.getMember().getId())
+                                .email(comment.getMember().getEmail())
                                 .userImage(changeImage(comment.getMember().getUserImage()))
                                 .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(comment.getMember().getDepartmentName())
@@ -226,6 +209,8 @@ public class ArticleService {
                                 .content(findArticle.getContent())
                                 .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
+                                .userId(findArticle.getMember().getId())
+                                .email(findArticle.getMember().getEmail())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -249,6 +234,8 @@ public class ArticleService {
                                 .calendarLocation(findArticle.getCalendarLocation())
                                 .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
+                                .userId(findArticle.getMember().getId())
+                                .email(findArticle.getMember().getEmail())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                 .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -289,6 +276,8 @@ public class ArticleService {
                                     .childCommentId(commit.getId())
                                     .content(commit.getContent())
                                     .username(commit.getMember().getUsername())
+                                    .userId(commit.getMember().getId())
+                                    .email(commit.getMember().getEmail())
                                     .userImage(changeImage(commit.getMember().getUserImage()))
                                     .admission(commit.getMember().getAdmission().substring(2, 4) + "학번")
                                     .departmentName(commit.getMember().getDepartmentName())
@@ -302,6 +291,8 @@ public class ArticleService {
                                     .commentId(comment.getId())
                                     .content(comment.getContent())
                                     .username(comment.getMember().getUsername())
+                                    .userId(comment.getMember().getId())
+                                    .email(comment.getMember().getEmail())
                                     .userImage(changeImage(comment.getMember().getUserImage()))
                                     .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
                                     .departmentName(comment.getMember().getDepartmentName())
@@ -312,7 +303,7 @@ public class ArticleService {
                     );
                 }
 
-                if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
+                if(!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
                     List<Image> findImage = imageRepository.findAll();
                     List<ImagePostDto> pickImage = new ArrayList<>();
 
@@ -335,6 +326,7 @@ public class ArticleService {
                                     .imageList(pickImage)
                                     .username(findArticle.getMember().getUsername())
                                     .userId(findArticle.getMember().getId())
+                                    .email(findArticle.getMember().getEmail())
                                     .userImage(changeImage(findArticle.getMember().getUserImage()))
                                     .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                     .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -359,6 +351,7 @@ public class ArticleService {
                                     .maxPeople(findArticle.getMaxPeople())
                                     .username(findArticle.getMember().getUsername())
                                     .userId(findArticle.getMember().getId())
+                                    .email(findArticle.getMember().getEmail())
                                     .userImage(changeImage(findArticle.getMember().getUserImage()))
                                     .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
                                     .admission(findArticle.getMember().getAdmission().substring(2, 4) + "학번")
@@ -539,6 +532,8 @@ public class ArticleService {
                                 .childCommentId(commit.getId())
                                 .content(commit.getContent())
                                 .username(commit.getMember().getUsername())
+                                .userId(commit.getMember().getId())
+                                .email(commit.getMember().getEmail())
                                 .userImage(changeImage(commit.getMember().getUserImage()))
                                 .admission(commit.getMember().getAdmission().substring(2, 4) + "학번")
                                 .departmentName(commit.getMember().getDepartmentName())
@@ -553,6 +548,8 @@ public class ArticleService {
                                 .commentId(comment.getId())
                                 .content(comment.getContent())
                                 .username(comment.getMember().getUsername())
+                                .userId(comment.getMember().getId())
+                                .email(comment.getMember().getEmail())
                                 .userImage(changeImage(comment.getMember().getUserImage()))
                                 .admission(comment.getMember().getAdmission().substring(2, 4)+"학번")
                                 .departmentName(comment.getMember().getDepartmentName())
@@ -585,6 +582,8 @@ public class ArticleService {
                     .title(article.getTitle())
                     .content(article.getContent())
                     .username(article.getMember().getUsername())
+                    .userId(article.getMember().getId())
+                    .email(article.getMember().getEmail())
                     .userImage(changeImage(article.getMember().getUserImage()))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
@@ -607,6 +606,8 @@ public class ArticleService {
                     .calendarLocation(article.getCalendarLocation())
                     .maxPeople(article.getMaxPeople())
                     .username(article.getMember().getUsername())
+                    .userId(article.getMember().getId())
+                    .email(article.getMember().getEmail())
                     .userImage(changeImage(article.getMember().getUserImage()))
                     .createdAt(Time.convertLocaldatetimeToTime(article.getCreatedAt()))
                     .admission(article.getMember().getAdmission().substring(2, 4) + "학번")
