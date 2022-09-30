@@ -7,7 +7,10 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.repository.ArticleRepository;
 import com.homecomingday.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +23,7 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
 
 
     //검색창 페이지 목록조회
@@ -90,12 +94,6 @@ public class ArticleController {
     public boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.heartArticle(articleId,userDetails);
     }
-//    //게시글 좋아요 확인
-//    @GetMapping("/article/{articleFlag}/{articleId}/heart")
-//    public boolean heartCheck(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        return articleService.heartCheck(articleId,userDetails);
-//    }
-
 
     //참여하기 버튼
    @PostMapping("/article/calendar/join/{articleId}")
@@ -108,4 +106,25 @@ public class ArticleController {
     public CheckAllParticipantDto checkJoinPeople(@PathVariable Long articleId){
         return articleService.checkJoinPeople(articleId);
     }
+
+    //무한스크롤 메인게시물조회
+    @GetMapping("/article2/{articleFlag}")
+    public ResponseEntity<Page<GetAllArticleDto>> getReadAllArticle(@PathVariable String articleFlag,
+                                                                    Pageable pageable,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return ResponseEntity.ok(articleRepository.getReadAllArticle(pageable, userDetails, articleFlag));
+
+    }
+
+    //무한스크롤 인기게시물조회
+    @GetMapping("/article2/{articleFlag}/popular")
+    public  ResponseEntity<Page<GetAllArticleDto>> readPopularArticle(@PathVariable String articleFlag,
+                                                                      Pageable pageable,
+                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return ResponseEntity.ok(articleRepository.readPopularArticle(pageable, userDetails, articleFlag));
+
+    }
+
 }

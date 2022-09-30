@@ -12,14 +12,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static com.homecomingday.domain.NoticeType.comment;
+import static com.homecomingday.domain.NoticeType.heart;
+
 @NoArgsConstructor
 @Getter
 public class NotificationResponseDto {
 
     private Long notificationId;
     private Long articleId;
-
-    private String message;
 
     private String username;
 
@@ -35,10 +36,9 @@ public class NotificationResponseDto {
 
 
     @Builder
-    public NotificationResponseDto(Long id, String message,String username, Long articleId, Boolean readStatus,
+    public NotificationResponseDto(Long id, String username, Long articleId, Boolean readStatus,
                                    String noticeType, String title, String createdAt, String articleFlag) {
         this.notificationId = id;
-        this.message = message;
         this.username = username;
         this.articleId = articleId;
         this.readStatus = readStatus;
@@ -49,20 +49,33 @@ public class NotificationResponseDto {
     }
 
     public static NotificationResponseDto create(Notification notification) {
-        long now = ChronoUnit.MINUTES.between(notification.getCreatedAt() , LocalDateTime.now());
+        long now = ChronoUnit.MINUTES.between(notification.getCreatedAt(), LocalDateTime.now());
         Time time = new Time();
         String createdAt = time.times(now);
+        if (notification.getNoticeType() == comment) {
+            return NotificationResponseDto.builder()
+                    .id(notification.getId())
+                    .noticeType(ArticleChange.changeNoticeType(String.valueOf(notification.getNoticeType())))
+                    .articleId(notification.getUrl())
+                    .title(notification.getTitle())
+                    .username(notification.getComment().getMember().getUsername())
+                    .articleFlag(ArticleChange.changearticleFlag(notification.getComment().getArticleFlag()))
+                    .readStatus(notification.getReadState())
+                    .createdAt(createdAt)
+                    .build();
+        } else if (notification.getNoticeType() == heart) {
+            return NotificationResponseDto.builder()
+                    .id(notification.getId())
+                    .noticeType(ArticleChange.changeNoticeType(String.valueOf(notification.getNoticeType())))
+                    .articleId(notification.getUrl())
+                    .title(notification.getTitle())
+                    .username(notification.getHeart().getMember().getUsername())
+                    .articleFlag(ArticleChange.changearticleFlag(notification.getHeart().getArticle().getArticleFlag()))
+                    .readStatus(notification.getReadState())
+                    .createdAt(createdAt)
+                    .build();
 
-        return NotificationResponseDto.builder()
-                .id(notification.getId())
-                .message(notification.getMessage())
-                .noticeType(ArticleChange.changeNoticeType(String.valueOf(notification.getNoticeType())))
-                .articleId(notification.getUrl())
-                .title(notification.getTitle())
-                .username(notification.getComment().getMember().getUsername())
-                .articleFlag(ArticleChange.changearticleFlag(notification.getComment().getArticleFlag()))
-                .readStatus(notification.getReadState())
-                .createdAt(createdAt)
-                .build();
-    }
+
+        }
+        return null;}
 }

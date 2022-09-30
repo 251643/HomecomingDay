@@ -59,7 +59,7 @@ public class MemberController {
 
   @RequestMapping(value = "/naverUserInfo", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json; charset=utf-8")
   public TokenDto naverUserInfo(@RequestHeader(value="Authorization", required = false) String token, HttpServletResponse response)throws ParseException {
-
+    System.out.println("네이버로그인 요청");
     return naverUserInfoService.naverUserInfo(token,  response);
   }
 

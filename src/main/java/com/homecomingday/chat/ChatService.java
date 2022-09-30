@@ -34,14 +34,11 @@ public class ChatService {
         redisRepository.memberEnterRoomInfo(memberId, roomId);
         // 채팅방의 안 읽은 메세지의 수 초기화
         redisRepository.initChatRoomMessageInfo(roomId, memberId);
-        System.out.println("redisRepository.getMemberEnterRoomId(userId) = " + redisRepository.getUserEnterRoomId(memberId));
-        System.out.println("redisRepository = " + redisRepository.getChatRoomMessageCount(roomId, memberId));
     }
 
     //채팅
     @Transactional
     public void sendMessage(ChatMessageDto chatMessageDto, Member member) {
-        System.out.println("여기 들어옴");
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomUuid(chatMessageDto.getRoomId()).orElseThrow(
                 () -> new IllegalArgumentException("채팅방이 존재하지 않습니다.")
         );

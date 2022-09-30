@@ -24,9 +24,9 @@ public class Notification extends Timestamped {
     @Enumerated(EnumType.STRING)
     private NoticeType noticeType;
 
-    //알림 메세지
-    @Column(nullable = false)
-    private String message;
+//    //알림 메세지
+//    @Column(nullable = false)
+//    private String message;
 
     @Column(nullable = false)
     private Boolean readState;
@@ -51,17 +51,23 @@ public class Notification extends Timestamped {
     @JoinColumn(name = "receiver_comment_id")
     private Comment comment;
 
+    @ManyToOne
+    @JsonBackReference
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "receiver_heart_id")
+    private Heart heart;
+
 
     @Builder
-    public Notification(NoticeType noticeType, String message, Boolean readState,
-                        Long articlesId, Member receiver, String title,Comment comment) {
+    public Notification(NoticeType noticeType, Boolean readState,
+                        Long articlesId, Member receiver, String title,Comment comment,Heart heart) {
         this.noticeType = noticeType;
-        this.message = message;
         this.readState = readState;
         this.url = articlesId;
         this.member = receiver;
         this.title = title;
-        this. comment = comment;
+        this.comment = comment;
+        this.heart = heart;
     }
 
     public void changeState() {

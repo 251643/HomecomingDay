@@ -23,12 +23,10 @@ public class ChatController {
      */
     @MessageMapping("/chat/enter")
     public void enter(ChatMessageDto chatMessageDto, @Header("token") String token) {
-        System.out.println("입장 token >>>>>>>"+token);
         String email = jwtDecoder.decodeUsername(token);
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new NotFoundException("해당 유저를 찾을 수 없습니다.")
         );
-        System.out.println("여깅!");
         chatService.enter(member.getId(), chatMessageDto.getRoomId());
     }
 
@@ -37,12 +35,10 @@ public class ChatController {
      */
     @MessageMapping("/chat/message")
     public void message(ChatMessageDto chatMessageDto, @Header("token") String token) {
-        System.out.println("메시지 token >>>>>>>"+token);
         String username = jwtDecoder.decodeUsername(token);
         Member member = memberRepository.findByEmail(username).orElseThrow(
             () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
-        System.out.println("Member Id >>>>>>>>>>>>>>>>>"+member.getId());
         chatService.sendMessage(chatMessageDto, member);
         chatService.updateUnReadMessageCount(chatMessageDto);
     }

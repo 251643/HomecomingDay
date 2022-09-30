@@ -35,7 +35,6 @@ public class ChatRoomController {
         // redis repository에 채팅방에 존재하는 사람 마다 안 읽은 메세지의 갯수 초기화
         redisRepository.initChatRoomMessageInfo(chatRoomUuid, myUserId);
         redisRepository.initChatRoomMessageInfo(chatRoomUuid, chatPartnerUserId);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>chatRoomUuid : "+chatRoomUuid);
 
         return chatRoomUuid;
     }
@@ -54,7 +53,6 @@ public class ChatRoomController {
     public void deleteChatRoom(@PathVariable String roomId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         //roonId=uuid
         //방번호랑 나간 사람
-        System.out.println("여깅!>>>>>>>>>>>>>>>>>>>>>>>>>" + roomId);
         ChatRoom chatroom = chatRoomRepository.findByChatRoomUuid(roomId).orElseThrow(
                 () -> new NotFoundException("존재하지 않는 채팅방입니다.")
         );
