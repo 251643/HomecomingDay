@@ -45,7 +45,7 @@ public class ChatRoomController {
     public ChatRoomListResponseDto getChatRoom (@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                 @PathVariable int page
                                                  ) {
-        //page -= 1;
+        page -= 1;
         return chatRoomService.getChatRoom(userDetails, page);
     }
 
