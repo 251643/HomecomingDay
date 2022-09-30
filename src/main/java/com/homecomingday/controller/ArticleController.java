@@ -107,7 +107,7 @@ public class ArticleController {
         return articleService.checkJoinPeople(articleId);
     }
 
-    //무한스크롤 api
+    //무한스크롤 메인게시물조회
     @GetMapping("/article2/{articleFlag}")
     public ResponseEntity<Page<GetAllArticleDto>> getReadAllArticle(@PathVariable String articleFlag,
                                                                     Pageable pageable,
@@ -117,5 +117,14 @@ public class ArticleController {
 
     }
 
+    //무한스크롤 인기게시물조회
+    @GetMapping("/article2/{articleFlag}/popular")
+    public  ResponseEntity<Page<GetAllArticleDto>> readPopularArticle(@PathVariable String articleFlag,
+                                                                      Pageable pageable,
+                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        return ResponseEntity.ok(articleRepository.readPopularArticle(pageable, userDetails, articleFlag));
+
+    }
 
 }
