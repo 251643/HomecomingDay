@@ -202,8 +202,6 @@ public class ArticleService {
                 );
             }
 
-//            List<Comment>findComment =commentRepository.findAll();
-//        List<ImagePostDto> imageList = new ArrayList<>();
 
             if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
                 List<Image> findImage = imageRepository.findAll();

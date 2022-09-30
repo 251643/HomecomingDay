@@ -56,14 +56,7 @@ public class S3Uploader {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
-//        try(InputStream inputStream=resizingFile.getInputStream()) {
-//            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, newData)
-//                    .withCannedAcl(CannedAccessControlList.PublicRead));
-//        }catch(IOException e){
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
-//        }
-//        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile));
-//        removeNewFile(resizingFile);
+
         return new S3Dto(fileName, uploadImageUrl);
     }
 
@@ -83,8 +76,7 @@ public class S3Uploader {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
         removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
-//        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile));
-//        removeNewFile(resizingFile);
+
         return uploadImageUrl;
     }
 
@@ -133,11 +125,6 @@ public class S3Uploader {
 
         return new MockMultipartFile(fileName, baos.toByteArray());
 
-//        if(resizedImage.createNewFile()) {
-//            ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-//            return Optional.of(resizedImage);
-//        }
-//        return Optional.empty();
     }
 
 
