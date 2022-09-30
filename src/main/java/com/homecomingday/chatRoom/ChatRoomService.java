@@ -6,6 +6,7 @@ import com.homecomingday.chat.ChatMessageRepository;
 import com.homecomingday.chat.RedisRepository;
 import com.homecomingday.chat.responseDto.ChatMessageTestDto;
 import com.homecomingday.chatRoom.requestDto.ChatRoomUserRequestDto;
+import com.homecomingday.chatRoom.responseDto.ChatRoomListResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomOtherMemberInfoResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomResponseDto;
 import com.homecomingday.domain.Member;
@@ -118,7 +119,7 @@ public class ChatRoomService {
     }
 
     //채팅방 조회
-    public List<ChatRoomResponseDto> getChatRoom(UserDetailsImpl userDetails, int page) {
+    public ChatRoomListResponseDto getChatRoom(UserDetailsImpl userDetails, int page) {
 
         // user로 챗룸 유저를 찾고 >> 챗룸 유저에서 채팅방을 찾는다
         // 마지막나온 메시지 ,내용 ,시간
@@ -126,15 +127,18 @@ public class ChatRoomService {
         List<ChatRoomResponseDto> responseDtos = new ArrayList<>();
         Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember(),pageable);
         //List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember());
-        int cnt = 0;
+        int unreadCnt = 0;
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             ChatRoomResponseDto responseDto = createChatRoomDto(chatRoomUser);
             responseDtos.add(responseDto);
             System.out.println("getUnreadCount>>>>>>>>>>>>>>>>"+responseDto.getUnreadCount());
+            unreadCnt += responseDto.getUnreadCount();
             //정렬
             responseDtos.sort(Collections.reverseOrder());
         }
-        return responseDtos;
+        ChatRoomListResponseDto chatRoomListResponseDto = new ChatRoomListResponseDto(responseDtos, unreadCnt);
+
+        return chatRoomListResponseDto;
     }
 
 
@@ -158,8 +162,8 @@ public class ChatRoomService {
         int unReadMessageCount = redisRepository.getChatRoomMessageCount(roomUuid, chatRoomUser.getMember().getId());
         String dayBefore = Time.convertLocaldatetimeToTime(lastTime);
         return new ChatRoomResponseDto(roomName, roomUuid, lastMessage, lastTime, unReadMessageCount, dayBefore,
-                                        chatRoomUser.getMember().getAdmission(), chatRoomUser.getMember().getDepartmentName(),
-                                        changeImage(chatRoomUser.getOtherUserImage()));
+                chatRoomUser.getMember().getAdmission(), chatRoomUser.getMember().getDepartmentName(),
+                changeImage(chatRoomUser.getOtherUserImage()));
     }
 
     //채팅방 삭제
@@ -176,15 +180,15 @@ public class ChatRoomService {
     public ChatRoomOtherMemberInfoResponseDto getOtherUserInfo(String roomId, UserDetailsImpl userDetails) {
         Member myMember = userDetails.getMember();
         ChatRoom chatRoom = chatRoomRepository.findByChatRoomUuid(roomId).orElseThrow(
-            () -> new NotFoundException("채팅방을 찾을 수 없습니다.")
+                () -> new NotFoundException("채팅방을 찾을 수 없습니다.")
         );
 
         List<ChatRoomUser> members = chatRoom.getChatRoomUsers();
 
         for(ChatRoomUser member : members){
             if(!member.getMember().getId().equals(myMember.getId())) {
-               Member otherUser = member.getMember();
-               return new ChatRoomOtherMemberInfoResponseDto(otherUser);
+                Member otherUser = member.getMember();
+                return new ChatRoomOtherMemberInfoResponseDto(otherUser);
             }
         }
 
@@ -215,7 +219,7 @@ public class ChatRoomService {
                 for(ChatMessage chatMessage : chatMessages){
                     chatMessageTestDtos.add(new ChatMessageTestDto(chatMessage));
                 }
-               return chatMessageTestDtos;
+                return chatMessageTestDtos;
             }
         }
         throw new RuntimeException("접근할 수 없는 채팅방입니다.");
