@@ -134,13 +134,7 @@ public class ChatRoomService {
         }
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             ChatRoomResponseDto responseDto = createChatRoomDto(chatRoomUser, totalCnt);
-
-            System.out.println("getUnreadCount>>>>>>>>>>>>>>>>>>>>"+responseDto.getUnreadCount());
-            System.out.println("getRoomName>>>>>>>>>>>>>>>>>>>>"+responseDto.getRoomName());
-            System.out.println("getChatRoomUuid>>>>>>>>>>>>>>>>>>>>"+responseDto.getChatRoomUuid());
-            System.out.println("getAdmission>>>>>>>>>>>>>>>>>>>>"+responseDto.getAdmission());
-            System.out.println("getLastMessage>>>>>>>>>>>>>>>>>>>>"+responseDto.getLastMessage());
-
+            responseDtos.add(responseDto);
 
             //정렬
             responseDtos.sort(Collections.reverseOrder());
