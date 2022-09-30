@@ -78,6 +78,11 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+
+    // sentry + logback
+    implementation 'io.sentry:sentry-logback:6.4.2'
+    implementation 'io.sentry:sentry-spring-boot-starter:6.4.2'
+
     // Scalr
     implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
     implementation 'commons-io:commons-io:2.9.0'
