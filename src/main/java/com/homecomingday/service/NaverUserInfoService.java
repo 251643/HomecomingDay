@@ -45,13 +45,13 @@ public class NaverUserInfoService {
         if(token == null){ // && token.equals("")){
             throw new RuntimeException("AccessToken값이 없습니다.");
         }
+        System.out.println("AccessToken>>>>>>>>>>>>>>>>>>>>" + AccessToken);
         String apiURL = "https://openapi.naver.com/v1/nid/me";
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("Authorization", token);
         String responseBody = get(apiURL,requestHeaders);
 
-        System.out.println(responseBody);
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(responseBody);
         JSONObject jsonObj = (JSONObject) obj;
@@ -59,7 +59,7 @@ public class NaverUserInfoService {
         JSONObject response_obj = (JSONObject)jsonObj.get("response");
         String name = (String)response_obj.get("name");
         String email = (String)response_obj.get("email");
-
+        System.out.println("로그인한 사람 메일 : " + email);
         NaverMemberInfoDto naverMemberInfoDto = new NaverMemberInfoDto(email, name);
 
         Member member = registerNaver(naverMemberInfoDto);

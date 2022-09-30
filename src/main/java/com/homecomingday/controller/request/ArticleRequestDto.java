@@ -18,10 +18,5 @@ public class ArticleRequestDto {
 
     private String calendarLocation;
 
-
-
-
-//    private List<ImageDto> imageList;
-
-
+    private Integer maxPeople;
 }

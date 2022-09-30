@@ -14,8 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class GetAllArticleDto {
 
-
-
     private Long articleId;
 
     private String title;
@@ -29,9 +27,11 @@ public class GetAllArticleDto {
 
     private String calendarLocation;
 
-    private List<ImagePostDto> imageList;
-
     private String username;
+
+    private Long userId;
+
+    private String email;
 
     private String createdAt;
 
@@ -49,10 +49,7 @@ public class GetAllArticleDto {
 
     private Long commentCnt;
 
-    private List<CommentResponseDto> commentList;
-
     private boolean isHeart;
-
 
 
 }

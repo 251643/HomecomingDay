@@ -1,28 +1,29 @@
 package com.homecomingday.service.s3;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import org.imgscalr.Scalr;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.homecomingday.controller.S3Dto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+
 import javax.imageio.ImageIO;
-import javax.transaction.Transactional;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.RemoteException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,100 +33,110 @@ import java.util.UUID;
 public class S3Uploader {
 
 
-    private final AmazonS3 amazonS3;
-
     private final AmazonS3Client amazonS3Client;
 
 
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
 
+
+    //게시글
     public S3Dto upload(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-
+        String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
+//        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
+
+//        ObjectMetadata objectMetadata=new ObjectMetadata();
+//        objectMetadata.setContentLength(resizingFile.getSize());
+//        objectMetadata.setContentType(resizingFile.getContentType());
+
+        ObjectMetadata objectMetadata=new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentType(multipartFile.getContentType());
 
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
-        }
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        removeNewFile(new File(Objects.requireNonNull(multipartFile.getOriginalFilename())));
+
 
         return new S3Dto(fileName, uploadImageUrl);
-
     }
-
 
 
     //프로필 이미지 업로드
     public String upload1(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
-
+        String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
+        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 2);
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentType(multipartFile.getContentType());
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(resizingFile.getSize());
+        objectMetadata.setContentType(resizingFile.getContentType());
 
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
-        }
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
+
 
         return uploadImageUrl;
     }
 
 
+    //게시글/프로필 이미지 리사이즈
+    private MultipartFile resizeMainImage(MultipartFile originalImage, String fileName, String fileFormatName, Integer checkNum) throws IOException {
 
-    //이미지 리사이징하기
-    private String resizeImageFile(String path, String resizedName) throws Exception {
-        Image originalImage = ImageIO.read(new File(path, resizedName));
+        //요청 파일로 BufferedImage 객체를 생성 => MultipartFile에서 Buffered로 바꾸어 가공가능하도록
+        BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
-        int originWidth = originalImage.getWidth(null);
-        int originHeight = originalImage.getHeight(null);
+        int demandWidth;
+        int demandHeight;
+        // 줄이려고 하는 이미지 크기
+        if (checkNum == 1) {//checkNum이 1이면 메인게시물
+            demandWidth = 330;
+            demandHeight = 250;
+        } else { //checkNum이 2면 프로필이미지로 사이즈 조정
+            demandWidth = 160;
+            demandHeight = 160;
+        }
+        int originWidth = srcImg.getWidth();
+        int originHeight = srcImg.getHeight();
 
-        int newWidth = 1600;
+        // 원본 너비를 기준으로 하여 이미지의 비율로 높이를 계산
+        int newWidth;
+        int newHeight;
 
-        if (originWidth > newWidth) {
-            int newHeight = (originHeight * newWidth) / originWidth;
-
-            Image resizeImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-
-            BufferedImage newImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-            Graphics graphics = newImage.getGraphics();
-            graphics.drawImage(resizeImage, 0, 0, null);
-            graphics.dispose();
-
-            String resizeImgName = "resize_" +resizedName;
-            File newFile = new File(path + File.separator + resizeImgName);
-            String formatName = resizedName.substring(resizedName.lastIndexOf(".") + 1);
-            ImageIO.write(newImage, formatName.toLowerCase(), newFile);
-
-            return resizeImgName;
+        // 원본 넓이가 더 작을경우 리사이징 안함.
+        if (demandWidth > originWidth && demandHeight > originHeight) {
+            newWidth = originWidth;
+            newHeight = originHeight;
         } else {
-            return resizedName;
+            newWidth = demandWidth;
+            newHeight = (demandWidth * originHeight) / originWidth;
+            // newHeigh = demandHeight; 차후 속도체크후 결정
         }
+
+        // 이미지 기본 너비 높이 설정값으로 변경
+        BufferedImage destImg = Scalr.resize(srcImg, newWidth, newHeight);
+
+        // 이미지 저장
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
+        baos.flush();
+        destImg.flush();
+
+        return new MockMultipartFile(fileName, baos.toByteArray());
+
     }
 
-    // delete file
-    public void fileDelete(String fileName) {
-        log.info("file name : "+ fileName);
-        try {
-            amazonS3.deleteObject(this.bucket, (fileName).replace(File.separatorChar, '/'));
-        } catch (AmazonServiceException e) {
-            System.err.println(e.getErrorMessage());
+
+    private void removeNewFile(File targetFile) {
+        if (targetFile.delete()) {
+            log.info("파일이 삭제되었습니다.");
+        } else {
+            log.info("파일이 삭제되지 못했습니다.");
         }
     }
-
-
-
 }
