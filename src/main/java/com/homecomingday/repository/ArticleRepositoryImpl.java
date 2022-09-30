@@ -144,7 +144,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
                                 .userId(findArticle.getMember().getId())
                                 .userImage(ArticleChange.changeImage(findArticle.getMember().getUserImage()))
@@ -156,7 +155,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .heartCnt(findArticle.getHeartCnt())
                                 .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
-                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             } else { //만남일정 부분  출력
@@ -168,7 +166,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .calendarDate(ArticleChange.changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
-                                .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
                                 .userId(findArticle.getMember().getId())
                                 .userImage(ArticleChange.changeImage(findArticle.getMember().getUserImage()))
@@ -180,7 +177,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .heartCnt(findArticle.getHeartCnt())
                                 .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
-                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             }
@@ -265,7 +261,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-                                .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
                                 .userId(findArticle.getMember().getId())
                                 .userImage(ArticleChange.changeImage(findArticle.getMember().getUserImage()))
@@ -277,7 +272,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .heartCnt(findArticle.getHeartCnt())
                                 .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
-                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             } else { //만남일정 부분  출력
@@ -289,7 +283,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .calendarDate(ArticleChange.changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
-                                .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
                                 .userId(findArticle.getMember().getId())
                                 .userImage(ArticleChange.changeImage(findArticle.getMember().getUserImage()))
@@ -301,7 +294,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                                 .heartCnt(findArticle.getHeartCnt())
                                 .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) commentResponseDtoList.size())
-                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             }
