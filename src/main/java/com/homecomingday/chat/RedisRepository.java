@@ -71,6 +71,7 @@ public class RedisRepository {
         System.out.println("roomId>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+roomUuid);
         System.out.println("memberId>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+memberId);
         chatRoomUnReadMessageInfo.put(roomUuid, memberId, 0);
+        System.out.println("안읽은 메시지 업데이트했음 "+getChatRoomMessageCount(roomUuid, memberId));
     }
 
     // 채팅방에서 사용자가 읽지 않은 메세지의 갯수 추가
