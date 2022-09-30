@@ -4,7 +4,6 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import com.homecomingday.chat.RedisRepository;
 import com.homecomingday.chat.responseDto.ChatMessageTestDto;
 import com.homecomingday.chatRoom.requestDto.ChatRoomUserRequestDto;
-import com.homecomingday.chatRoom.responseDto.ChatRoomListResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomOtherMemberInfoResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomUuidDto;
@@ -42,8 +41,8 @@ public class ChatRoomController {
 
     //내가 가진 채팅방 조회
     @GetMapping ("/chat/rooms/{page}")
-    public ChatRoomListResponseDto getChatRoom (@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                @PathVariable int page
+    public List<ChatRoomResponseDto> getChatRoom (@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                  @PathVariable int page
                                                  ) {
         page -= 1;
         return chatRoomService.getChatRoom(userDetails, page);

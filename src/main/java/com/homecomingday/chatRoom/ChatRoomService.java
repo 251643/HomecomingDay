@@ -6,7 +6,6 @@ import com.homecomingday.chat.ChatMessageRepository;
 import com.homecomingday.chat.RedisRepository;
 import com.homecomingday.chat.responseDto.ChatMessageTestDto;
 import com.homecomingday.chatRoom.requestDto.ChatRoomUserRequestDto;
-import com.homecomingday.chatRoom.responseDto.ChatRoomListResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomOtherMemberInfoResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomResponseDto;
 import com.homecomingday.domain.Member;
@@ -119,27 +118,23 @@ public class ChatRoomService {
     }
 
     //채팅방 조회
-    public ChatRoomListResponseDto getChatRoom(UserDetailsImpl userDetails, int page) {
+    public List<ChatRoomResponseDto> getChatRoom(UserDetailsImpl userDetails, int page) {
 
         // user로 챗룸 유저를 찾고 >> 챗룸 유저에서 채팅방을 찾는다
         // 마지막나온 메시지 ,내용 ,시간
         Pageable pageable = PageRequest.of(page, DISPLAY_CHAT_ROOM_COUNT);
         List<ChatRoomResponseDto> responseDtos = new ArrayList<>();
-
         Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember(),pageable);
         //List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember());
-        int totalCnt = 0;
-        for (ChatRoomUser chatRoomUser : chatRoomUsers) {
 
+        for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             ChatRoomResponseDto responseDto = createChatRoomDto(chatRoomUser);
-            totalCnt += responseDto.getUnreadCount();
             responseDtos.add(responseDto);
 
             //정렬
             responseDtos.sort(Collections.reverseOrder());
         }
-
-        return new ChatRoomListResponseDto(responseDtos, totalCnt);
+        return responseDtos;
     }
 
 
