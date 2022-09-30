@@ -78,7 +78,12 @@ public class RedisRepository {
 
     //
     public int getChatRoomMessageCount(String roomUuid, Long memberId) {
-        return chatRoomUnReadMessageInfo.get(roomUuid, memberId);
+        if(chatRoomUnReadMessageInfo.get(roomUuid, memberId)==null){
+            return 0;
+        }
+        else{
+            return chatRoomUnReadMessageInfo.get(roomUuid, memberId);
+        }
     }
 
     // step3

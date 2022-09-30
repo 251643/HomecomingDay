@@ -126,11 +126,11 @@ public class ChatRoomService {
         List<ChatRoomResponseDto> responseDtos = new ArrayList<>();
         Page<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember(),pageable);
         //List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByMember(userDetails.getMember());
-
+        int cnt = 0;
         for (ChatRoomUser chatRoomUser : chatRoomUsers) {
             ChatRoomResponseDto responseDto = createChatRoomDto(chatRoomUser);
             responseDtos.add(responseDto);
-
+            System.out.println("getUnreadCount>>>>>>>>>>>>>>>>"+responseDto.getUnreadCount());
             //정렬
             responseDtos.sort(Collections.reverseOrder());
         }
