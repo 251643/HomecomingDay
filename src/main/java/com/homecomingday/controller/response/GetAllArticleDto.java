@@ -31,6 +31,8 @@ public class GetAllArticleDto {
 
     private Long userId;
 
+    private String email;
+
     private String createdAt;
 
     private String admission;
