@@ -141,6 +141,7 @@ public class ChatRoomService {
             System.out.println("getAdmission>>>>>>>>>>>>>>>>>>>>"+responseDto.getAdmission());
             System.out.println("getLastMessage>>>>>>>>>>>>>>>>>>>>"+responseDto.getLastMessage());
 
+
             //정렬
             responseDtos.sort(Collections.reverseOrder());
         }
