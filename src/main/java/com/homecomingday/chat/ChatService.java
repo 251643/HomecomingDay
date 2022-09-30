@@ -82,7 +82,7 @@ public class ChatService {
 
             ChatMessageDto responseChatMessageDto = new ChatMessageDto(requestChatMessageDto, unReadMessageCount);
 
-            redisTemplate.convertAndSend(topic, responseChatMessageDto);
+          //  redisTemplate.convertAndSend(topic, responseChatMessageDto);
         }
     }
 }
