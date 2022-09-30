@@ -47,14 +47,18 @@ public class S3Uploader {
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
 
-        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
+//        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
+
+//        ObjectMetadata objectMetadata=new ObjectMetadata();
+//        objectMetadata.setContentLength(resizingFile.getSize());
+//        objectMetadata.setContentType(resizingFile.getContentType());
 
         ObjectMetadata objectMetadata=new ObjectMetadata();
-        objectMetadata.setContentLength(resizingFile.getSize());
-        objectMetadata.setContentType(resizingFile.getContentType());
+        objectMetadata.setContentLength(multipartFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
 
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
-        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        removeNewFile(new File(Objects.requireNonNull(multipartFile.getOriginalFilename())));
 
 
         return new S3Dto(fileName, uploadImageUrl);

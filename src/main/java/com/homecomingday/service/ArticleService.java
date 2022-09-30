@@ -61,26 +61,12 @@ public class ArticleService {
         for(Article findArticle : articleList){
 
             if (!findArticle.getArticleFlag().equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
-//                List<Image> findImage = imageRepository.findAll();
-//                List<ImagePostDto> pickImage = new ArrayList<>();
-//
-//                for (Image image : findImage) {
-//                    if (image.getArticle().getId().equals(findArticle.getId())) {
-//                        pickImage.add(
-//                                ImagePostDto.builder()
-//                                        .imageId(image.getId())
-//                                        .imgUrl(image.getImgUrl())
-//                                        .build()
-//                        );
-//                    }
-//                }
 
                 getAllArticleDtoList.add(
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
-//                                .content(findArticle.getContent())
-//                                .imageList(pickImage)
+                                .content(findArticle.getContent())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -97,11 +83,9 @@ public class ArticleService {
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
-//                                .content(findArticle.getContent())
                                 .calendarDate(ArticleChange.changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
-                                .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -127,26 +111,12 @@ public class ArticleService {
         for(Article findArticle : articleList){
 
             if (!findArticle.getArticleFlag().equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
-//                List<Image> findImage = imageRepository.findAll();
-//                List<ImagePostDto> pickImage = new ArrayList<>();
-//
-//                for (Image image : findImage) {
-//                    if (image.getArticle().getId().equals(findArticle.getId())) {
-//                        pickImage.add(
-//                                ImagePostDto.builder()
-//                                        .imageId(image.getId())
-//                                        .imgUrl(image.getImgUrl())
-//                                        .build()
-//                        );
-//                    }
-//                }
 
                 getAllArticleDtoList.add(
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
                                 .content(findArticle.getContent())
-//                                .imageList(pickImage)
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -163,11 +133,10 @@ public class ArticleService {
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
-//                                .content(findArticle.getContent())
+                                .content(findArticle.getContent())
                                 .calendarDate(ArticleChange.changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
-                                .maxPeople(findArticle.getMaxPeople())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -191,46 +160,14 @@ public class ArticleService {
         List<GetAllArticleDto> getAllArticleDtoList = new ArrayList<>();
 
         for (Article findArticle : articleList) {
-            List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
-            List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
-
-//            for (Comment comment : commentList) {
-//
-//                commentResponseDtoList.add(
-//                        CommentResponseDto.builder()
-//                                .commentId(comment.getId())
-//                                .content(comment.getContent())
-//                                .username(comment.getMember().getUsername())
-//                                .userImage(changeImage(comment.getMember().getUserImage()))
-//                                .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
-//                                .departmentName(comment.getMember().getDepartmentName())
-//                                .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-//                                .build()
-//                );
-//            }
-
 
             if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
-//                List<Image> findImage = imageRepository.findAll();
-//                List<ImagePostDto> pickImage = new ArrayList<>();
-//
-//                for (Image image : findImage) {
-//                    if (image.getArticle().getId().equals(findArticle.getId())) {
-//                        pickImage.add(
-//                                ImagePostDto.builder()
-//                                        .imageId(image.getId())
-//                                        .imgUrl(image.getImgUrl())
-//                                        .build()
-//                        );
-//                    }
-//                }
 
                 getAllArticleDtoList.add(
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
-//                                .content(findArticle.getContent())
-//                                .imageList(pickImage)
+                                .content(findArticle.getContent())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -241,7 +178,6 @@ public class ArticleService {
                                 .heartCnt( findArticle.getHeartCnt())
                                 .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) findArticle.getComments().size())
-//                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             } else { //만남일정 부분  출력
@@ -249,11 +185,10 @@ public class ArticleService {
                         GetAllArticleDto.builder()
                                 .articleId(findArticle.getId())
                                 .title(findArticle.getTitle())
-//                                .content(findArticle.getContent())
                                 .calendarDate(ArticleChange.changeCalendarDate(findArticle.getCalendarDate()))
                                 .calendarTime(findArticle.getCalendarTime())
                                 .calendarLocation(findArticle.getCalendarLocation())
-//                                .maxPeople(findArticle.getMaxPeople())
+                                .content(findArticle.getContent())
                                 .username(findArticle.getMember().getUsername())
                                 .userImage(changeImage(findArticle.getMember().getUserImage()))
                                 .createdAt(Time.convertLocaldatetimeToTime(findArticle.getCreatedAt()))
@@ -264,7 +199,6 @@ public class ArticleService {
                                 .heartCnt( findArticle.getHeartCnt())
                                 .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) findArticle.getComments().size())
-//                                .commentList(commentResponseDtoList)
                                 .build()
                 );
             }
@@ -283,61 +217,14 @@ public class ArticleService {
 
 
         for (Article findArticle : articleList) {
-//            List<Comment> commentList = findArticle.getComments(); //게시물 index 번호에 따라 뽑아옴
-//            List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();   //for문 안에 있어야 계속 초기화돼서 들어감
-//            for (Comment comment : commentList) {
-//                List<Commit> commitList = commitRepository.findByCommentAndArticle(comment,findArticle);
-//                List<CommitResponseDto> commitResponseDtoList = new ArrayList<>();
-//                for (Commit commit : commitList) {
-//                    commitResponseDtoList.add(
-//                            CommitResponseDto.builder()
-//                                    .childCommentId(commit.getId())
-//                                    .content(commit.getContent())
-//                                    .username(commit.getMember().getUsername())
-//                                    .userImage(changeImage(commit.getMember().getUserImage()))
-//                                    .admission(commit.getMember().getAdmission().substring(2, 4) + "학번")
-//                                    .departmentName(commit.getMember().getDepartmentName())
-//                                    .createdAt(Time.convertLocaldatetimeToTime(commit.getCreatedAt()))
-//                                    .build()
-//                    );
-//                }
-//
-//                    commentResponseDtoList.add(
-//                            CommentResponseDto.builder()
-//                                    .commentId(comment.getId())
-//                                    .content(comment.getContent())
-//                                    .username(comment.getMember().getUsername())
-//                                    .userImage(changeImage(comment.getMember().getUserImage()))
-//                                    .admission(comment.getMember().getAdmission().substring(2, 4) + "학번")
-//                                    .departmentName(comment.getMember().getDepartmentName())
-//                                    .createdAt(Time.convertLocaldatetimeToTime(comment.getCreatedAt()))
-//                                    .childCommentList(commitResponseDtoList)
-//                                    .build()
-//
-//                    );
-//                }
 
                 if (!articleFlag.equals("calendar")) { //만남일정 부분 제외하고 모든값 출력
-//                    List<Image> findImage = imageRepository.findAll();
-//                    List<ImagePostDto> pickImage = new ArrayList<>();
-//
-//                    for (Image image : findImage) {
-//                        if (image.getArticle().getId().equals(findArticle.getId())) {
-//                            pickImage.add(
-//                                    ImagePostDto.builder()
-//                                            .imageId(image.getId())
-//                                            .imgUrl(image.getImgUrl())
-//                                            .build()
-//                            );
-//                        }
-//                    }
 
                     getAllArticleDtoList.add(
                             GetAllArticleDto.builder()
                                     .articleId(findArticle.getId())
                                     .title(findArticle.getTitle())
                                     .content(findArticle.getContent())
-//                                    .imageList(pickImage)
                                     .username(findArticle.getMember().getUsername())
                                     .userId(findArticle.getMember().getId())
                                     .userImage(changeImage(findArticle.getMember().getUserImage()))
@@ -349,7 +236,6 @@ public class ArticleService {
                                     .heartCnt(findArticle.getHeartCnt())
                                     .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) findArticle.getComments().size())
-//                                    .commentList(commentResponseDtoList)
                                     .build()
                     );
                 } else { //만남일정 부분  출력
@@ -357,11 +243,9 @@ public class ArticleService {
                             GetAllArticleDto.builder()
                                     .articleId(findArticle.getId())
                                     .title(findArticle.getTitle())
-//                                    .content(findArticle.getContent())
                                     .calendarDate(ArticleChange.changeCalendarDate(findArticle.getCalendarDate()))
                                     .calendarTime(findArticle.getCalendarTime())
                                     .calendarLocation(findArticle.getCalendarLocation())
-//                                    .maxPeople(findArticle.getMaxPeople())
                                     .username(findArticle.getMember().getUsername())
                                     .userId(findArticle.getMember().getId())
                                     .userImage(changeImage(findArticle.getMember().getUserImage()))
@@ -373,7 +257,6 @@ public class ArticleService {
                                     .heartCnt(findArticle.getHeartCnt())
                                     .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) findArticle.getComments().size())
-//                                    .commentList(commentResponseDtoList)
                                     .build()
                     );
                 }
@@ -528,7 +411,6 @@ public class ArticleService {
         List<Comment> findComment = commentRepository.findAll();
 
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
-//        List<ImagePostDto> imageList = new ArrayList<>();
 
         for (Comment comment : findComment) {
 
