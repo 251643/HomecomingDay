@@ -24,12 +24,10 @@ public class Encrypt {
         byte[] salt1 = salt.getBytes();
         String result = "";
 
-        System.out.println("pwd : "+pwd);
-        System.out.println("salt : "+salt);
 //        byte[] temp = pwd.getBytes();
 //        byte[] bytes = new byte[temp.length + salt1.length];
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(pwd.getBytes());
             md.update(salt.getBytes());
 
@@ -38,7 +36,6 @@ public class Encrypt {
            // StringBuffer sb = new StringBuffer();
 
             String hex = String.format("%064x", new BigInteger(1, b));
-            System.out.println("hex : "+ hex);
 //            for(int i=0; i<b.length; i++) {
 //                sb.append(Integer.toString((b[i] & 0xFF) + 256, 16).substring(1));
 //            }
