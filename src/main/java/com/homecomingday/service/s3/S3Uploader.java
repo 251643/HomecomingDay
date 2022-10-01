@@ -49,15 +49,15 @@ public class S3Uploader {
 
         MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
 
-        ObjectMetadata objectMetadata=new ObjectMetadata();
-        objectMetadata.setContentLength(resizingFile.getSize());
-        objectMetadata.setContentType(resizingFile.getContentType());
-
 //        ObjectMetadata objectMetadata=new ObjectMetadata();
-//        objectMetadata.setContentLength(multipartFile.getSize());
-//        objectMetadata.setContentType(multipartFile.getContentType());
+//        objectMetadata.setContentLength(resizingFile.getSize());
+//        objectMetadata.setContentType(resizingFile.getContentType());
 
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(multipartFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
 //        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
 
