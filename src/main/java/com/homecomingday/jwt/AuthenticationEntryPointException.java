@@ -1,7 +1,7 @@
 package com.homecomingday.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.homecomingday.controller.response.ResponseDto;
+import com.homecomingday.dto.ResponseDto;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;

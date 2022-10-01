@@ -6,13 +6,12 @@ import com.homecomingday.chat.ChatMessageRepository;
 import com.homecomingday.chat.RedisRepository;
 import com.homecomingday.chat.responseDto.ChatMessageTestDto;
 import com.homecomingday.chatRoom.requestDto.ChatRoomUserRequestDto;
-import com.homecomingday.chatRoom.responseDto.ChatRoomListResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomOtherMemberInfoResponseDto;
 import com.homecomingday.chatRoom.responseDto.ChatRoomResponseDto;
 import com.homecomingday.domain.Member;
 
 import com.homecomingday.domain.UserDetailsImpl;
-import com.homecomingday.repository.MemberRepository;
+import com.homecomingday.member.MemberRepository;
 import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

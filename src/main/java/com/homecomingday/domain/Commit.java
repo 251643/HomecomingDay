@@ -1,7 +1,7 @@
 package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.homecomingday.controller.request.CommentRequestDto;
+import com.homecomingday.comment.requestDto.CommentRequestDto;
 import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

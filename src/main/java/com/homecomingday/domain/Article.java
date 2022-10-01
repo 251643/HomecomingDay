@@ -2,7 +2,7 @@ package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.homecomingday.controller.request.ArticleRequestDto;
+import com.homecomingday.article.requestDto.ArticleRequestDto;
 import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

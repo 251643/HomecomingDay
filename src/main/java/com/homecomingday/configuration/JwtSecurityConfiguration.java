@@ -2,7 +2,7 @@ package com.homecomingday.configuration;
 
 import com.homecomingday.jwt.JwtFilter;
 import com.homecomingday.jwt.TokenProvider;
-import com.homecomingday.service.UserDetailsServiceImpl;
+import com.homecomingday.member.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

@@ -81,7 +81,7 @@
 
     
 ## ERD
-![image](https://user-images.githubusercontent.com/102898794/190412095-45164291-2671-4fdb-a07c-c72407a8e3e5.png)
+<img width="915" alt="image" src="https://user-images.githubusercontent.com/102898794/193406479-9c6a2917-4453-4998-9015-ff7a412661fb.png">
 
 
 ## api
