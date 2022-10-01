@@ -68,21 +68,25 @@ public class RedisRepository {
     // step2
     // 채팅방에서 사용자가 읽지 않은 메세지의 갯수 초기화
     public void initChatRoomMessageInfo(String roomUuid, Long memberId) {
+        System.out.println("roomId>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+roomUuid);
+        System.out.println("memberId>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+memberId);
         chatRoomUnReadMessageInfo.put(roomUuid, memberId, 0);
+        System.out.println("안읽은 메시지 업데이트했음 "+getChatRoomMessageCount(roomUuid, memberId));
     }
 
     // 채팅방에서 사용자가 읽지 않은 메세지의 갯수 추가
     public void addChatRoomMessageCount(String roomUuid, Long memberId) {
-        System.out.println("roomUuid>>>>>>>>>>>>>>>>>>>>" + roomUuid);
-        System.out.println("memberId>>>>>>>>>>>>>>>>>>>>" + memberId);
-        System.out.println("읽지않는 메시지 갯수>>>>>>>>>>>>>>>>>>>>" + chatRoomUnReadMessageInfo.get(roomUuid, memberId));
         chatRoomUnReadMessageInfo.put(roomUuid, memberId, chatRoomUnReadMessageInfo.get(roomUuid, memberId) + 1);
     }
 
     //
     public int getChatRoomMessageCount(String roomUuid, Long memberId) {
-        System.out.println("읽지않은 메시지 갯수는? : "+chatRoomUnReadMessageInfo.get(roomUuid, memberId));
-        return chatRoomUnReadMessageInfo.get(roomUuid, memberId);
+        if(chatRoomUnReadMessageInfo.get(roomUuid, memberId)==null){
+            return 0;
+        }
+        else{
+            return chatRoomUnReadMessageInfo.get(roomUuid, memberId);
+        }
     }
 
     // step3

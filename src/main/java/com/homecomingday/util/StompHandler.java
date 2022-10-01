@@ -26,20 +26,17 @@ public class StompHandler implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        System.out.println("accessor>>>>>>>>>      " + accessor);
         String jwtToken = "";
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             // toDo : 모든 화면에서 socket이 뚫려 있기 때문에 대화방에서 온 connect라는 것을 알 수 있는 것이 있어야 한다.
 
-            System.out.println("여기는 CONNECT 입니다.");
             String type = accessor.getFirstNativeHeader("type");
             if (type !=null && type.equals("CHAT")) {
                 // 사용자 확인
                 jwtToken = Objects.requireNonNull(accessor.getFirstNativeHeader("token"));
 
                 String username = jwtDecoder.decodeUsername(jwtToken) ;
-                System.out.println("연결된 유저 이메일 : "+username);
 
                 Member member = memberRepository.findByEmail(username).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
@@ -50,12 +47,9 @@ public class StompHandler implements ChannelInterceptor {
                 redisRepository.saveMyInfo(sessionId, userId);
             }
 
-            System.out.println("타입이 CHAT이 아니고 " + type + "입니다.");
         } else if (StompCommand.DISCONNECT.equals(accessor.getCommand())) { // Websocket 연결 종료
-            System.out.println("여기는 DISCONNECT 입니다.");
             String sessionId = (String) message.getHeaders().get("simpSessionId");
             String type = accessor.getFirstNativeHeader("type");
-            System.out.println("타입이 CHAT이 아니고 " + type + "입니다.");
             // 채팅방에서 나가는 것이 맞는지 확인 작업
             if (redisRepository.existMyInfo(sessionId)) {
                 Long userId = redisRepository.getMyInfo(sessionId);
@@ -68,7 +62,6 @@ public class StompHandler implements ChannelInterceptor {
                 redisRepository.deleteMyInfo(sessionId);
             }
         }
-        System.out.println("message는 : " + message);
         return message;
     }
 }

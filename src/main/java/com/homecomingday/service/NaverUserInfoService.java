@@ -8,7 +8,8 @@ import com.homecomingday.domain.UserDetailsImpl;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.repository.RefreshTokenRepository;
-
+import com.homecomingday.shared.NaverLogin;
+import com.homecomingday.util.Encrypt;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -46,13 +47,13 @@ public class NaverUserInfoService {
         if(token == null){ // && token.equals("")){
             throw new RuntimeException("AccessToken값이 없습니다.");
         }
+        System.out.println("AccessToken>>>>>>>>>>>>>>>>>>>>" + AccessToken);
         String apiURL = "https://openapi.naver.com/v1/nid/me";
 
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("Authorization", token);
         String responseBody = get(apiURL,requestHeaders);
 
-        System.out.println(responseBody);
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(responseBody);
         JSONObject jsonObj = (JSONObject) obj;
@@ -60,7 +61,7 @@ public class NaverUserInfoService {
         JSONObject response_obj = (JSONObject)jsonObj.get("response");
         String name = (String)response_obj.get("name");
         String email = (String)response_obj.get("email");
-
+        System.out.println("로그인한 사람 메일 : " + email);
         NaverMemberInfoDto naverMemberInfoDto = new NaverMemberInfoDto(email, name);
 
         Member member = registerNaver(naverMemberInfoDto);
@@ -128,9 +129,11 @@ public class NaverUserInfoService {
             // 회원가입
             String email = naverMemberInfoDto.getEmail();
 
+            String salt = Encrypt.getSalt();
+
             // password: random UUID
             String password = UUID.randomUUID().toString();
-            String encodedPassword = passwordEncoder.encode(password);
+            String encodedPassword = Encrypt.getEncrypt(password, salt);
 
             String name = naverMemberInfoDto.getName();
 
@@ -138,6 +141,7 @@ public class NaverUserInfoService {
                     .email(email)
                     .username(name)
                     .password(encodedPassword)
+                    .salt(salt)
                     .build();
             memberRepository.save(member);
 

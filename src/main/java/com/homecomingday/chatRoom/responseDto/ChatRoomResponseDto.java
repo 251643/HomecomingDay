@@ -24,9 +24,10 @@ public class ChatRoomResponseDto implements Comparable<ChatRoomResponseDto> {
     private String departmentName;
 
     private String otherUserImage;
+    private int totalCnt;
 
     public ChatRoomResponseDto(String roomName, String roomId, String lastMessage,
-        LocalDateTime lastTime, int unReadMessageCount, String dayBefore, String admission, String departmentName, String otherUserImage) {
+        LocalDateTime lastTime, int unReadMessageCount, String dayBefore, String admission, String departmentName, String otherUserImage, int totalCnt) {
         this.roomName = roomName;
         this.chatRoomUuid=roomId;
         this.lastMessage=lastMessage;
@@ -36,6 +37,7 @@ public class ChatRoomResponseDto implements Comparable<ChatRoomResponseDto> {
         this.admission = admission.substring(2, 4) + "학번";
         this.departmentName = departmentName;
         this.otherUserImage = otherUserImage;
+        this.totalCnt = totalCnt;
     }
 
     @Override

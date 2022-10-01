@@ -1,30 +1,28 @@
 package com.homecomingday.service.s3;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.AmazonS3;
-import org.imgscalr.Scalr;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import org.imgscalr.Scalr;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.homecomingday.controller.S3Dto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+
 import javax.imageio.ImageIO;
-import javax.transaction.Transactional;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.RemoteException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,24 +36,33 @@ public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
 
 
-
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
 
+
+    //게시글
     public S3Dto upload(MultipartFile multipartFile) throws IOException {
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
 
-        File resizingFile = resizeMainImage(multipartFile,fileName,fileFormatName,1).orElseThrow(() -> new io.jsonwebtoken.io.IOException("변환실패"));
+        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
 
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile));
-        removeNewFile(resizingFile);
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(resizingFile.getSize());
+        objectMetadata.setContentType(resizingFile.getContentType());
+
+//        ObjectMetadata objectMetadata=new ObjectMetadata();
+//        objectMetadata.setContentLength(multipartFile.getSize());
+//        objectMetadata.setContentType(multipartFile.getContentType());
+
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+//        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
+
+
         return new S3Dto(fileName, uploadImageUrl);
     }
-
-
 
 
     //프로필 이미지 업로드
@@ -64,17 +71,22 @@ public class S3Uploader {
         String fileFormatName = Objects.requireNonNull(multipartFile.getContentType()).substring(multipartFile.getContentType().lastIndexOf("/") + 1);
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
-        File resizingFile = resizeMainImage(multipartFile,fileName,fileFormatName,2).orElseThrow(() -> new io.jsonwebtoken.io.IOException("변환실패"));
+        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 2);
+
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(resizingFile.getSize());
+        objectMetadata.setContentType(resizingFile.getContentType());
+
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+//        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
 
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile));
-        removeNewFile(resizingFile);
-        return  uploadImageUrl;
+        return uploadImageUrl;
     }
 
 
     //게시글/프로필 이미지 리사이즈
-    private Optional<File> resizeMainImage(MultipartFile originalImage,String fileName,String fileFormatName,Integer checkNum) throws IOException {
+    private MultipartFile resizeMainImage(MultipartFile originalImage, String fileName, String fileFormatName, Integer checkNum) throws IOException {
 
         //요청 파일로 BufferedImage 객체를 생성 => MultipartFile에서 Buffered로 바꾸어 가공가능하도록
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
@@ -82,10 +94,10 @@ public class S3Uploader {
         int demandWidth;
         int demandHeight;
         // 줄이려고 하는 이미지 크기
-        if(checkNum==1){//checkNum이 1이면 메인게시물
+        if (checkNum == 1) {//checkNum이 1이면 메인게시물
             demandWidth = 330;
             demandHeight = 250;
-        }else { //checkNum이 2면 프로필이미지로 사이즈 조정
+        } else { //checkNum이 2면 프로필이미지로 사이즈 조정
             demandWidth = 160;
             demandHeight = 160;
         }
@@ -97,37 +109,34 @@ public class S3Uploader {
         int newHeight;
 
         // 원본 넓이가 더 작을경우 리사이징 안함.
-        if (demandWidth > originWidth&&demandHeight > originHeight ) {
+        if (demandWidth > originWidth && demandHeight > originHeight) {
             newWidth = originWidth;
             newHeight = originHeight;
-        }else {
+        } else {
             newWidth = demandWidth;
             newHeight = (demandWidth * originHeight) / originWidth;
-           // newHeigh = demandHeight; 차후 속도체크후 결정
+            // newHeigh = demandHeight; 차후 속도체크후 결정
         }
 
         // 이미지 기본 너비 높이 설정값으로 변경
         BufferedImage destImg = Scalr.resize(srcImg, newWidth, newHeight);
 
         // 이미지 저장
-        File resizedImage = new File(fileName);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
+        baos.flush();
+        destImg.flush();
 
-//        if(resizedImage.createNewFile()) {
-            ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-            return Optional.of(resizedImage);
+        return new MockMultipartFile(fileName, baos.toByteArray());
+
+    }
+
+//만약을 위해 우선 남겼습니다
+//    private void removeNewFile(File targetFile) {
+//        if (targetFile.delete()) {
+//            log.info("파일이 삭제되었습니다.");
+//        } else {
+//            log.info("파일이 삭제되지 못했습니다.");
 //        }
-//        return Optional.empty();
-    }
-
-
-
-
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        } else {
-            log.info("파일이 삭제되지 못했습니다.");
-        }
-    }
-
+//    }
 }

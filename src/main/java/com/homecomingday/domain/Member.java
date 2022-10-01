@@ -50,6 +50,9 @@ public class Member extends Timestamped {
   @Column
   private String userImage;
 
+  @Column
+  private String salt;
+
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
   @JsonManagedReference
   private List<Notification> notification = new ArrayList<>();
@@ -75,9 +78,6 @@ public class Member extends Timestamped {
     return getClass().hashCode();
   }
 
-  public boolean validatePassword(PasswordEncoder passwordEncoder, String password) {
-    return passwordEncoder.matches(password, this.password);
-  }
 
 
   public void updateMyPage(MyPageResponseDto myPageResponseDto){

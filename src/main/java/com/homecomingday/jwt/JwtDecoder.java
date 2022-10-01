@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import com.homecomingday.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -24,14 +25,14 @@ import java.util.Optional;
 
 import static com.homecomingday.jwt.TokenProvider.*;
 @Component
-@RequiredArgsConstructor
 public class JwtDecoder {
-
-
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+    public JwtDecoder(@Value("${jwt.secret}") String secretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+    private static Key key;
 
-    byte[] keyBytes = Decoders.BASE64.decode("dkqkRnjdiehlsmsepdlrjsdfsdfsdafdsdksqkRnawlsWkwhffkrprFSDFSDFnlcksgdmawlsWKWkwmdsksekdmfklsdfjkldsjfsdmfklsdfsdlhfksdjfksdfjSDFSADFSDdklsfjklsad");
-    Key key = Keys.hmacShaKeyFor(keyBytes);
     public String decodeUsername(String token) {
 
         String username = "";
