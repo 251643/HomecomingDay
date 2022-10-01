@@ -15,6 +15,7 @@ import com.homecomingday.jwt.JwtDecoder;
 import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.shared.Authority;
+import com.homecomingday.util.Encrypt;
 import com.homecomingday.util.RedisUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.utils.StringUtils;
 
 import static com.homecomingday.jwt.JwtFilter.BEARER_PREFIX;
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,20 +56,12 @@ public class MemberService {
       return ResponseDto.fail("DUPLICATED_NICKNAME",
           "중복된 닉네임 입니다.");
     }
-//    if (null != isPresentMember(requestDto.getEmail())) {
-//      throw new CustomException(DUPLE_EMAIL);
-//    }
-
-//    if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
-//      return ResponseDto.fail("PASSWORDS_NOT_MATCHED",
-//          "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-//    }
-
+    String salt = Encrypt.getSalt();
     Member member = Member.builder()
-
             .email(requestDto.getEmail())
             .username(requestDto.getUsername())
-                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .password(Encrypt.getEncrypt(requestDto.getPassword(), salt))
+            .salt(salt)
                     .build();
     memberRepository.save(member);
     return ResponseDto.success(
@@ -89,7 +83,7 @@ public class MemberService {
           "사용자를 찾을 수 없습니다.");
     }
 
-    if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
+    if (!validatePassword(requestDto.getEmail(), requestDto.getPassword())) {
       return ResponseDto.fail("INVALID_MEMBER", "사용자를 찾을 수 없습니다.");
     }
 
@@ -98,6 +92,12 @@ public class MemberService {
 
     return ResponseDto.success(tokenDto);
 
+  }
+
+  private boolean validatePassword(String email, String password) {
+
+    Member member = isPresentMember(email);
+    return member.getPassword().equals(Encrypt.getEncrypt(password, member.getSalt()));
   }
 
 //  @Transactional

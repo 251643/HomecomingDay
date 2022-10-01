@@ -9,6 +9,7 @@ import com.homecomingday.jwt.TokenProvider;
 import com.homecomingday.repository.MemberRepository;
 import com.homecomingday.repository.RefreshTokenRepository;
 import com.homecomingday.shared.NaverLogin;
+import com.homecomingday.util.Encrypt;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -126,9 +127,11 @@ public class NaverUserInfoService {
             // 회원가입
             String email = naverMemberInfoDto.getEmail();
 
+            String salt = Encrypt.getSalt();
+
             // password: random UUID
             String password = UUID.randomUUID().toString();
-            String encodedPassword = passwordEncoder.encode(password);
+            String encodedPassword = Encrypt.getEncrypt(password, salt);
 
             String name = naverMemberInfoDto.getName();
 
@@ -136,6 +139,7 @@ public class NaverUserInfoService {
                     .email(email)
                     .username(name)
                     .password(encodedPassword)
+                    .salt(salt)
                     .build();
             memberRepository.save(member);
 
