@@ -2,10 +2,7 @@ package com.homecomingday.article;
 
 
 import com.homecomingday.article.requestDto.ArticleRequestDto;
-import com.homecomingday.article.responseDto.ArticleResponseDto;
-import com.homecomingday.article.responseDto.CheckAllParticipantDto;
-import com.homecomingday.article.responseDto.CheckJoinDto;
-import com.homecomingday.article.responseDto.GetAllArticleDto;
+import com.homecomingday.article.responseDto.*;
 import com.homecomingday.domain.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +24,14 @@ public class ArticleController {
     private final ArticleRepository articleRepository;
 
 
-    //검색창 페이지 목록조회
+    //조회수 체크
+    @GetMapping("/article/view/{articleId}")
+    public ViewResponseDto checkView(@PathVariable Long articleId){
+        return articleService.checkViews(articleId);
+    }
+
+
+   //검색창 페이지 목록조회
     @GetMapping("/searchArticle")
     public List<GetAllArticleDto> searchAllArticle(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return articleService.searchArticle(userDetails);

@@ -421,9 +421,7 @@ public class ArticleService {
 
 
     // 게시글 상세 조회
-    @Transactional            //get이라고 @transactional 지우지마세요 조회수 갱신때메 넣어야합니다.빼면 에러나유
     public ArticleResponseDto readArticle(String articleFlag, Long articleId, UserDetailsImpl userDetails) {
-        articleRepository.updateCount(articleId);
 
         Article article = isPresentArticle(articleId);
         if (null == article) {
@@ -743,6 +741,15 @@ public class ArticleService {
 
 
 
+    }
+
+
+    @Transactional
+    public ViewResponseDto checkViews(Long articleId) {
+        articleRepository.updateCount(articleId);
+        Article article = isPresentArticle(articleId);
+
+        return new ViewResponseDto(articleId,article.getViews());
     }
 }
 
