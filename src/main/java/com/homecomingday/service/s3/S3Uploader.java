@@ -47,18 +47,18 @@ public class S3Uploader {
         String uploadImageUrl = amazonS3Client.getUrl(bucket, fileName).toString();
 
 
-//        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
-
-//        ObjectMetadata objectMetadata=new ObjectMetadata();
-//        objectMetadata.setContentLength(resizingFile.getSize());
-//        objectMetadata.setContentType(resizingFile.getContentType());
+        MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
 
         ObjectMetadata objectMetadata=new ObjectMetadata();
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(resizingFile.getSize());
+        objectMetadata.setContentType(resizingFile.getContentType());
 
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
-        removeNewFile(new File(Objects.requireNonNull(multipartFile.getOriginalFilename())));
+//        ObjectMetadata objectMetadata=new ObjectMetadata();
+//        objectMetadata.setContentLength(multipartFile.getSize());
+//        objectMetadata.setContentType(multipartFile.getContentType());
+
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
 
         return new S3Dto(fileName, uploadImageUrl);
@@ -131,7 +131,7 @@ public class S3Uploader {
 
     }
 
-
+//만약을 위해 우선 남겼습니다
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
             log.info("파일이 삭제되었습니다.");
