@@ -2,14 +2,12 @@ package com.homecomingday.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.homecomingday.controller.ItemList;
-import com.homecomingday.controller.response.DepartmentDto;
-import com.homecomingday.controller.response.SchoolDto;
+import com.homecomingday.member.responseDto.DepartmentDto;
+import com.homecomingday.member.responseDto.SchoolDto;
 import com.homecomingday.domain.Department;
 import com.homecomingday.domain.School;
-import com.homecomingday.repository.ArticleRepository;
-import com.homecomingday.repository.DepartmentRepository;
-import com.homecomingday.repository.SchoolRepository;
+import com.homecomingday.member.DepartmentRepository;
+import com.homecomingday.member.SchoolRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor // final 멤버 변수를 자동으로 생성합니다.
 @Component // 스프링이 필요 시 자동으로 생성하는 클래스 목록에 추가합니다.

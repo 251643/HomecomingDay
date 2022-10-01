@@ -2,15 +2,14 @@ package com.homecomingday.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.homecomingday.controller.request.SchoolInfoDto;
-import com.homecomingday.controller.response.MyPageResponseDto;
+import com.homecomingday.member.requestDto.SchoolInfoDto;
+import com.homecomingday.myPage.responseDto.MyPageResponseDto;
 import com.homecomingday.util.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;

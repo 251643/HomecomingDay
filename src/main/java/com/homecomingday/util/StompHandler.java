@@ -3,7 +3,7 @@ package com.homecomingday.util;
 import com.homecomingday.chat.RedisRepository;
 import com.homecomingday.domain.Member;
 import com.homecomingday.jwt.JwtDecoder;
-import com.homecomingday.repository.MemberRepository;
+import com.homecomingday.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

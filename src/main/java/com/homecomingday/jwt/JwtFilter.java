@@ -1,8 +1,8 @@
 package com.homecomingday.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.homecomingday.controller.response.ResponseDto;
-import com.homecomingday.service.UserDetailsServiceImpl;
+import com.homecomingday.dto.ResponseDto;
+import com.homecomingday.member.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

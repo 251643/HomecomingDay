@@ -4,7 +4,7 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import com.homecomingday.chat.requestDto.ChatMessageDto;
 import com.homecomingday.domain.Member;
 import com.homecomingday.jwt.JwtDecoder;
-import com.homecomingday.repository.MemberRepository;
+import com.homecomingday.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
