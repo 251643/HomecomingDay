@@ -100,6 +100,7 @@ dependencies {
 
     implementation 'com.auth0:java-jwt:3.13.0'
 
+    implementation 'io.sentry:sentry-logback:6.4.2'
 }
 
 

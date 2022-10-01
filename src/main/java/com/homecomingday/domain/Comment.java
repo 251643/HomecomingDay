@@ -35,14 +35,6 @@ public class Comment extends Timestamped {
   @Column(nullable = false)
   private String articleFlag;
 
-////대댓글
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinColumn(name = "parent_id")
-//  private Comment parent;
-//
-//  @Builder.Default
-//  @OneToMany(mappedBy = "parent", orphanRemoval = true)
-//  private List<Comment> children = new ArrayList<>();
 
 
   @JoinColumn(name = "member_id",nullable = false)
@@ -66,8 +58,7 @@ public class Comment extends Timestamped {
     this.article = article;
     this.content = reviseContentDto.getContent();
     this.member = userDetails.getMember();
-//    this.free = free.getArticlesId();
-//    이메일이 들어올자리
+
   }
 
 
