@@ -58,7 +58,7 @@ public class S3Uploader {
 //        objectMetadata.setContentType(multipartFile.getContentType());
 
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
-        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
+//        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
 
         return new S3Dto(fileName, uploadImageUrl);
