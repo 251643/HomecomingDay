@@ -1,7 +1,7 @@
 ![image](https://user-images.githubusercontent.com/102898794/190405115-3557e184-e6c8-4e2a-b335-3b3049553c9e.png)
 
 #  <img src="https://user-images.githubusercontent.com/102898794/190404072-43a580b8-e606-404d-b1d2-96b31a08cca7.png" width="5%"> Homecoming Day
-
+### 🔗사이트 ->  [HomecomingDay](https://www.homecomingdaycare.com)
 
 ### 👩‍🎓 대학교 졸업생 동문 사이트 [홈커밍데이 HomeComingDay] 에서 전국의 선후배를 만나보세요! 👨‍🎓
 
@@ -13,109 +13,105 @@
 청춘이 시작되는 20대를 함께 보낸 동기들, 의지하고 싶은 선후배를 찾고 싶지만 아쉽게도 동문을 만날 수 있는 방법은 많이 없습니다. 오픈채팅, 카페 등을 이용하여 동창들과 이어지는 것을 넘어 졸업 후에도 선후배를 만날 수 있는 커뮤니티를 만들고자 하는 아이디어에서 시작된 프로젝트입니다.
 
 <br/>
+
+
+
 <br/>
 
-## 프로젝트 개요
-- 프로젝트명 : HomecomingDay
-- 개발인원 : 백엔드(3), 프론트엔드(3), 디자이너(1)
-- 개발 기간 : 2022/08/26~2022/10/07
-- 개발 환경 :
-  - 프론트엔드 : React, Redux Toolkit, Axios, Global Cookie
-  - 백엔드 : Springboot 2.7.2, JDK 11, Spring Security, Spring JPA
-- 배포 환경 : Gradle, AWS S3, AWS EC2
-- 웹 서버 : 
-- 데이터 베이스 : 
-- 협업 도구 : Git, Slack, Notion, GatherTown, Kakao Talk
+### 주요기능
 
+#### 📲 네이버 로그인 / 이메일 로그인(이메일 인증)<br/>: 네이버를 통한 소셜로그인으로 간단하게 가입할 수 있어요. 이메일 회원가입에서는 본인 명의 이메일을 통해 인증메일을 받으실 수 있어요.
+####  🏫 학교마다 독립적인 공간 사용 가능<br/> : 로그인시 선택하는 학교이름으로 독립적인 공간 사용이 가능해요.
+#### 💬채팅<br/> : 친구들과 1:1 채팅을 할 수 있어요
+#### 🔔 댓글, 좋아요 알림<br/> : 게시글에 달린 댓글과 좋아요를 알림으로 확인할 수 있어요
+#### ✔️ 게시글 작성시 원하는 카테고리 선택<br/> : 게시글 작성시 페이지 하나에서 원하는 카테고리를 골라서 작성이 가능해요
+#### 📄 대댓글<br/> : 댓글 안에 대댓글을 달아서 의견을 나눠보아요
+#### 👍 좋아요<br/> : 공감이 가는 게시글에 좋아요를 누를 수 있어요 
+#### 📝 마이페이지<br/> : 마이페이지에서 마음에 드는 프로필 사진 수정과 본인의 프로필 및 게시글을 확인해 보아요
+#### 🏆 게시글 숫자에 따른 뱃지 생성<br/> : 게시글 숫자에 따른 뱃지가 생성이 됩니당
+#### 👩‍👩‍👧‍👦 참여하기<br/> : 만남일정 게시판에서 참여하기를 눌러 일정에 참여할 수 있어요. 서두르세요 참여인원이 마감될 수 있어요🙊
+#### 🗺 일정정하기<br/> : 만남일정 게시판에서 원하는 일정, 장소, 참여인원을 정할 수 있어요. 동창들과 만남일정을 정해보세요☺️
+#### 🔎 검색하기<br/> : 원하는 게시글을 검색으로 찾을 수 있어요
 
-## 주요기능
-    - 사이트에서 사용할 수 있는 기능
-#### 📲 네이버 로그인 / 이메일 로그인(이메일 인증)
-네이버를 통한 소셜로그인으로 간단하게 가입할 수 있어요. 이메일 회원가입에서는 본인 명의 이메일을 통해 인증메일을 받으실 수 있어요.
-#### 🏫학교마다 독립적인 공간 사용 가능
-로그인시 선택하는 학교이름으로 독립적인 공간 사용이 가능해요.
 
 </br>
 
-## Architecture
-
-
-## How to use
-    - 적용한 기술
-- 
-
-
-## 📜 기술스택
-|분류|기술|
-| :-: |:- |
-|Language|<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">|
-|Framework|<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white">|
-|Build Tool|<img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">|
-|DB|<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">|
-|Server|<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white"> <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">|
-|CI/CD|<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"> <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">|
-|proxy, 무중단배포|<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">|
-
-## 🚀  스택
- <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat&logo=SpringBoot&logoColor=white"/>  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat&logo=Spring Security&logoColor=white"/> <img src="https://img.shields.io/badge/Java-007396?style=flat&logo=java&logoColor=white"/>   <img src="https://img.shields.io/badge/JWT-000000?style=flat&logo=JWT&logoColor=white"/> 
- <img src="https://img.shields.io/badge/Flask-000000?style=flat&logo=Flask&logoColor=white"/>  <img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=Gradle&logoColor=white"/>  <img src="https://img.shields.io/badge/Redis-DC382D?style=flat&logo=Redis&logoColor=white"/>
- <img src="https://img.shields.io/badge/STOMP-885630?style=flat&logo=stomp&logoColor=white"/> <img src="https://img.shields.io/badge/SockJS-2A2A2A?style=flat&logo=SockJS&logoColor=white"/>
-
-
-  ## 🔧 툴
-  <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white"/>   <img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=flat&logo=IntelliJ IDEA&logoColor=white"/>   <img src="https://img.shields.io/badge/Sourcetree-0052CC?style=flat&logo=Sourcetree&logoColor=white"/>   <img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=Notion&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=Postman&logoColor=white"/>  <img src="https://img.shields.io/badge/Slack-4A154B?style=flat&logo=Slack&logoColor=white"/>   <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=Git&logoColor=white"/> 
-  <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white"/>   <img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo=Figma&logoColor=white"/>
-
-   
-
-  ## 🖥 서버
-  <img src="https://img.shields.io/badge/NGINX-009639?style=flat&logo=NGINX&logoColor=white"/>  <img src="https://img.shields.io/badge/AmazonEC2-FF9900?style=flat&logo=AmazonEC2&logoColor=orange"/>
+### Architecture
+![image](https://user-images.githubusercontent.com/102898794/193447392-f4778d29-b2d2-4f9f-9ad1-61fa404e824c.png)
 
 
 
+### 🔥 트러블슈팅
 
-## 기술적 의사결정
-    - 적용기술과 기술 도입배경
+<br/>
+
+### 기술적 의사결정
+| 사용 기술 | 기술 설명 |
+| --- | --- |
+| CloudFront | 사용자에게 제공되는 정적 컨텐츠의 전송 속도를 높이고 HTTPS를 적용시키기 위해 사용되었다. |
+| mySql | 각 게시글에 유저간 사이에 참가자로서, 대기자로서, 방장으로서 각각 다양하게 연계가 되어있기 때문에 효율적인 서버관리를 위하여 관계형 DB를 선택하였다.  |
+| socket.io | https를 이용한 실시간 데이터 통신으로서, 실시간으로 유저들이 채팅을 할 수 있다. 또한 실시간 알림을 통해 자신이 해당 게시글에 참여상태를 바로바로 알수 있게 만들 수 있었다. |
+| github actions | 프론트엔드와 백엔드의 효율적인 협업을 위해, 자동배포를 진행하였다.  |
+| nginx | DDos와 같은 공격으로부터 보호하고, 좀 더 빠른 응답을 위해 사용되었다.  |
+| redux-toolkit | action type이나 action creator를 따로 생성해주지 않아도 되고. immer가 내장되어 있어 mutable 객체를 사용할 수 있었다. redux-thunk가 내장되어 있어 비동기 처리 및 미들웨어 추가가 편리하게 사용되었다. |
+
   
 
+<br/>
+
+### ⚙️ 개발 환경
+- **Server** : AWS EC2(Linux 2 AMI)
+- **Framework** : Springboot
+- **Database** : Mysql (AWS RDS), Redis (Aws ElastiCache)
+- **ETC** : AWS S3, AWS IAM, AWS Parameter Store, AWS Code deploy, NginX
+
+<br/>
+
+### 📜 기술스택
+#### 🚀  스택
+ <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat&logo=SpringBoot&logoColor=white"/>  <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat&logo=Spring Security&logoColor=white"/> <img src="https://img.shields.io/badge/Java-007396?style=flat&logo=java&logoColor=white"/>   <img src="https://img.shields.io/badge/JWT-000000?style=flat&logo=JWT&logoColor=white"/> 
+ <img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=Gradle&logoColor=white"/>  <img src="https://img.shields.io/badge/Redis-DC382D?style=flat&logo=Redis&logoColor=white"/>
+ <img src="https://img.shields.io/badge/STOMP-885630?style=flat&logo=stomp&logoColor=white"/>  <img src="https://img.shields.io/badge/Socket-010101?style=flat-square&logo=Socket.io&logoColor=white"/>
+
+
+  #### 🔧 툴
+  <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white"/>   <img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=flat&logo=IntelliJ IDEA&logoColor=white"/>   <img src="https://img.shields.io/badge/Sourcetree-0052CC?style=flat&logo=Sourcetree&logoColor=white"/>   <img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=Notion&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=Postman&logoColor=white"/>  <img src="https://img.shields.io/badge/Slack-4A154B?style=flat&logo=Slack&logoColor=white"/>   <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=Git&logoColor=white"/> 
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white"/>   <img src="https://img.shields.io/badge/Figma-F24E1E?style=flat&logo=Figma&logoColor=white"/>  <img src="https://img.shields.io/badge/Amazon S3-569A31?style=flat-square&logo=Amazon S3&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon AWS-232F3E?style=flat-square&logo=Amazon AWS&logoColor=white"/>
+
+ 
+  #### 🖥 서버
+  <img src="https://img.shields.io/badge/NGINX-009639?style=flat&logo=NGINX&logoColor=white"/>  <img src="https://img.shields.io/badge/AmazonEC2-FF9900?style=flat&logo=AmazonEC2&logoColor=orange"/>  <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=flat&logo=GitHub Actions&logoColor=white"/>  <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=flat&logo=codedeploy&logoColor=white"/>
+
+
+
+
     
-## ERD
+### ERD
 <img width="915" alt="image" src="https://user-images.githubusercontent.com/102898794/193406479-9c6a2917-4453-4998-9015-ff7a412661fb.png">
 
 
-## api
-[api](https://www.notion.so/API-958fc1f5810045a684d94cc16b43772a)
+
+###  [API](https://www.notion.so/API-958fc1f5810045a684d94cc16b43772a)
+
+###  [HomecomingDay 와이어 프레임](https://www.figma.com/file/b5xDAy68cty1Rguu5dqPZR/D%EB%B0%98-1%EC%A1%B0-%ED%99%88%EC%BB%A4%EB%B0%8D%EB%8D%B0%EC%9D%B4-%EC%99%80%EC%9D%B4%EC%96%B4%ED%94%84%EB%A0%88%EC%9E%84?node-id=995%3A3062)
 
 
-## 와이드 프레임
-[HomecomingDay 와이드 프레임](https://www.figma.com/file/b5xDAy68cty1Rguu5dqPZR/D%EB%B0%98-1%EC%A1%B0-%ED%99%88%EC%BB%A4%EB%B0%8D%EB%8D%B0%EC%9D%B4-%EC%99%80%EC%9D%B4%EC%96%B4%ED%94%84%EB%A0%88%EC%9E%84?node-id=995%3A3062)
 
+<br/>
 
-## Contributors
- - 백엔드 :
-    <td align="center"><b><a href="https://github.com/JeongWilly">정우창</a></b></td>
-    <td align="center"><b><a href="https://github.com/251643">서솔</a></b></td>
-     <td align="center"><b><a href="https://github.com/ji-0o0o0o">신지영</a></b></td>
-  - 프론트엔드 :   
-     <td align="center"><b><a href="https://github.com/jennywoon">나청운</a></b></td>
-    <td align="center"><b><a href="https://github.com/suzzeong">조수정</a></b></td>
-    <td align="center"><b><a href="https://github.com/hyeongyong-choi">최형용</a></b></td>
-  - 디자이너 : 
-     <td align="center"><b><a href="">김미래</a></b></td>
-     <hr>
+### 🗓 개발 기간 : 2022/08/26~2022/10/07
 
-| 이름       | 포지션       | 담당 기능 구현          |
-| ---------- | ------------ | ------------------------------ |
-| **정우창** | `백엔드` | 회원가입, 로그인(+소셜로그인) 기능, 마이페이지 , 신고기능, 이메일 인증 기능, NGINX+SSL로 HTTPS 설정,  무중단 배포 |
-| **서솔** | `백엔드` | Coffee 작성 및 조회, Post 작성 및 조회, 기술 문제 해결 |
-| **신지영** | `백엔드` | Coffee review 및 star /bookmark생성 및 조회 Post comment love/boomark 생성 및 조회 |
-| **나청운** | `프론트엔드` | 로그인, 회원가입, 소셜로그인, 게시판CRUD, 내위치기반주변지도, 검색형지도, 북마크, 마이페이지 |
-| **조수정** | `프론트엔드` | 커피리뷰&게시판댓글 CRUD, 랜덤커피뽑기, 반응형 적용, CSS |
-| **최형용** | `프론트엔드` | websocket,STOMP을 이용한 채팅 기능 구현 |
-| **김미래** | `백엔드` | github action과 codedeploy를 통한 자동화 배포,redis 사용과 websocket을 이용한 채팅,CRUD 구현 |
-
+### Contributors
+- 백엔드 :
+   <td align="center"><b><a href="https://github.com/JeongWilly">정우창</a></b></td>
+   <td align="center"><b><a href="https://github.com/251643">서솔</a></b></td>
+    <td align="center"><b><a href="https://github.com/ji-0o0o0o">신지영</a></b></td>
+- 프론트엔드 :
+   <td align="center"><b><a href="https://github.com/jennywoon">나청운</a></b></td>
+  <td align="center"><b><a href="https://github.com/suzzeong">조수정</a></b></td>
+  <td align="center"><b><a href="https://github.com/hyeongyong-choi">최형용</a></b></td>
+- 디자이너 :
+   <td align="center"><b><a href="">김미래</a></b></td>
 [FE repo 바로가기][https://github.com/jennywoon/HomeComingDay]
 
-
-- 트러블 슈팅 → 추가예정(개선된 서비스 사항에 대해)
