@@ -161,8 +161,8 @@ public class ChatRoomService {
         int unReadMessageCount = redisRepository.getChatRoomMessageCount(roomUuid, chatRoomUser.getMember().getId());
         String dayBefore = Time.convertLocaldatetimeToTime(lastTime);
         return new ChatRoomResponseDto(roomName, roomUuid, lastMessage, lastTime, unReadMessageCount, dayBefore,
-                chatRoomUser.getMember().getAdmission(), chatRoomUser.getMember().getDepartmentName(),
-                changeImage(chatRoomUser.getOtherUserImage()), totalCnt);
+                chatRoomUser.getOtherMember().getAdmission(), chatRoomUser.getOtherMember().getDepartmentName(),
+                changeImage(chatRoomUser.getOtherMember().getUserImage()), totalCnt);
     }
 
     //채팅방 삭제
