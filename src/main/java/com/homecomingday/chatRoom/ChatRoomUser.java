@@ -28,7 +28,8 @@ public class ChatRoomUser extends Timestamped {
     // 채팅방 이름
     private String name;
     private String otherUserImage;
-
+    @ManyToOne
+    private Member otherMember;
 
     @ManyToOne
     @JoinColumn(name = "chatroom_id")
@@ -40,6 +41,7 @@ public class ChatRoomUser extends Timestamped {
         this.member = member;
         this.name = anotherUser.getUsername();
         this.chatRoom = room;
+        this.otherMember = anotherUser;
         this.otherUserImage = anotherUser.getUserImage();
     }
 
