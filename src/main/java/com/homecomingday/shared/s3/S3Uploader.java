@@ -73,8 +73,6 @@ public class S3Uploader {
         objectMetadata.setContentType(resizingFile.getContentType());
 
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
-//        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
-
 
         return uploadImageUrl;
     }
@@ -137,17 +135,4 @@ public class S3Uploader {
 
     }
 
-//만약을 위해 우선 남겼습니다
-//    private void removeNewFile(File targetFile) {
-//        if (targetFile.delete()) {
-//            log.info("파일이 삭제되었습니다.");
-//        } else {
-//            log.info("파일이 삭제되지 못했습니다.");
-//        }
-//    }
-
-//    public void remove(String filename) {
-//        DeleteObjectRequest request = new DeleteObjectRequest(bucket, filename);
-//        amazonS3Client.deleteObject(request);
-//    }
 }
