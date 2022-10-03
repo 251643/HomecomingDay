@@ -43,15 +43,15 @@ public class S3Uploader {
 
         MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 1);
 
-//        ObjectMetadata objectMetadata=new ObjectMetadata();
-//        objectMetadata.setContentLength(resizingFile.getSize());
-//        objectMetadata.setContentType(resizingFile.getContentType());
-
         ObjectMetadata objectMetadata=new ObjectMetadata();
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(resizingFile.getSize());
+        objectMetadata.setContentType(resizingFile.getContentType());
 
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+//        ObjectMetadata objectMetadata=new ObjectMetadata();
+//        objectMetadata.setContentLength(multipartFile.getSize());
+//        objectMetadata.setContentType(multipartFile.getContentType());
+
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
 //        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
 
 
@@ -68,12 +68,11 @@ public class S3Uploader {
         MultipartFile resizingFile = resizeMainImage(multipartFile, fileName, fileFormatName, 2);
 
         ObjectMetadata objectMetadata=new ObjectMetadata();
+
         objectMetadata.setContentLength(resizingFile.getSize());
         objectMetadata.setContentType(resizingFile.getContentType());
 
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, resizingFile.getInputStream(),objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
-//        removeNewFile(new File(Objects.requireNonNull(resizingFile.getOriginalFilename())));
-
 
         return uploadImageUrl;
     }
@@ -89,12 +88,22 @@ public class S3Uploader {
         int demandHeight;
         // 줄이려고 하는 이미지 크기
         if (checkNum == 1) {//checkNum이 1이면 메인게시물
-            demandWidth = 330;
+            demandWidth = 340;
             demandHeight = 250;
+
+            BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
+
+            // 이미지 저장
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
+            baos.flush();
+            destImg.flush();
+
+            return new MockMultipartFile(fileName, baos.toByteArray());
         } else { //checkNum이 2면 프로필이미지로 사이즈 조정
             demandWidth = 160;
             demandHeight = 160;
-        }
+
         int originWidth = srcImg.getWidth();
         int originHeight = srcImg.getHeight();
 
@@ -115,22 +124,15 @@ public class S3Uploader {
         // 이미지 기본 너비 높이 설정값으로 변경
         BufferedImage destImg = Scalr.resize(srcImg, newWidth, newHeight);
 
-        // 이미지 저장
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
-        baos.flush();
-        destImg.flush();
+            // 이미지 저장
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(destImg, fileFormatName.toLowerCase(), baos);
+            baos.flush();
+            destImg.flush();
 
-        return new MockMultipartFile(fileName, baos.toByteArray());
+            return new MockMultipartFile(fileName, baos.toByteArray());
+        }
 
     }
 
-//만약을 위해 우선 남겼습니다
-//    private void removeNewFile(File targetFile) {
-//        if (targetFile.delete()) {
-//            log.info("파일이 삭제되었습니다.");
-//        } else {
-//            log.info("파일이 삭제되지 못했습니다.");
-//        }
-//    }
 }
