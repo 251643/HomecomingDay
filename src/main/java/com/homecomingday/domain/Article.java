@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +25,11 @@ public class Article extends Timestamped {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
 
+    @NotBlank
     @Column(nullable = false)
     private String title;
 
+    @NotBlank
     @Column(nullable = false,length=400)
     private String content;
 
