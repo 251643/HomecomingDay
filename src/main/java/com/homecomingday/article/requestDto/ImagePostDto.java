@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImagePostDto {
+public class ImagePostDto implements Serializable {
 
     private Long imageId;
 

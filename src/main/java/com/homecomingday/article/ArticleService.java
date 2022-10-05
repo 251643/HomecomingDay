@@ -13,13 +13,17 @@ import com.homecomingday.domain.*;
 import com.homecomingday.notification.NotificationService;
 import com.homecomingday.shared.s3.S3Uploader;
 import com.homecomingday.util.ArticleChange;
+import com.homecomingday.util.CacheKey;
 import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -45,13 +49,11 @@ public class ArticleService {
     private final NotificationService notificationService;
 
     private final ParticipantRepository participantRepository;
-
-
-
+    private final CacheSevice cacheSevice;
 
 
     //현재 게시물 받아오기
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public Article isPresentArticle(Long id) {
         Optional<Article> optionalPost = articleRepository.findById(id);
         return optionalPost.orElse(null);
@@ -59,6 +61,7 @@ public class ArticleService {
 
 
     //검색창 페이지 인기 목록조회 수정했슴다
+    @Cacheable(value = "searchPop", key = "#userDetails.getMember().getSchoolName()", unless = "#result == null")
     public List<GetAllArticleDto> searchPopularArticle(UserDetailsImpl userDetails){
 
         List<Article> articleList = articleRepository.findBySchoolNameOrderByViewsDesc(userDetails.getMember().getSchoolName());
@@ -114,6 +117,7 @@ public class ArticleService {
     }
 
     //검색창 페이지 목록조회
+    @Cacheable(value = "search", key = "#userDetails.getMember().getSchoolName()", unless = "#result == null")
     public List<GetAllArticleDto> searchArticle(UserDetailsImpl userDetails){
         List<Article> articleList = articleRepository.findBySchoolNameOrderByCreatedAtDesc(userDetails.getMember().getSchoolName());
 
@@ -171,6 +175,7 @@ public class ArticleService {
     }
 
     //메인페이지 인기순 조회
+    @Cacheable(value = "articlePop", key = "#articleFlag + #userDetails.getMember().getSchoolName()", unless = "#result == null")
     public List<GetAllArticleDto> readPopularArticle(String articleFlag, UserDetailsImpl userDetails){
 
         List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByViewsDesc(articleFlag,userDetails.getMember().getSchoolName());
@@ -232,6 +237,7 @@ public class ArticleService {
 
 
     //메인페이지 게시물 조회
+    @Cacheable(value = CacheKey.ARTICLES, key = "#articleFlag + #userDetails.getMember().getSchoolName()", unless = "#result == null")
     public List<GetAllArticleDto> readAllArticle(String articleFlag, UserDetailsImpl userDetails) {
 
         List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByCreatedAtDesc(articleFlag, userDetails.getMember().getSchoolName());
@@ -295,6 +301,7 @@ public class ArticleService {
 
     //게시글 만남일정이랑 다른친구 구분값으로 api주던가 flag통해서 구분값주기
     //게시글 생성
+    @CacheEvict(value = CacheKey.ARTICLES, key = "#articleFlag + #userDetails.getMember().getSchoolName()")
     public ArticleResponseDto postArticle(String articleFlag,
                                           List<MultipartFile> multipartFile,
                                           ArticleRequestDto articleRequestDto,
@@ -426,7 +433,6 @@ public class ArticleService {
 
 
     // 게시글 상세 조회
-    @Transactional(readOnly = true)
     public ArticleResponseDto readArticle(String articleFlag, Long articleId, UserDetailsImpl userDetails) {
 
         Article article = isPresentArticle(articleId);
@@ -569,6 +575,8 @@ public class ArticleService {
         if(!articleFlag.equals("calendar")) {
             if (userDetails.getUsername().equals(article.getMember().getEmail())) { //유니크 처리를 email만 해줬기에 기존 작성자와 현로그인한 유저의 이메일을 비교하여 바꿔준다
                 article.updateArticle(articleRequestDto);
+
+                cacheSevice.deleteBoardCache(article.getId(), userDetails, articleFlag);
                 return articleFlag + "  " + myId + "번 게시글 수정";
 
             }
@@ -578,6 +586,7 @@ public class ArticleService {
                if(articleRequestDto.getMaxPeople()>=article.getParticipants().size()) {
                    article.updateArticle(articleRequestDto);
 
+                   cacheSevice.deleteBoardCache(article.getId(), userDetails, articleFlag);
                    return articleFlag + "  " + myId + "번 게시글 수정";
                }
             }
@@ -599,6 +608,8 @@ public class ArticleService {
         if (email.equals(articles.getMember().getEmail())) {
 
             articleRepository.delete(article);
+
+            cacheSevice.deleteBoardCache(article.getId(), userDetails, articleFlag);
             return articleFlag + " " + myId + "번 게시글이 삭제 성공";
         } else return articleFlag + " " + myId + "번 게시글이 삭제 실패";
 
