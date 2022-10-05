@@ -635,6 +635,18 @@ public class ArticleService {
             return  false;
         }
     }
+    //좋아요 확인
+    public ConfirmHeartDto confirmHeart(Long articleId, UserDetailsImpl userDetails) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+        return ConfirmHeartDto.builder()
+                .heartCnt(article.getHeartCnt())
+                .isHeart(heartCheck(article, userDetails.getMember()))
+                .build();
+
+
+    }
 
     ///게시글 좋아요 확인
     public boolean heartCheck(Article article, Member member) {
