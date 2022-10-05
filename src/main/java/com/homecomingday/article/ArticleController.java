@@ -94,6 +94,12 @@ public class ArticleController {
         return articleService.deleteArticles(articleFlag,articleId,userDetails);
     }
 
+    //게시글 좋아요 확인
+    @GetMapping("/article/{articleFlag}/{articleId}/heart")
+    public ConfirmHeartDto confirmHeart(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return articleService.confirmHeart(articleId,userDetails);
+    }
+
     //게시글 좋아요
     @PostMapping("/article/{articleFlag}/{articleId}/heart")
     public boolean heartArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails){
