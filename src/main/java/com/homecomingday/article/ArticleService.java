@@ -104,6 +104,7 @@ public class ArticleService {
                                 .views(findArticle.getViews())
                                 .heartCnt(findArticle.getHeartCnt())
                                 .commentCnt((long) findArticle.getComments().size())
+                                .joinCheck(ArticleChange.changeJoinPeople(findArticle))
                                 .build()
                 );
             }
@@ -160,6 +161,7 @@ public class ArticleService {
                                 .views(findArticle.getViews())
                                 .heartCnt(findArticle.getHeartCnt())
                                 .commentCnt((long) findArticle.getComments().size())
+                                .joinCheck(ArticleChange.changeJoinPeople(findArticle))
                                 .build()
                 );
             }
@@ -218,6 +220,7 @@ public class ArticleService {
                                 .heartCnt( findArticle.getHeartCnt())
                                 .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                 .commentCnt((long) findArticle.getComments().size())
+                                .joinCheck(ArticleChange.changeJoinPeople(findArticle))
                                 .build()
                 );
             }
@@ -279,6 +282,7 @@ public class ArticleService {
                                     .heartCnt(findArticle.getHeartCnt())
                                     .isHeart(heartCheck(findArticle, userDetails.getMember()))
                                     .commentCnt((long) findArticle.getComments().size())
+                                    .joinCheck(ArticleChange.changeJoinPeople(findArticle))
                                     .build()
                     );
                 }

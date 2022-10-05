@@ -52,6 +52,8 @@ public class GetAllArticleDto {
 
     private Long commentCnt;
 
+    private boolean joinCheck;
+
     private boolean isHeart;
 
 
