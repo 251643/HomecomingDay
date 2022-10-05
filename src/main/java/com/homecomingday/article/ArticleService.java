@@ -17,9 +17,10 @@ import com.homecomingday.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -425,6 +426,7 @@ public class ArticleService {
 
 
     // 게시글 상세 조회
+    @Transactional(readOnly = true)
     public ArticleResponseDto readArticle(String articleFlag, Long articleId, UserDetailsImpl userDetails) {
 
         Article article = isPresentArticle(articleId);
@@ -432,7 +434,7 @@ public class ArticleService {
             throw new RuntimeException("해당 게시글이 없습니다.");
         }
 
-        List<Comment> findComment = commentRepository.findAll();
+        List<Comment> findComment = article.getComments();
 
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
