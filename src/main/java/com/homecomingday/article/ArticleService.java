@@ -426,7 +426,7 @@ public class ArticleService {
 
 
     // 게시글 상세 조회
-
+    @Transactional(readOnly = true)
     public ArticleResponseDto readArticle(String articleFlag, Long articleId, UserDetailsImpl userDetails) {
 
         Article article = isPresentArticle(articleId);
