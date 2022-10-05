@@ -1,6 +1,7 @@
 package com.homecomingday.util;
 
 
+import com.homecomingday.domain.Article;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -62,5 +63,13 @@ public class ArticleChange {
             return "대댓글";
         }
         return null;
+    }
+
+    public static boolean changeJoinPeople(Article checkPeople){
+        if(checkPeople.getParticipants().size()<checkPeople.getMaxPeople()){
+            return false;
+        }else{
+            return true;
+        }
     }
 }
