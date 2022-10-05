@@ -16,10 +16,10 @@ public class CacheSevice {
         @CacheEvict(value = CacheKey.ARTICLE, key = "#articleId"),
 //        @CacheEvict(value = "#articleFlag"+"Pop", key = "#userDetails.getMember().getSchoolName()"),
 //        @CacheEvict(value = "#articleFlag", key = "#userDetails.getMember().getSchoolName()"),
-        @CacheEvict(value = CacheKey.ARTICLES, key = "#articleFlag"),
-        @CacheEvict(value = "articlesPop", key = "#articleFlag"),
-        @CacheEvict(value = "searchPop", key = "#userDetails.getMember().getSchoolName()"),
-        @CacheEvict(value = "search", key = "#userDetails.getMember().getSchoolName()")
+        @CacheEvict(value = CacheKey.ARTICLES, key = "#articleFlag+ #userDetails.getMember().getSchoolName()"),
+        @CacheEvict(value = CacheKey.ARTICLEPOP, key = "#articleFlag+ #userDetails.getMember().getSchoolName()"),
+        @CacheEvict(value = CacheKey.SEARCHPOP, key = "#userDetails.getMember().getSchoolName()"),
+        @CacheEvict(value = CacheKey.SERACH, key = "#userDetails.getMember().getSchoolName()")
     })
     public boolean deleteBoardCache(long articleId, UserDetailsImpl userDetails, String articleFlag) {
         log.debug("deleteBoardCache - articleId {}, schoolName {}", articleId, userDetails.getMember().getSchoolName());

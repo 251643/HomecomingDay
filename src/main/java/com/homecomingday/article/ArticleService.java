@@ -61,7 +61,7 @@ public class ArticleService {
 
 
     //검색창 페이지 인기 목록조회 수정했슴다
-    @Cacheable(value = "searchPop", key = "#userDetails.getMember().getSchoolName()", unless = "#result == null")
+    @Cacheable(value = CacheKey.SEARCHPOP, key = "#userDetails.getMember().getSchoolName()", unless = "#result == null")
     public List<GetAllArticleDto> searchPopularArticle(UserDetailsImpl userDetails){
 
         List<Article> articleList = articleRepository.findBySchoolNameOrderByViewsDesc(userDetails.getMember().getSchoolName());
@@ -117,7 +117,7 @@ public class ArticleService {
     }
 
     //검색창 페이지 목록조회
-    @Cacheable(value = "search", key = "#userDetails.getMember().getSchoolName()", unless = "#result == null")
+    @Cacheable(value = CacheKey.SERACH, key = "#userDetails.getMember().getSchoolName()", unless = "#result == null")
     public List<GetAllArticleDto> searchArticle(UserDetailsImpl userDetails){
         List<Article> articleList = articleRepository.findBySchoolNameOrderByCreatedAtDesc(userDetails.getMember().getSchoolName());
 
@@ -175,7 +175,7 @@ public class ArticleService {
     }
 
     //메인페이지 인기순 조회
-    @Cacheable(value = "articlePop", key = "#articleFlag + #userDetails.getMember().getSchoolName()", unless = "#result == null")
+    @Cacheable(value = CacheKey.ARTICLEPOP, key = "#articleFlag + #userDetails.getMember().getSchoolName()", unless = "#result == null")
     public List<GetAllArticleDto> readPopularArticle(String articleFlag, UserDetailsImpl userDetails){
 
         List<Article> articleList = articleRepository.findByArticleFlagAndSchoolNameOrderByViewsDesc(articleFlag,userDetails.getMember().getSchoolName());
