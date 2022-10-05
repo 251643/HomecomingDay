@@ -13,29 +13,37 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     public static final String ALLOWED_METHOD_NAMES = "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH";
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .exposedHeaders("*")
+//                .allowedHeaders("*")
+////                .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
+//
+//                .allowedMethods(
+//                        HttpMethod.GET.name(),
+//                        HttpMethod.POST.name(),
+//                        HttpMethod.PATCH.name(),
+//                        HttpMethod.DELETE.name(),
+//                        HttpMethod.OPTIONS.name(),
+//                        HttpMethod.HEAD.name(),
+//                        HttpMethod.PUT.name())
+////                .allowCredentials(true)
+//                .maxAge(3600)
+////                .allowedOrigins("https://devtools-gewfe9kn1-green9930.vercel.app,https://devtools-si83a57cz-green9930.vercel.app, http://localhost:3000");
+//                // 여기에 열어놓읗 주소 적어놓으면 된다.
+////                .allowedOrigins("*");
+//                .allowedOrigins("https://homecomingdays.net"," http://localhost:3000"," http://localhost:8080"," http://43.201.48.73", "https://www.homecomingdaycare.com");
+//
+//
+//    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .exposedHeaders("*")
-                .allowedHeaders("*")
-//                .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
-
-                .allowedMethods(
-                        HttpMethod.GET.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.PATCH.name(),
-                        HttpMethod.DELETE.name(),
-                        HttpMethod.OPTIONS.name(),
-                        HttpMethod.HEAD.name(),
-                        HttpMethod.PUT.name())
-//                .allowCredentials(true)
-                .maxAge(3600)
-//                .allowedOrigins("https://devtools-gewfe9kn1-green9930.vercel.app,https://devtools-si83a57cz-green9930.vercel.app, http://localhost:3000");
-                // 여기에 열어놓읗 주소 적어놓으면 된다.
-//                .allowedOrigins("*");
-                .allowedOrigins("https://homecomingdays.net"," http://localhost:3000"," http://localhost:8080"," http://43.201.48.73", "https://www.homecomingdaycare.com");
-
-
+                .allowedOrigins("*")
+                .allowedOrigins("https://homecomingdaycare.com", "http://localhost:3000"+"\n")
+                .allowedMethods("*");
     }
     /* swagger-ui 페이지 연결 핸들러 설정 */
     @Override
@@ -57,10 +65,12 @@ public class WebConfig implements WebMvcConfigurer {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true) ;
         configuration.addAllowedOriginPattern("*");
-//        configuration.addAllowedOrigin("*"); // 배포 시
+        configuration.addAllowedOrigin("https://homecomingdaycare.com"); // 배포 시
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
