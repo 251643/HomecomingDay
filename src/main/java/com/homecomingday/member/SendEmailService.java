@@ -31,8 +31,8 @@ public class SendEmailService {
         dto.setAddress(emailSendRequestDto.getEmail());
         dto.setTitle("Homecoming Day 인증번호 안내 이메일 입니다.");
         dto.setMessage(authKey);
-        // 유효 시간(5분)동안 {email, authKey} 저장
-        redisUtil.setDataExpire(authKey, emailSendRequestDto.getEmail(), 60 * 3L);
+        // 유효 시간(10분)동안 {email, authKey} 저장
+        redisUtil.setDataExpire(authKey, emailSendRequestDto.getEmail(), 60 * 10L);
 
         return dto;
     }
@@ -58,7 +58,7 @@ public class SendEmailService {
                                        + "</div>"
                                        + "<hr style='border: 0; height: 1px; background: #ccc; >"
                                        + "<h2 style='text-align:center;'></h2>"
-                                       + "<h4 style='text-align:center;color: #787878;'>본 이메일은 발신전용 이메일입니다. 궁금하신 사항은 홈커밍데이로 문의하시기 바랍니다.</h4>"
+                                       + "<h4 style='text-align:center;color: #787878;'>본 이메일은 발신전용 이메일입니다. 궁금하신 사항은 homecomingday@naver.com으로 문의하시기 바랍니다.</h4>"
                                    + "</div>"
                                    +
                                  "</div>";
