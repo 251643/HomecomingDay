@@ -142,3 +142,5 @@
    
 [FE repo 바로가기][https://github.com/jennywoon/HomeComingDay]
 
+<br/>
+<img src="https://user-images.githubusercontent.com/109018926/194331117-a466f5ef-7c3e-4c5d-b813-d8b8c334ede6.png">
