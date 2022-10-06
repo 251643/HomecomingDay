@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommitResponseDto {
+public class CommitResponseDto implements Serializable {
 
 
     private Long childCommentId;
